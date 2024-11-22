@@ -1,0 +1,17 @@
+-- AlterTable
+ALTER TABLE "Laboratory" ALTER COLUMN "labHeadName" DROP NOT NULL,
+ALTER COLUMN "labHeadEmail" DROP NOT NULL,
+ALTER COLUMN "labHeadContact" DROP NOT NULL,
+ALTER COLUMN "contactNumber" DROP NOT NULL,
+ALTER COLUMN "faxNumber" DROP NOT NULL,
+ALTER COLUMN "tin" DROP NOT NULL,
+ALTER COLUMN "missionStatement" DROP NOT NULL,
+ALTER COLUMN "businessPermitId" DROP NOT NULL,
+ALTER COLUMN "businessPermitNumber" DROP NOT NULL,
+ALTER COLUMN "businessPermitIssueDate" DROP NOT NULL,
+ALTER COLUMN "businessPermitExpiration" DROP NOT NULL,
+ALTER COLUMN "businessPermitPlaceOfIssuance" DROP NOT NULL,
+ALTER COLUMN "categoryOfClient" DROP NOT NULL,
+ALTER COLUMN "ServicesOffered" DROP NOT NULL,
+ALTER COLUMN "scopeOfWork" DROP NOT NULL,
+ALTER COLUMN "areaServed" DROP NOT NULL;

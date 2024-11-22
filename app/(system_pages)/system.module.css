@@ -1,0 +1,17 @@
+.body{
+    background:white;
+    width:100vw;
+    min-height:100vh;
+    display:flex;
+    flex-direction:row;
+    
+}
+.nav{
+    flex:1;
+}
+
+.content {
+    flex:6;
+    overflow:auto;
+    height:100vh;
+}

@@ -1,0 +1,110 @@
+.profile_header_2{
+    text-transform: uppercase;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color:white;
+    font-size: 16px;
+    font-weight: 700;
+
+}
+
+.header_container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 10px;
+    background: cornflowerblue;
+    border-radius: 5px;
+}
+
+.header_container_end{
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+}
+
+.status_container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color:gray
+}
+
+.form_style{
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    padding: 10px;
+}
+.row {
+    display: flex;
+    flex-direction: row;
+    gap:20px;
+
+}
+
+.row_end {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    gap:20px;
+
+}
+
+.item {
+    flex:1;
+}
+
+.item_label {
+    font-size: 14px;
+    color:dimgray;
+    font-weight: 500;
+    margin-bottom: 7px;
+    font-weight: 600;
+}
+
+.item_input{
+    height: 40px;
+    padding:10px !important;
+    min-width: 100%;
+    border-radius: 5px;
+    border:solid 1px gray;
+    font-size: 14px;
+    color:rgb(48, 46, 46)
+}
+
+.item_input_textarea{
+    padding:10px !important;
+    min-width: 100%;
+    border-radius: 5px;
+    border:solid 1px gray;
+    font-size: 14px;
+    color:rgb(48, 46, 46);
+    resize: none;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+.submit_button{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap:5px;
+    padding: 5px;
+    background: green;
+    border: none;
+    color:white;
+    width: 100px;
+    border-radius: 5px;
+    cursor: pointer;
+    justify-content: center;
+    transition: background-color 0.3s ease-in-out , scale 0.3s ease-in-out;
+}
+
+.submit_button:hover{
+    scale: 1.2;
+    background-color: rgb(4, 80, 4);
+}

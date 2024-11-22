@@ -1,0 +1,13 @@
+.header_container {
+    height:70px;
+    border-bottom:solid 1px gray;
+    width:inherit;
+    display:flex;
+    align-items:center;
+    padding-left:50px;
+    background-color: #f5f9fc;
+}
+
+.header_text {
+    font-size:22px;
+}

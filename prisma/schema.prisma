@@ -1,0 +1,297 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                Int          @id @default(autoincrement())
+  email             String       @unique
+  password          String
+  region            Region_w_co
+  role              Role
+  iis_token         String?
+  crs_token         String?
+  created           DateTime     @default(now())
+  updated           DateTime     @default(now())
+  isDetailsComplete Boolean      @default(false)
+  sessions          Session[]
+  userDetails       UserDetails?
+  establishmentCreated Establishment[] @relation("CreatedEstablishment")
+  establishmentUpdated Establishment[] @relation("UpdatedEstablishment")
+  laboratories Laboratory[] @relation("createdLabs")
+}
+
+model UserDetails {
+  id             Int     @id @default(autoincrement())
+  userId         Int     @unique
+  firstName      String?
+  lastName       String?
+  address        String?
+  contactNumber  String?
+  profilePicture String?
+  signature      String?
+  qrCode         String?
+  companyName    String?
+  companyJobTitle    String?
+  companyContact    String?
+  companyAddress    String?
+  user           User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Session {
+  id        String   @id
+  userId    Int
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Attachment {
+  id         Int    @id @default(autoincrement())
+  file_path  String
+  url_path   String
+  file_label String
+  accreditation_records AccreditationRecord[]
+  personnelCV Personnel[] @relation("PersonnelCV")
+  personnelLicense Personnel[] @relation("PersonnelLicense")
+  businessPermit Laboratory[] @relation("businessPermit")
+  labTestResultForm LaboratoryAttachments[] @relation("labTestResultForm")
+  equipmentCalibrationMaintenanceProgram LaboratoryAttachments[] @relation("equipmentCalibrationMaintenanceProgram")
+  pcwManagementPractices LaboratoryAttachments[] @relation("pcwManagementPractices")
+  refLiterature LaboratoryAttachments[] @relation("refLiterature")
+  qaqcProgram LaboratoryAttachments[] @relation("qaqcProgram")
+  floorPlan LaboratoryAttachments[] @relation("floorPlan")
+  pcoAccreditation LaboratoryAttachments[] @relation("pcoAccreditation")
+  complianceCertificate LaboratoryAttachments[] @relation("complianceCertificate")
+  hazardousWasteGenerator LaboratoryAttachments[] @relation("hazardousWasteGenerator")
+  ccoRegistrationCertificate LaboratoryAttachments[] @relation("ccoRegistrationCertificate")
+  ccoForCyanide LaboratoryAttachments[] @relation("ccoForCyanide")
+  ccoForLead LaboratoryAttachments[] @relation("ccoForLead")
+  ccoForPolychlorinatedBiphenyls LaboratoryAttachments[] @relation("ccoForPolychlorinatedBiphenyls")
+  ptoAirPollution LaboratoryAttachments[] @relation("ptoAirPollution")
+  dischargePermits LaboratoryAttachments[] @relation("dischargePermits")
+  pnpPurchaserLicense LaboratoryAttachments[] @relation("pnpPurchaserLicense")
+  pdeaLicense LaboratoryAttachments[] @relation("pdeaLicense")
+  pnriLicense LaboratoryAttachments[] @relation("pnriLicense")
+  certificateToOperateChemLab LaboratoryAttachments[] @relation("certificateToOperateChemLab")
+}
+
+
+
+// ======================================= Laboratory Models =======================================
+
+model AccreditationRecord {
+  id Int @id @default(autoincrement())
+  accreditation_body String
+  scope String
+  expiration DateTime
+  certificateId Int
+  certificate Attachment @relation(fields: [certificateId], references: [id], onDelete: Cascade)
+  laboratoryId Int
+  laboratory Laboratory @relation(fields: [laboratoryId], references: [id], onDelete: Cascade)
+}
+
+
+model Personnel {
+  id Int @id @default(autoincrement())
+  name String
+  position String
+  education String
+  yearsOfExperience Int
+  cvId Int @unique
+  cv Attachment @relation("PersonnelCV", fields: [cvId], references: [id], onDelete: Cascade) 
+  licenseId Int @unique
+  license Attachment @relation("PersonnelLicense", fields: [licenseId], references: [id], onDelete: Cascade)
+  laboratoryId Int
+  laboratory Laboratory @relation(fields: [laboratoryId], references: [id], onDelete: Cascade)
+}
+
+
+model SampleType {
+  id Int @id @default(autoincrement())
+  name String
+  parameters Parameter[]
+  samples Sample[]
+}
+
+model Parameter {
+  id Int @id @default(autoincrement())
+  name String
+  sampleTypeId Int
+  sampleType SampleType @relation(fields: [sampleTypeId], references: [id])
+  sampleMethods SampleMethod[]
+  samples Sample[]
+}
+
+model SampleMethod {
+  id Int @id @default(autoincrement())
+  name String
+  parameterId Int
+  parameter Parameter @relation(fields: [parameterId], references: [id])
+  sampleReferences SampleReference[]
+  samples Sample[]
+}
+
+model SampleReference {
+  id Int @id @default(autoincrement())
+  name String
+  sampleMethodId Int
+  sampleMethod SampleMethod @relation(fields: [sampleMethodId], references: [id])
+  samples Sample[]
+}
+
+
+model Sample {
+  id Int @id @default(autoincrement())
+    sampleTypeId Int
+    sampleType SampleType @relation(fields: [sampleTypeId], references: [id], onDelete: Cascade)
+    parameterId Int
+    parameter Parameter @relation(fields: [parameterId], references: [id], onDelete: Cascade)
+    sampleMethodId Int
+    sampleMethod SampleMethod @relation(fields: [sampleMethodId], references: [id], onDelete: Cascade)
+    sampleReferenceId Int
+    sampleReference SampleReference @relation(fields: [sampleReferenceId], references: [id], onDelete: Cascade)
+    trackRecords TrackRecord[]
+}
+
+model TrackRecord {
+  id Int @id @default(autoincrement())
+  sampleId Int
+  sample Sample @relation(fields: [sampleId], references: [id], onDelete: Cascade)
+  numberOfSamples Int
+  dateCoveredStart DateTime
+  dateCoveredEnd  DateTime
+  laboratoryId Int
+  laboratory Laboratory @relation(fields: [laboratoryId], references: [id], onDelete: Cascade)
+}
+
+
+model Establishment {
+  id Int @id @default(autoincrement())
+  region Region
+  province String
+  address String
+  lat Float
+  lon Float
+  created DateTime @default(now())
+  updated DateTime @default(now())
+  addedById Int
+  addedBy User @relation("CreatedEstablishment", fields: [addedById], references: [id], onDelete: Cascade)
+  updatedById Int
+  updatedBy User @relation("UpdatedEstablishment", fields: [updatedById], references: [id], onDelete: Cascade)
+  laboratory Laboratory[]
+}
+
+
+model LaboratoryAttachments {
+  id Int @id @default(autoincrement())
+  laboratoryId Int @unique
+  laboratory Laboratory @relation(fields: [laboratoryId], references: [id])
+  labTestResultForm Attachment[] @relation("labTestResultForm")
+  equipmentCalibrationMaintenanceProgram Attachment[] @relation("equipmentCalibrationMaintenanceProgram")
+  pcwManagementPractices Attachment[] @relation("pcwManagementPractices")
+  refLiterature Attachment[] @relation("refLiterature")
+  qaqcProgram Attachment[] @relation("qaqcProgram")
+  floorPlan Attachment[] @relation("floorPlan")
+  pcoAccreditation Attachment[] @relation("pcoAccreditation")
+  complianceCertificate Attachment[] @relation("complianceCertificate")
+  hazardousWasteGenerator Attachment[] @relation("hazardousWasteGenerator")
+  ccoRegistrationCertificate Attachment[] @relation("ccoRegistrationCertificate")
+  ccoForCyanide Attachment[] @relation("ccoForCyanide")
+  ccoForLead Attachment[] @relation("ccoForLead")
+  ccoForPolychlorinatedBiphenyls Attachment[] @relation("ccoForPolychlorinatedBiphenyls")
+  ptoAirPollution Attachment[] @relation("ptoAirPollution")
+  dischargePermits Attachment[] @relation("dischargePermits")
+  pnpPurchaserLicense Attachment[] @relation("pnpPurchaserLicense")
+  pdeaLicense Attachment[] @relation("pdeaLicense")
+  pnriLicense Attachment[] @relation("pnriLicense")
+  certificateToOperateChemLab Attachment[] @relation("certificateToOperateChemLab")
+}
+
+model Laboratory {
+  id Int @id @default(autoincrement())
+  laboratoryName String
+  establishmentId Int
+  establishment Establishment @relation(fields: [establishmentId], references: [id], onDelete: Cascade)
+  certificationDate DateTime?
+  certificationExpiration DateTime?
+  labHeadName String?
+  labHeadEmail String?
+  labHeadContact String?
+  contactNumber String?
+  faxNumber String?
+  tin String?
+  missionStatement String?
+  dateEstablished DateTime
+  businessPermitId Int?
+  businessPermit Attachment? @relation("businessPermit", fields: [businessPermitId], references: [id], onDelete: Cascade)
+  businessPermitNumber String?
+  businessPermitIssueDate DateTime?
+  businessPermitExpiration DateTime?
+  businessPermitPlaceOfIssuance String?
+  categoryOfClient Json?
+  ServicesOffered Json?
+  scopeOfWork String?
+  areaServed String?
+  accreditationRecords AccreditationRecord[] // Own page
+  personnels Personnel[] // Own page
+  trackRecords TrackRecord[] // Own page
+  labAttachments LaboratoryAttachments? // Own page
+  addedById Int
+  addedBy User @relation("createdLabs", fields: [addedById], references: [id])
+  status Int
+}
+
+enum Region {
+  car
+  ncr
+  r1
+  r2
+  r3
+  r4a
+  r4b
+  r5
+  r6
+  r7
+  r8
+  r9
+  r10
+  r11
+  r12
+  r13
+}
+
+enum Region_w_co {
+  car
+  central_office
+  ncr
+  r1
+  r2
+  r3
+  r4a
+  r4b
+  r5
+  r6
+  r7
+  r8
+  r9
+  r10
+  r11
+  r12
+  r13
+}
+
+enum Role {
+  custodian
+  liat_member_co
+  liat_member_ro
+  elr_secretariat
+  elr_coordinator
+  external_assessor
+  applicant
+  admin
+  denr_secretary
+}
