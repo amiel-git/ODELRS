@@ -5,7 +5,7 @@ import { verifyAuth } from '@/app/lib/auth';
 import { getLabById } from '@/app/lib/lab_actions';
 import { capitalize } from '@/app/lib/helper';
 import LabTabs from '@/components/lab_components/lab_tabs/lab_tabs';
-
+import { redirect } from 'next/navigation';
 
 export default async function PerLabPage({params}){
     

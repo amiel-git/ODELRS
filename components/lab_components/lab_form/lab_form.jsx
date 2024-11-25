@@ -18,7 +18,7 @@ export default function LabForm({toggle_function, user}){
             console.log("FORM STATE UPDATED: ", formState);
             toggle_function(formState);
         }
-    }, [formState]);
+    }, [formState, toggle_function]);
     
     return (
         <>

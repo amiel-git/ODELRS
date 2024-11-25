@@ -7,6 +7,7 @@ import LabTable from "@/components/lab_components/lab_table/lab_table";
 import { Suspense } from "react";
 import { verifyAuth } from '@/app/lib/auth';
 import { getAllLabsForTable } from "@/app/lib/lab_actions";
+import { redirect } from "next/navigation";
 
 export default async function LaboratoryPage(){
 

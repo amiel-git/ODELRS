@@ -9,6 +9,47 @@ import { updateUser } from '@/app/lib/user_actions';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { provincesByRegion } from '@/app/mappings/provinceByRegion';
+import MultipleSelectChip from '@/components/form_components/multi_select_field';
+import { 
+        category_of_client, 
+        services_offered,
+        category_of_client_reference,
+        services_offered_reference,
+         } from '@/app/mappings/lab_creation_items';
+
+
+
+//Multi select field imports
+import { useTheme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import Chip from '@mui/material/Chip';
+
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+function getStyles(name, itemName, theme) {
+  return {
+    fontWeight: itemName.includes(name)
+      ? theme.typography.fontWeightMedium
+      : theme.typography.fontWeightRegular,
+  };
+}
+
+
+// ======================================================
 
 
 export default function LaboratoryDetailsForm(props){
@@ -41,6 +82,29 @@ export default function LaboratoryDetailsForm(props){
             return new Date(lab.dateEstablished).toISOString().slice(0,10)
         }
     }
+
+    const theme = useTheme();
+    const [categories, setCategories] = useState([]);
+    const [services, setServices] = useState([]);
+
+    const handleChangeCategories = (event) => {
+        const {
+        target: { value },
+        } = event;
+        setCategories(
+        // On autofill we get a stringified value.
+        typeof value === 'string' ? value.split(',') : value,
+        );
+    };
+    const handleChangeServices = (event) => {
+        const {
+        target: { value },
+        } = event;
+        setServices(
+        // On autofill we get a stringified value.
+        typeof value === 'string' ? value.split(',') : value,
+        );
+    };
     const [formState, formAction] = useActionState(updateUser, {error:null})
 
     const [snackBarMessage, setSnackBarMessage] = useState("")
@@ -69,9 +133,8 @@ export default function LaboratoryDetailsForm(props){
     const [input_l_head_email, set_input_l_head_email] = useState(nullChecker(lab.labHeadEmail))
     const [input_l_head_contact, set_input_l_head_contact] = useState(nullChecker(lab.labHeadContact))
 
-
-
-
+    const [input_scope, set_input_scope] = useState(nullChecker(lab.scopeOfWork))
+    const [input_geographical_area, set_input_geographical_area] = useState(nullChecker(lab.areaServed))
 
 
     const handleCloseSnackBar = (event, reason) => {
@@ -117,7 +180,7 @@ export default function LaboratoryDetailsForm(props){
       };
 
     return (
-        <div>      
+        <div>
             <form action={formAction} className={styles.form_style}>
                 <div className={styles.header_container}>
                     <p className={styles.profile_header_2}>General Laboratory Information</p>
@@ -331,6 +394,110 @@ export default function LaboratoryDetailsForm(props){
                     </div>
                     <div className={styles.form_item}>
                         {/* blank */}
+                    </div>
+                </div>
+
+
+                <div className={styles.header_container}>
+                    <p className={styles.profile_header_2}>Client and Service Information</p>
+                </div>
+
+                <div className={styles.form_row}>
+                    <div className={styles.form_item}>
+                        <label className={styles.label} htmlFor="client_category">Clients' Categories:</label>
+                        <FormControl sx={{width:"100%"}}>
+                            <Select
+                            name={"categories"}
+                            multiple
+                            value={categories}
+                            onChange={handleChangeCategories}
+                            input={<OutlinedInput id="select-multiple-chip" />}
+                            renderValue={(selected) => (
+                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                {selected.map((value) => (
+                                    <Chip key={value} label={category_of_client_reference[value]} />
+                                ))}
+                                </Box>
+                            )}
+                            MenuProps={MenuProps}
+                            >
+                            {category_of_client.map((item,idx) => (
+                                <MenuItem
+                                key={idx}
+                                value={item.value}
+                                style={getStyles(item, services, theme)}
+                                >
+                                {item.label}
+                                </MenuItem>
+                            ))}
+                            </Select>
+                        </FormControl>
+                    </div>
+                </div>
+
+                <div className={styles.form_row}>
+                    <div className={styles.form_item}>
+                        <label className={styles.label} htmlFor="client_category">Services Offered:</label>
+                        <FormControl sx={{width:"100%"}}>
+                            <Select
+                            name={"services"}
+                            multiple
+                            value={services}
+                            onChange={handleChangeServices}
+                            input={<OutlinedInput id="select-multiple-chip" />}
+                            renderValue={(selected) => (
+                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                {selected.map((value) => (
+                                    <Chip key={value} label={services_offered_reference[value]} />
+                                ))}
+                                </Box>
+                            )}
+                            MenuProps={MenuProps}
+                            >
+                            {services_offered.map((item,idx) => (
+                                <MenuItem
+                                key={idx}
+                                value={item.value}
+                                style={getStyles(item, services, theme)}
+                                >
+                                {item.label}
+                                </MenuItem>
+                            ))}
+                            </Select>
+                        </FormControl>
+                    </div>
+                </div>
+
+                <div className={styles.form_row}>
+                    <div className={styles.form_item}>
+                        <label className={styles.label} htmlFor="address">Scope and nature of work of the laboratory:</label>
+                        <textarea 
+                            rows={3} 
+                            className={styles.input_textarea} 
+                            type="text" 
+                            name="scope" 
+                            value={input_scope} 
+                            onChange={generic_setter(set_input_scope)} 
+                            required
+                        />
+                    </div>
+                </div>
+
+
+                <div className={styles.form_row}>
+                    <div className={styles.form_item}>
+                        <label className={styles.label} htmlFor="address">
+                            Geographical area currently served by the laboratory regarding acceptance of testing work (restrictions):
+                        </label>
+                        <textarea 
+                            rows={3} 
+                            className={styles.input_textarea} 
+                            type="text" 
+                            name="geographical_area" 
+                            value={input_geographical_area} 
+                            onChange={generic_setter(set_input_geographical_area)} 
+                            required
+                        />
                     </div>
                 </div>
 
