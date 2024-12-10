@@ -23,6 +23,8 @@ model User {
   establishmentCreated Establishment[] @relation("CreatedEstablishment")
   establishmentUpdated Establishment[] @relation("UpdatedEstablishment")
   laboratories Laboratory[] @relation("createdLabs")
+  updatedLabs Laboratory[] @relation("updatedLabs")
+  uploadedLabAttachments LaboratoryAttachments[] @relation("UploadedLabAttachments")
 }
 
 model UserDetails {
@@ -54,29 +56,12 @@ model Attachment {
   file_path  String
   url_path   String
   file_label String
+  file_type String @default("other")
   accreditation_records AccreditationRecord[]
   personnelCV Personnel[] @relation("PersonnelCV")
   personnelLicense Personnel[] @relation("PersonnelLicense")
   businessPermit Laboratory[] @relation("businessPermit")
-  labTestResultForm LaboratoryAttachments[] @relation("labTestResultForm")
-  equipmentCalibrationMaintenanceProgram LaboratoryAttachments[] @relation("equipmentCalibrationMaintenanceProgram")
-  pcwManagementPractices LaboratoryAttachments[] @relation("pcwManagementPractices")
-  refLiterature LaboratoryAttachments[] @relation("refLiterature")
-  qaqcProgram LaboratoryAttachments[] @relation("qaqcProgram")
-  floorPlan LaboratoryAttachments[] @relation("floorPlan")
-  pcoAccreditation LaboratoryAttachments[] @relation("pcoAccreditation")
-  complianceCertificate LaboratoryAttachments[] @relation("complianceCertificate")
-  hazardousWasteGenerator LaboratoryAttachments[] @relation("hazardousWasteGenerator")
-  ccoRegistrationCertificate LaboratoryAttachments[] @relation("ccoRegistrationCertificate")
-  ccoForCyanide LaboratoryAttachments[] @relation("ccoForCyanide")
-  ccoForLead LaboratoryAttachments[] @relation("ccoForLead")
-  ccoForPolychlorinatedBiphenyls LaboratoryAttachments[] @relation("ccoForPolychlorinatedBiphenyls")
-  ptoAirPollution LaboratoryAttachments[] @relation("ptoAirPollution")
-  dischargePermits LaboratoryAttachments[] @relation("dischargePermits")
-  pnpPurchaserLicense LaboratoryAttachments[] @relation("pnpPurchaserLicense")
-  pdeaLicense LaboratoryAttachments[] @relation("pdeaLicense")
-  pnriLicense LaboratoryAttachments[] @relation("pnriLicense")
-  certificateToOperateChemLab LaboratoryAttachments[] @relation("certificateToOperateChemLab")
+  laboratoryAttachments LaboratoryAttachments[]
 }
 
 
@@ -103,8 +88,8 @@ model Personnel {
   yearsOfExperience Int
   cvId Int @unique
   cv Attachment @relation("PersonnelCV", fields: [cvId], references: [id], onDelete: Cascade) 
-  licenseId Int @unique
-  license Attachment @relation("PersonnelLicense", fields: [licenseId], references: [id], onDelete: Cascade)
+  licenseId Int? @unique
+  license Attachment? @relation("PersonnelLicense", fields: [licenseId], references: [id], onDelete: Cascade)
   laboratoryId Int
   laboratory Laboratory @relation(fields: [laboratoryId], references: [id], onDelete: Cascade)
 }
@@ -150,10 +135,10 @@ model Sample {
     sampleType SampleType @relation(fields: [sampleTypeId], references: [id], onDelete: Cascade)
     parameterId Int
     parameter Parameter @relation(fields: [parameterId], references: [id], onDelete: Cascade)
-    sampleMethodId Int
-    sampleMethod SampleMethod @relation(fields: [sampleMethodId], references: [id], onDelete: Cascade)
-    sampleReferenceId Int
-    sampleReference SampleReference @relation(fields: [sampleReferenceId], references: [id], onDelete: Cascade)
+    sampleMethodId Int?
+    sampleMethod SampleMethod? @relation(fields: [sampleMethodId], references: [id], onDelete: Cascade)
+    sampleReferenceId Int?
+    sampleReference SampleReference? @relation(fields: [sampleReferenceId], references: [id], onDelete: Cascade)
     trackRecords TrackRecord[]
 }
 
@@ -180,8 +165,8 @@ model Establishment {
   updated DateTime @default(now())
   addedById Int
   addedBy User @relation("CreatedEstablishment", fields: [addedById], references: [id], onDelete: Cascade)
-  updatedById Int
-  updatedBy User @relation("UpdatedEstablishment", fields: [updatedById], references: [id], onDelete: Cascade)
+  updatedById Int?
+  updatedBy User? @relation("UpdatedEstablishment", fields: [updatedById], references: [id], onDelete: Cascade)
   laboratory Laboratory[]
 }
 
@@ -189,26 +174,13 @@ model Establishment {
 model LaboratoryAttachments {
   id Int @id @default(autoincrement())
   laboratoryId Int @unique
-  laboratory Laboratory @relation(fields: [laboratoryId], references: [id])
-  labTestResultForm Attachment[] @relation("labTestResultForm")
-  equipmentCalibrationMaintenanceProgram Attachment[] @relation("equipmentCalibrationMaintenanceProgram")
-  pcwManagementPractices Attachment[] @relation("pcwManagementPractices")
-  refLiterature Attachment[] @relation("refLiterature")
-  qaqcProgram Attachment[] @relation("qaqcProgram")
-  floorPlan Attachment[] @relation("floorPlan")
-  pcoAccreditation Attachment[] @relation("pcoAccreditation")
-  complianceCertificate Attachment[] @relation("complianceCertificate")
-  hazardousWasteGenerator Attachment[] @relation("hazardousWasteGenerator")
-  ccoRegistrationCertificate Attachment[] @relation("ccoRegistrationCertificate")
-  ccoForCyanide Attachment[] @relation("ccoForCyanide")
-  ccoForLead Attachment[] @relation("ccoForLead")
-  ccoForPolychlorinatedBiphenyls Attachment[] @relation("ccoForPolychlorinatedBiphenyls")
-  ptoAirPollution Attachment[] @relation("ptoAirPollution")
-  dischargePermits Attachment[] @relation("dischargePermits")
-  pnpPurchaserLicense Attachment[] @relation("pnpPurchaserLicense")
-  pdeaLicense Attachment[] @relation("pdeaLicense")
-  pnriLicense Attachment[] @relation("pnriLicense")
-  certificateToOperateChemLab Attachment[] @relation("certificateToOperateChemLab")
+  laboratory Laboratory @relation(fields: [laboratoryId], references: [id], onDelete: Cascade)
+  attachmentId Int
+  attachment Attachment @relation(fields: [attachmentId], references: [id], onDelete: Cascade)
+  addedById Int
+  addedBy User @relation("UploadedLabAttachments", fields: [addedById], references: [id])
+  dateAdded DateTime @default(now())
+  file_type String
 }
 
 model Laboratory {
@@ -242,7 +214,15 @@ model Laboratory {
   labAttachments LaboratoryAttachments? // Own page
   addedById Int
   addedBy User @relation("createdLabs", fields: [addedById], references: [id])
+  updateById Int?
+  updatedBy User? @relation("updatedLabs", fields: [updateById], references: [id])
+  updated DateTime @default(now())
   status Int
+  lab_details_complete Boolean @default(false)
+  attachment_record_complete Boolean @default(false)
+  personnel_record_complete Boolean @default(false)
+  track_record_complete Boolean @default(false)
+  required_files_complete Boolean @default(false)
 }
 
 enum Region {

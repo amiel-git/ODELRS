@@ -6,6 +6,13 @@ import { getLabById } from '@/app/lib/lab_actions';
 import { capitalize } from '@/app/lib/helper';
 import LabTabs from '@/components/lab_components/lab_tabs/lab_tabs';
 import { redirect } from 'next/navigation';
+import getAllSampleTypes from '@/app/lib/lab_sample_actions';
+import { 
+            getLaboratoryAccreditationRecords,
+            getPersonnelRecords,
+            getAllTrackRecords,
+            getAllLabAttachments
+        } from '@/app/lib/lab_actions';
 
 export default async function PerLabPage({params}){
     
@@ -21,11 +28,25 @@ export default async function PerLabPage({params}){
 
     const parameters = await params
     const lab = await getLabById(parameters.id)
+    const accreditationRecords = await getLaboratoryAccreditationRecords(parameters.id)
+    const personnelRecords = await getPersonnelRecords(parameters.id)
+    const trackRecords = await getAllTrackRecords(parameters.id)
+
+    const sampleTypes = await getAllSampleTypes()
+    const labAttachments = await getAllLabAttachments(parameters.id)
     
     return (
         <div className={styles.page}>
             <PageHeader title={capitalize(lab.laboratoryName)}/>
-            <LabTabs user={result.user} lab={lab}/>
+            <LabTabs 
+                user={result.user} 
+                lab={lab}
+                accreditationRecords={accreditationRecords}
+                personnelRecords={personnelRecords}
+                sampleTypes={sampleTypes}
+                trackRecords={trackRecords}
+                labAttachments={labAttachments}
+            />
         </div>
     )
 }

@@ -1,4 +1,7 @@
+
 import role_mapping from "../mappings/role_mapping";
+
+
 export function capitalize(string) {
     if(string){
         return string.split(' ')

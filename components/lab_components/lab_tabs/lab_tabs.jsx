@@ -3,7 +3,6 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import styles from './component.module.css'
 
@@ -16,6 +15,11 @@ import SourceIcon from '@mui/icons-material/Source';
 
 
 import LaboratoryDetailsForm from '../laboratory_details/laboratory_details';
+import AccreditationRecords from '../accreditation_records/accreditation_records';
+import PersonnelRecords from '../personnel/personnel_records';
+import TrackRecords from '@/components/lab_components/track_records/track_records';
+import AttachmentRecords from '@/components/lab_components/lab_attachments/attachment_records';
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -136,7 +140,7 @@ export default function LabTabs(props) {
                         Files
                     </div>
                     }
-                    {...a11yProps(3)}
+                    {...a11yProps(4)}
             sx={{
                 alignItems:"start"
             }} 
@@ -148,22 +152,25 @@ export default function LabTabs(props) {
         <LaboratoryDetailsForm user={props.user} lab={props.lab}/>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Item Two
+        <AccreditationRecords user={props.user} lab={props.lab} accreditationRecords={props.accreditationRecords}/>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Item Three
+        <PersonnelRecords user={props.user} lab={props.lab} personnelRecords={props.personnelRecords}/>
       </TabPanel>
       <TabPanel value={value} index={3}>
-        Item Four
+        <TrackRecords 
+            user={props.user} 
+            lab={props.lab} 
+            trackRecords={props.trackRecords} 
+            sampleTypes={props.sampleTypes}
+        />
       </TabPanel>
       <TabPanel value={value} index={4}>
-        Item Five
-      </TabPanel>
-      <TabPanel value={value} index={5}>
-        Item Six
-      </TabPanel>
-      <TabPanel value={value} index={6}>
-        Item Seven
+        <AttachmentRecords
+          user={props.user} 
+          lab={props.lab} 
+          labAttachments={props.labAttachments}
+        />
       </TabPanel>
     </Box>
   );

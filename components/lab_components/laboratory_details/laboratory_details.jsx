@@ -2,21 +2,19 @@
 import styles from './component.module.css';
 import { generic_setter } from '@/app/lib/helper';
 import { useState, useEffect } from 'react';
-import { convertToStandardDate } from '@/app/lib/helper';
 import SaveIcon from '@mui/icons-material/Save';
 import { useActionState } from 'react';
 import { updateUser } from '@/app/lib/user_actions';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { provincesByRegion } from '@/app/mappings/provinceByRegion';
-import MultipleSelectChip from '@/components/form_components/multi_select_field';
 import { 
         category_of_client, 
         services_offered,
         category_of_client_reference,
         services_offered_reference,
          } from '@/app/mappings/lab_creation_items';
-
+import { updateLaboratoryDetails } from '@/app/lib/lab_actions';
 
 
 //Multi select field imports
@@ -84,8 +82,8 @@ export default function LaboratoryDetailsForm(props){
     }
 
     const theme = useTheme();
-    const [categories, setCategories] = useState([]);
-    const [services, setServices] = useState([]);
+    const [categories, setCategories] = useState(lab.categoryOfClient !== null ? lab.categoryOfClient : []);
+    const [services, setServices] = useState(lab.ServicesOffered !== null ? lab.ServicesOffered : []);
 
     const handleChangeCategories = (event) => {
         const {
@@ -105,7 +103,6 @@ export default function LaboratoryDetailsForm(props){
         typeof value === 'string' ? value.split(',') : value,
         );
     };
-    const [formState, formAction] = useActionState(updateUser, {error:null})
 
     const [snackBarMessage, setSnackBarMessage] = useState("")
     const [openSnackBar, setOpenSnackBar] = useState(false)
@@ -136,6 +133,7 @@ export default function LaboratoryDetailsForm(props){
     const [input_scope, set_input_scope] = useState(nullChecker(lab.scopeOfWork))
     const [input_geographical_area, set_input_geographical_area] = useState(nullChecker(lab.areaServed))
 
+    const [formState, formAction] = useActionState(updateLaboratoryDetails, {error:null})
 
     const handleCloseSnackBar = (event, reason) => {
         if (reason === 'clickaway') {
@@ -146,20 +144,15 @@ export default function LaboratoryDetailsForm(props){
 
 
     useEffect(() => {
-        if(formState.error === null && Object.keys(formState).includes("success") && Object.keys(formState).includes("detailsComplete")){
-            if(formState.detailsComplete === true){
-                setSnackBarMessage("User successfully updated!")
+        if(formState.error === null && Object.keys(formState).includes("success")){
+            if(formState.success === true){
+                setSnackBarMessage("Laboratory details successfully updated!")
                 setOpenSnackBar(true)
                 setSnackBarSeverity("success")
             }
-            else {
-                setSnackBarMessage("Please make sure to add a signature and profile picture to activate your account.")
-                setOpenSnackBar(true)
-                setSnackBarSeverity("warning")
-            }
         }
         else if(formState.error !== null){
-            setSnackBarMessage(`User update error! ${formState.error}`)
+            setSnackBarMessage(`Laboratory details update error! ${formState.error}`)
             setOpenSnackBar(true)
             setSnackBarSeverity("error")
         }
@@ -177,6 +170,22 @@ export default function LaboratoryDetailsForm(props){
         }
         
         setter(input); // Update the state with the formatted phone number
+      };
+
+
+      const handleTINChange = (setter) => (event) => {
+        let input = event.target.value.replace(/\D/g, ''); // Remove non-digit characters
+      
+        // Format TIN based on its length
+        if (input.length > 9) {
+          input = `${input.slice(0, 3)}-${input.slice(3, 6)}-${input.slice(6, 9)}-${input.slice(9, 12)}`;
+        } else if (input.length > 6) {
+          input = `${input.slice(0, 3)}-${input.slice(3, 6)}-${input.slice(6)}`;
+        } else if (input.length > 3) {
+          input = `${input.slice(0, 3)}-${input.slice(3)}`;
+        }
+      
+        setter(input); // Update the state with the formatted TIN
       };
 
     return (
@@ -280,7 +289,6 @@ export default function LaboratoryDetailsForm(props){
                             name="mission_statement" 
                             value={input_mission_statement} 
                             onChange={generic_setter(set_input_mission_statement)} 
-                            required
                         />
                     </div>
                 </div>
@@ -293,11 +301,26 @@ export default function LaboratoryDetailsForm(props){
                 <div className={styles.form_row}>
                     <div className={styles.form_item}>
                         <label className={styles.label} htmlFor="contact_number">Contact number:</label>
-                        <input type="text" className={styles.input} name='contact_number' value={input_contact} onChange={handlePhoneChange(set_input_contact)} placeholder="(xxx) xxx-xxxx" required/>
+                        <input 
+                            type="text" 
+                            className={styles.input} 
+                            name='contact_number' 
+                            value={input_contact} 
+                            onChange={handlePhoneChange(set_input_contact)} 
+                            placeholder="(xxx) xxx-xxxx"
+                            required
+                        />
                     </div>
                     <div className={styles.form_item}>
                         <label className={styles.label} htmlFor="contact_number">Fax number:</label>
-                        <input type="text" className={styles.input} name='fax_number' value={input_fax} onChange={handlePhoneChange(set_input_fax)} placeholder="(xxx) xxx-xxxx" required/>
+                        <input 
+                            type="text" 
+                            className={styles.input} 
+                            name='fax_number' value={input_fax} 
+                            onChange={handlePhoneChange(set_input_fax)} 
+                            placeholder="(xxx) xxx-xxxx" 
+                            required
+                        />
                     </div>
                 </div>
                     
@@ -309,7 +332,15 @@ export default function LaboratoryDetailsForm(props){
                 <div className={styles.form_row}>
                     <div className={styles.form_item}>
                         <label className={styles.label} htmlFor="tin">Tax Identification Number (TIN):</label>
-                        <input className={styles.input} type="text" name="tin" value={input_tin} onChange={generic_setter(set_input_tin)} required/>
+                        <input 
+                            className={styles.input} 
+                            type="text" 
+                            name="tin" 
+                            value={input_tin}
+                            placeholder='XXX-XXX-XXX-XXX' 
+                            onChange={handleTINChange(set_input_tin)}
+                            required
+                        />
                     </div>
                     <div className={styles.form_item}>
                         <label className={styles.label} htmlFor="b_permit_number">Business Permit Number:</label>
@@ -318,7 +349,7 @@ export default function LaboratoryDetailsForm(props){
                             type="text" 
                             name="b_permit_number" 
                             value={input_b_permit_number} 
-                            onChange={generic_setter(set_input_b_permit_number)} 
+                            onChange={generic_setter(set_input_b_permit_number)}
                             required
                         />
                     </div>
@@ -358,7 +389,7 @@ export default function LaboratoryDetailsForm(props){
                             type="text" 
                             name="b_permit_place" 
                             value={input_b_permit_place} 
-                            onChange={set_input_b_permit_place} 
+                            onChange={generic_setter(set_input_b_permit_place)} 
                             required
                         />
                     </div>
@@ -372,11 +403,25 @@ export default function LaboratoryDetailsForm(props){
                 <div className={styles.form_row}>
                     <div className={styles.form_item}>
                         <label className={styles.label} htmlFor="l_head_name">Laboratory Head Name:</label>
-                        <input className={styles.input} type="text" name="l_head_name" value={input_l_head_name} onChange={generic_setter(set_input_l_head_name)} required/>
+                        <input 
+                            className={styles.input} 
+                            type="text" 
+                            name="l_head_name" 
+                            value={input_l_head_name} 
+                            onChange={generic_setter(set_input_l_head_name)} 
+                            required
+                        />
                     </div>
                     <div className={styles.form_item}>
                         <label className={styles.label} htmlFor="l_head_email">Laboratory Head Email Address:</label>
-                        <input className={styles.input} type="text" name="l_head_email" value={input_l_head_email} onChange={generic_setter(set_input_l_head_email)} required/>
+                        <input 
+                            className={styles.input} 
+                            type="text" 
+                            name="l_head_email" 
+                            value={input_l_head_email} 
+                            onChange={generic_setter(set_input_l_head_email)} 
+                            required
+                        />
                     </div>
                 </div>
                 <div className={styles.form_row}>
@@ -404,11 +449,12 @@ export default function LaboratoryDetailsForm(props){
 
                 <div className={styles.form_row}>
                     <div className={styles.form_item}>
-                        <label className={styles.label} htmlFor="client_category">Clients' Categories:</label>
+                        <label className={styles.label} htmlFor="client_category">{"Clients' Categories:"}</label>
                         <FormControl sx={{width:"100%"}}>
                             <Select
                             name={"categories"}
                             multiple
+                            required
                             value={categories}
                             onChange={handleChangeCategories}
                             input={<OutlinedInput id="select-multiple-chip" />}
@@ -442,6 +488,7 @@ export default function LaboratoryDetailsForm(props){
                             <Select
                             name={"services"}
                             multiple
+                            required
                             value={services}
                             onChange={handleChangeServices}
                             input={<OutlinedInput id="select-multiple-chip" />}
@@ -502,6 +549,7 @@ export default function LaboratoryDetailsForm(props){
                 </div>
 
                 <input type="text" value={user.id} name='userId' readOnly hidden required/>
+                <input type="text" value={lab.id} name='labId' readOnly hidden required/>
 
                 <hr />
                 <div className={styles.button_container}>

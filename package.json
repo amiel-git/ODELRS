@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
@@ -26,7 +27,11 @@
     "styled-components": "^6.1.13"
   },
   "devDependencies": {
+    "@types/node": "^22.10.0",
     "eslint": "^8",
-    "eslint-config-next": "15.0.3"
+    "eslint-config-next": "15.0.3",
+    "node-loader": "^2.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
   }
 }
