@@ -40,4 +40,9 @@ yarn-error.log*
 next-env.d.ts
 
 
-*.pdf
+uploads/laboratory/attachment_records/*
+uploads/laboratory/attachments/*
+uploads/laboratory/personnel_cv/*
+uploads/laboratory/personnel_license/*
+uploads/users/profile_pictures/*
+uploads/users/signatures/*

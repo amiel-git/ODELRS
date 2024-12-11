@@ -18,6 +18,16 @@
     padding-left:5px;
 }
 
+.attachment_header_red{
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color:red;
+    font-size: 15px;
+    font-weight: 600;
+    width:100%;
+    text-align: left;
+    padding-left:5px;
+}
+
 .header_container{
     display: flex;
     flex-direction: row;
@@ -147,8 +157,23 @@
 /* MODAL STYLES */
 
 .modal_container {
-    min-height:400px;
-    height: 400px;
+    min-height:380px;
+    height: 380px;
+    width:500px;
+    background:white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius:10px;
+    z-index: 11;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.sub_modal_container {
+    min-height:250px;
+    height: 250px;
     width:500px;
     background:white;
     position: absolute;
@@ -189,6 +214,16 @@
     display:flex;
     flex-direction:column;
     gap:5px;
+    justify-content:end;
+    align-items:end;
+}
+
+.row_button_container{
+    text-align:right;
+    padding:20px;
+    display:flex;
+    flex-direction:row;
+    gap:25px;
     justify-content:end;
     align-items:end;
 }
@@ -251,7 +286,7 @@
 
 .attachment_table_container{
     min-width:100%;
-    min-height:300px;
+    min-height:150px;
 }
 
 .attachment_header_container{
@@ -259,4 +294,65 @@
     width:100%;
     align-items:center;
     margin-bottom:10px;
+}
+
+
+.remove_button{
+    height:30px;
+    width:100px;
+    background:red;
+    color:white;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    transition: background-color 0.3s ease-in-out, scale 0.3s ease-in-out;
+}
+
+
+.remove_button:hover{
+    background:#c50c0c;
+    scale:1.1;
+}
+
+.remove_button_cancel{
+    height:30px;
+    width:100px;
+    background:none;
+    color:black;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    transition: color 0.3s ease-in-out
+}
+
+
+.remove_button_cancel:hover{
+    color:red;
+}
+
+
+.attachment_containers{
+    display:flex;
+    flex-direction:column;
+    gap:40px;
+}
+
+
+.sub_header{
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color:white;
+    font-size: 16px;
+    font-weight: 700;
+    text-align:center;
+    width:100%;
+}
+
+.sub_header_container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 10px;
+    background: #0240a6;
+    border-radius: 5px;
 }

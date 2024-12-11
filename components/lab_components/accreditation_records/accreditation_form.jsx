@@ -1,7 +1,7 @@
 'use client'
 import styles from './component.module.css';
 import { useActionState, useState, useEffect} from 'react';
-import { addAttachmentRecord } from '@/app/lib/lab_actions';
+import { addAccreditationRecord } from '@/app/lib/lab_actions';
 import SaveIcon from '@mui/icons-material/Save';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
@@ -21,7 +21,7 @@ const VisuallyHiddenInput = styled('input')({
 
 export default function AccreditationForm({toggle_function, user, lab}){
 
-    const [formState, formAction] = useActionState(addAttachmentRecord, {error:null})
+    const [formState, formAction] = useActionState(addAccreditationRecord, {error:null})
     const [certificate, setCertificate] = useState("")
     const [fileName, setFileName] = useState("")
 

@@ -173,7 +173,7 @@ model Establishment {
 
 model LaboratoryAttachments {
   id Int @id @default(autoincrement())
-  laboratoryId Int @unique
+  laboratoryId Int
   laboratory Laboratory @relation(fields: [laboratoryId], references: [id], onDelete: Cascade)
   attachmentId Int
   attachment Attachment @relation(fields: [attachmentId], references: [id], onDelete: Cascade)
@@ -211,7 +211,7 @@ model Laboratory {
   accreditationRecords AccreditationRecord[] // Own page
   personnels Personnel[] // Own page
   trackRecords TrackRecord[] // Own page
-  labAttachments LaboratoryAttachments? // Own page
+  labAttachments LaboratoryAttachments[]
   addedById Int
   addedBy User @relation("createdLabs", fields: [addedById], references: [id])
   updateById Int?
@@ -219,7 +219,7 @@ model Laboratory {
   updated DateTime @default(now())
   status Int
   lab_details_complete Boolean @default(false)
-  attachment_record_complete Boolean @default(false)
+  accreditation_record_complete Boolean @default(false)
   personnel_record_complete Boolean @default(false)
   track_record_complete Boolean @default(false)
   required_files_complete Boolean @default(false)

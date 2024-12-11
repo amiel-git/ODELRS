@@ -5,8 +5,8 @@ import { capitalize, convertToStandardDate, isEMBEmployee } from "./helper";
 import { convertRegionToReadable } from "./helper";
 import { laboratoryStatusMapping } from "../mappings/laboratory_status_mappings";
 import { notFound } from "next/navigation";
-import uploadFile from "./file_upload";
-
+import uploadFile, { deleteFile } from "./file_management";
+import fs from 'node:fs';
 const prisma = new PrismaClient()
 
 
@@ -185,7 +185,41 @@ export async function updateLaboratoryDetails(prevState, formData){
         const userId = parseInt(formData.get("userId"))
         const labId = parseInt(formData.get("labId"))
         
-    
+        var detailsComplete = false
+        //Check if all details are there
+        const allFields = [
+            labName,
+            region,
+            province,
+            address,
+            lat,
+            lon,    
+            date_established,
+            mission_statement,
+            contact_number,
+            fax_number,
+            tin,
+            b_permit_number,
+            b_permit_issue_date,
+            b_permit_expiry_date,
+            b_permit_place,
+            l_head_name,
+            l_head_email,
+            l_head_contact,
+            scope,
+            geographical_area,
+            categories,
+            services
+        ];
+        
+        // Check if all fields are not empty or null
+        if (allFields.every(field => field !== "" && field !== null && field !== undefined)) {
+            detailsComplete = true
+        } else {
+            detailsComplete = false
+        }
+
+
         const curr_lab = await prisma.laboratory.update({
             where:{
                 id:labId
@@ -215,6 +249,7 @@ export async function updateLaboratoryDetails(prevState, formData){
                     }
                 },
                 updated:new Date(),
+                lab_details_complete:detailsComplete,
             }
         })
         
@@ -244,7 +279,7 @@ export async function updateLaboratoryDetails(prevState, formData){
             }
         })
 
-    
+
     
         revalidatePath("laboratory/")
         await prisma.$disconnect()
@@ -257,7 +292,7 @@ export async function updateLaboratoryDetails(prevState, formData){
         console.log()
         console.log()
         console.log()
-        console.log("LAB UPDATE ERROR: ", JSON.stringify(error__))
+        console.log("LAB UPDATE ERROR: ", error__)
         console.log()
         console.log()
         console.log()
@@ -266,7 +301,7 @@ export async function updateLaboratoryDetails(prevState, formData){
 }
 
 
-export async function addAttachmentRecord(prevState, formData){
+export async function addAccreditationRecord(prevState, formData){
     
     const body = formData.get("body")
     const scope = formData.get("scope")
@@ -281,8 +316,6 @@ export async function addAttachmentRecord(prevState, formData){
 
     else if(certificate.size > 0){
         //Upload certificate
-        
-
         try {
 
             const certificate_attachment = await uploadFile(certificate,"uploads/laboratory/attachment_records/","other")    
@@ -296,6 +329,17 @@ export async function addAttachmentRecord(prevState, formData){
                 }
             })
             
+            //Mark the accreditation record complete
+            await prisma.laboratory.update({
+                where:{
+                    id:labId
+                },
+                data:{
+                    accreditation_record_complete:true
+                }
+            })
+
+
             await prisma.$disconnect()
             revalidatePath("laboratory/")
             return {error:null, success:true}
@@ -333,6 +377,7 @@ export async function getLaboratoryAccreditationRecords(labId){
     for(var record of records){
 
         flatData.push({
+            id:parseInt(record.id),
             accreditation_body:capitalize(record.accreditation_body),
             scope:capitalize(record.scope),
             expiration:convertToStandardDate(record.expiration),
@@ -416,6 +461,18 @@ export async function addPersonnelRecord(prevState, formData){
                 }
             })
         }
+
+
+        //Mark the personnel record complete
+        await prisma.laboratory.update({
+            where:{
+                id:labId
+            },
+            data:{
+                personnel_record_complete:true
+            }
+        })
+
         
         await prisma.$disconnect()
         revalidatePath("laboratory/")
@@ -446,6 +503,7 @@ export async function getPersonnelRecords(labId){
 
     for(var record of records){
         flatData.push({
+            id:record.id,
             name:capitalize(record.name),
             position:capitalize(record.position),
             education:record.education,
@@ -521,6 +579,16 @@ export async function addTrackRecord(prevState, formData){
         })
 
 
+        //Mark the accreditation record complete
+        await prisma.laboratory.update({
+            where:{
+                id:labId
+            },
+            data:{
+                track_record_complete:true
+            }
+        })
+
         await prisma.$disconnect()
         revalidatePath("laboratory/")
         return {error:null, success:true}
@@ -561,6 +629,7 @@ export async function getAllTrackRecords(labId){
     for(var rec of records){
         const item = rec.sample
         flatData.push({
+            id:item.id,
             sampleType:item.sampleType.name,
             parameter:item.parameter.name,
             sampleMethod:item.sampleMethod !== null ? item.sampleMethod.name : "---",
@@ -612,6 +681,268 @@ export async function getAllLabAttachments(labId) {
 
     console.log(groupedAttachments)
 
-
+    await prisma.$disconnect()
     return groupedAttachments;
+}
+
+
+export async function deleteAttachment(prevState, formData){
+    
+
+    try {
+        const curr_lab_attachment = await prisma.laboratoryAttachments.findFirst({
+            where:{
+                id:parseInt(formData.get("attachmentId"))
+            },
+            include:{
+                attachment:true
+            }
+        })
+
+        const attachment_id_to_delete = parseInt(curr_lab_attachment.attachment.id)
+        
+
+        await prisma.laboratoryAttachments.delete({
+            where:{
+                id:parseInt(formData.get("attachmentId"))
+            }
+        })
+
+
+        await prisma.attachment.delete({
+            where:{
+                id:attachment_id_to_delete
+            }
+        })
+
+
+        //Check if files are present
+        const labId = parseInt(curr_lab_attachment.laboratoryId)
+        const attachments_list = await getAllLabAttachments(labId)
+
+        const required_files_keys = [
+            "lab_test_form",
+            "equipment_calibration",
+            "pollution_control",
+            "ref_literature",
+            "qaqc_program",
+            "floor_plan"
+        ]
+
+        if(attachments_list !== undefined && attachments_list !== null && attachments_list !== ""){
+            const attachment_keys = Object.keys(attachments_list)
+            
+            const allKeysPresent = required_files_keys.every(key => attachment_keys.includes(key));
+            
+            if(!allKeysPresent) {
+                await prisma.laboratory.update({
+                    where:{
+                        id:labId
+                    },
+                    data:{
+                        required_files_complete:false
+                    }
+                }) 
+            }
+        }
+
+        await prisma.$disconnect()
+        revalidatePath("laboratory/")
+        return {error:null, success:true}
+    } catch (error) {
+        return {error:"Unable to delete file.", success:true}
+    }
+
+    
+}
+
+
+export async function deleteAccreditationRecord(prevState, formData){
+
+    const recordId = parseInt(formData.get("recordId"))
+    const labId = parseInt(formData.get("labId"))
+    
+    try {
+        const record = await prisma.accreditationRecord.findFirst({
+            where:{
+                id:recordId
+            },
+            include:{
+                certificate:true
+            }
+        })
+    
+        const file_path = record.certificate.file_path
+    
+        //delete record
+        await prisma.accreditationRecord.delete({
+            where:{
+                id:recordId
+            }
+        })
+    
+        await deleteFile(file_path)
+    
+       
+
+
+        //Check if there are no records remaining
+        const curr_lab = await prisma.laboratory.findFirst({
+            where:{
+                id:labId
+            },
+            include:{
+                accreditationRecords:true
+            }
+        })
+
+        if(!curr_lab){
+            return {error:"Unable to find lab.", success:true}
+        }
+
+        if(curr_lab.accreditationRecords !== null && curr_lab.accreditationRecords !== undefined){
+            if(curr_lab.accreditationRecords.length === 0){
+                await prisma.laboratory.update({
+                    where:{
+                        id:labId
+                    },
+                    data:{
+                        accreditation_record_complete:false
+                    }
+                }) 
+            }
+        }
+
+        await prisma.$disconnect()
+        revalidatePath("laboratory/")
+
+        return {error:null, success: true}
+    } catch (error__) {
+        return {error:"Unable to delete accreditation record.", success: true}
+    }
+
+}
+
+
+export async function deletePersonnelRecord(prevState, formData){
+
+    const recordId = parseInt(formData.get("recordId"))
+    const labId = parseInt(formData.get("labId"))
+    
+    try {
+        const record = await prisma.personnel.findFirst({
+            where:{
+                id:recordId
+            },
+            include:{
+                cv:true,
+                license:true
+            }
+        })
+    
+        const file_path_cv = record.cv.file_path
+        const file_path_license = record.license !== null ? record.license.file_path : ""
+    
+        //delete record
+        await prisma.personnel.delete({
+            where:{
+                id:recordId
+            }
+        })
+    
+        await deleteFile(file_path_cv)
+        if(file_path_license !== ""){
+            await deleteFile(file_path_cv)
+        }
+        
+    
+
+        //Check if there are no records remaining
+        const curr_lab = await prisma.laboratory.findFirst({
+            where:{
+                id:labId
+            },
+            include:{
+                personnels:true
+            }
+        })
+
+        if(!curr_lab){
+            return {error:"Unable to find lab.", success:true}
+        }
+
+        if(curr_lab.personnels !== null && curr_lab.personnels !== undefined){
+            if(curr_lab.personnels.length === 0){
+                await prisma.laboratory.update({
+                    where:{
+                        id:labId
+                    },
+                    data:{
+                        personnel_record_complete:false
+                    }
+                }) 
+            }
+        }
+
+        await prisma.$disconnect()
+        revalidatePath("laboratory/")
+
+        return {error:null, success: true}
+    } catch (error__) {
+        return {error:"Unable to delete accreditation record.", success: true}
+    }
+
+}
+
+
+export async function deleteTrackRecord(prevState, formData){
+
+    const recordId = parseInt(formData.get("recordId"))
+    const labId = parseInt(formData.get("labId"))
+    
+    try {
+        
+        //delete record
+        await prisma.trackRecord.delete({
+            where:{
+                id:recordId
+            }
+        })
+        
+
+        //Check if there are no records remaining
+        const curr_lab = await prisma.laboratory.findFirst({
+            where:{
+                id:labId
+            },
+            include:{
+                trackRecords:true
+            }
+        })
+
+        if(!curr_lab){
+            return {error:"Unable to find lab.", success:true}
+        }
+
+        if(curr_lab.trackRecords !== null && curr_lab.trackRecords !== undefined){
+            if(curr_lab.trackRecords.length === 0){
+                await prisma.laboratory.update({
+                    where:{
+                        id:labId
+                    },
+                    data:{
+                        track_record_complete:false
+                    }
+                }) 
+            }
+        }
+
+        await prisma.$disconnect()
+        revalidatePath("laboratory/")
+
+        return {error:null, success: true}
+    } catch (error__) {
+        return {error:"Unable to delete accreditation record.", success: true}
+    }
+
 }

@@ -58,6 +58,7 @@ function a11yProps(index) {
 export default function LabTabs(props) {
 
   const user = props.user
+  const lab = props.lab
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -87,7 +88,9 @@ export default function LabTabs(props) {
       >
         <Tab 
             label={
-                    <div className={styles.tab_item}>
+                    <div 
+                      className={lab.lab_details_complete ? styles.tab_item : styles.tab_item_incomplete}
+                    >
                         <ApartmentIcon className={styles.tab_item_icon}/>
                         Laboratory Details
                     </div>
@@ -99,7 +102,9 @@ export default function LabTabs(props) {
         />
         <Tab 
             label={
-                    <div className={styles.tab_item}>
+                      <div 
+                        className={lab.accreditation_record_complete ? styles.tab_item : styles.tab_item_incomplete}
+                      >
                         <ReceiptLongIcon className={styles.tab_item_icon}/>
                         Accreditation Records
                     </div>
@@ -111,7 +116,9 @@ export default function LabTabs(props) {
         />
         <Tab 
             label={
-                    <div className={styles.tab_item}>
+                    <div 
+                      className={lab.personnel_record_complete ? styles.tab_item : styles.tab_item_incomplete}
+                    >
                         <PeopleIcon className={styles.tab_item_icon}/>
                         Personnel
                     </div>
@@ -123,7 +130,9 @@ export default function LabTabs(props) {
         />
         <Tab 
             label={
-                    <div className={styles.tab_item}>
+                    <div 
+                      className={lab.track_record_complete ? styles.tab_item : styles.tab_item_incomplete}
+                    >
                         <AssessmentIcon className={styles.tab_item_icon}/>
                         Track Record
                     </div>
@@ -135,7 +144,9 @@ export default function LabTabs(props) {
         />
         <Tab 
             label={
-                    <div className={styles.tab_item}>
+                    <div 
+                      className={lab.required_files_complete ? styles.tab_item : styles.tab_item_incomplete}
+                    >
                         <SourceIcon className={styles.tab_item_icon}/>
                         Files
                     </div>

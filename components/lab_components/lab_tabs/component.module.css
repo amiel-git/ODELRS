@@ -7,6 +7,16 @@
     justify-content: start !important;
 }
 
+.tab_item_incomplete{
+    font-size: 12px;
+    text-transform: capitalize;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start !important;
+    color:red;
+}
+
 .tab_item_icon{
     scale: 0.75;
 }

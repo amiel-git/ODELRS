@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import { PrismaClient } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
-
+import { getAllLabAttachments } from './lab_actions';
 
 
 const prisma = new PrismaClient()
@@ -52,10 +52,16 @@ export async function UploadLabAttachment(prevState, formData){
 
     const file_path = "uploads/laboratory/attachments/"
 
+    const required_files_keys = [
+        "lab_test_form",
+        "equipment_calibration",
+        "pollution_control",
+        "ref_literature",
+        "qaqc_program",
+        "floor_plan"
+    ]
 
-
-
-    // try {
+    try {
         const uploaded_file = await uploadFile(file,file_path,fileType)
         
         const new_attachment_record = await prisma.laboratoryAttachments.create({
@@ -82,14 +88,60 @@ export async function UploadLabAttachment(prevState, formData){
         })
 
 
+
+        //Check if files are present
+        const attachments_list = await getAllLabAttachments(labId)
+
+        if(attachments_list !== undefined && attachments_list !== null && attachments_list !== ""){
+            const attachment_keys = Object.keys(attachments_list)
+            
+            const allKeysPresent = required_files_keys.every(key => attachment_keys.includes(key));
+            
+            if (allKeysPresent) {
+                await prisma.laboratory.update({
+                    where:{
+                        id:labId
+                    },
+                    data:{
+                        required_files_complete:true
+                    }
+                }) 
+            }
+        }
+        
+
         await prisma.$disconnect()
         revalidatePath("laboratory/")
 
         return {error:null, file_type: title, success:true}
-    // } catch (error__) {
-    //     const string_error = JSON.stringify(error__)
-    //     console.log(string_error)
-    //     return {error:string_error}
-    // }
+    } catch (error__) {
+        const string_error = JSON.stringify(error__)
+        console.log(string_error)
+        return {error:string_error}
+    }
+
+}
+
+
+
+export async function deleteFile(file_path){
+    
+    try {
+        const sig_stream = fs.unlink(file_path, (err) => {
+            if (err) {
+                if (err.code === 'ENOENT') {
+                    console.log('File not found, nothing to delete.');
+                } else {
+                    console.error('Error deleting the file:', err);
+                }
+            } else {
+                console.log('File deleted successfully!');
+            }
+        });
+
+        return true
+    } catch (error) {
+        return false
+    }
 
 }

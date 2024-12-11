@@ -10,7 +10,7 @@ import { styled } from '@mui/material/styles';
 import { useActionState } from 'react';
 import SaveIcon from '@mui/icons-material/Save';
 import Image from 'next/image';
-import { UploadLabAttachment } from '@/app/lib/file_upload';
+import { UploadLabAttachment } from '@/app/lib/file_management';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import { capitalize } from '@/app/lib/helper';
@@ -36,11 +36,12 @@ export default function AttachmentContainer(props){
     const [fileName, setFileName] = useState("")
     const [file, setFile] = useState("")
 
-
-    const title_without_s = String(props.title).slice(0,-1)
+    const title = String(props.title)
 
     const user = props.user
     const lab = props.lab 
+
+    const records = props.records === undefined ? [] : props.records
 
 
     const [formState, formAction] = useActionState(UploadLabAttachment, {error:null})
@@ -67,7 +68,7 @@ export default function AttachmentContainer(props){
         if(Object.keys(formState).includes("success")){
             toggle_modal()
             if(formState.error === null){
-                setSnackBarMessage(`${capitalize(title_without_s.toLocaleLowerCase())} successfully added.`)
+                setSnackBarMessage(`${capitalize(title)} successfully added.`)
                 setOpenSnackBar(true)
                 setSnackBarSeverity("success")
             } else {
@@ -91,7 +92,11 @@ export default function AttachmentContainer(props){
         <div className={styles.attachment_container}>
             <div className={styles.attachment_header_container}>
                 <p></p>
-                <p className={styles.attachment_header}>{props.title}</p>
+                <p className={
+                    records.length === 0 && props.isRequired === true ? styles.attachment_header_red : styles.attachment_header
+                }>
+                    {props.title}
+                </p>
                 <button onClick={toggle_modal} className={styles.add_button}>
                     <AddIcon/>
                 </button>
@@ -118,8 +123,8 @@ export default function AttachmentContainer(props){
 
                     <div className={styles.form_container}>
                         <div className={styles.form_header}>
-                            <h2>Add {String(title_without_s).toLocaleLowerCase()}</h2>
-                            <p>Fill out the form to add a new {String(title_without_s).toLocaleLowerCase()}.</p>
+                            <h3 style={{fontSize:"18px"}}>Add {title}</h3>
+                            <p style={{fontSize:"13px"}}>Fill out the form to add a new {title}.</p>
                             <hr />
                         </div>
 
@@ -176,7 +181,6 @@ export default function AttachmentContainer(props){
                                             </p>
                                         }
                                     </div>
-
                                 </div>
                             </div>
 
@@ -188,7 +192,7 @@ export default function AttachmentContainer(props){
                             <hr />
                             <div className={styles.button_container}>
                                 {formState.error && <small 
-                                                                    style={{textAlign:"left", width:"100%", color:"red"}}>
+                                                                    style={{textAlign:"center", width:"100%", color:"red"}}>
                                                                         {formState.error}
                                                                 </small>}
                                 <button className={styles.add_button}>
@@ -203,6 +207,8 @@ export default function AttachmentContainer(props){
 
                 </div>
             }
+
+
 
             <Snackbar open={openSnackBar} autoHideDuration={3000} onClose={handleCloseSnackBar} anchorOrigin={{vertical:"bottom", horizontal:"center"}}>
                 <Alert

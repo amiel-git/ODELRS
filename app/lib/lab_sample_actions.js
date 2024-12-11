@@ -33,18 +33,6 @@ export default async function getAllSampleTypes(){
             return []
         }
 
-
-        console.log()
-        console.log()
-        console.log()
-        console.log(sampleTypes)
-        console.log()
-        console.log()
-        console.log()
-
-
-
-
         await prisma.$disconnect()
         return sampleTypes
         
