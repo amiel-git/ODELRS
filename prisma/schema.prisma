@@ -25,6 +25,18 @@ model User {
   laboratories Laboratory[] @relation("createdLabs")
   updatedLabs Laboratory[] @relation("updatedLabs")
   uploadedLabAttachments LaboratoryAttachments[] @relation("UploadedLabAttachments")
+  assignedApplications ELRApplication[] @relation("assignedApplications")
+  custodianApplication ELRApplication[] @relation("custodianApplications")
+  nonComplianceReportHandled NonComplianceReport[] @relation("NonComplianceReportHandler")
+  nonComplianceReportCreated NonComplianceReport[] @relation("NonComplianceReportCreated")
+  recommendationReportHandled RecommendationReport[] @relation("RecommendationReportReportHandler")
+  recommendationReportCreated RecommendationReport[] @relation("RecommendationReportCreated")
+  checklists Checklist[]
+  liatChaired AssessmentTeam[] @relation("LIATChaired")
+  liatChairedCO AssessmentTeam[] @relation("LIATMemberedCO")
+  liatChairedRO AssessmentTeam[] @relation("LIATMemberedRO")
+  extAssessorMgmt AssessmentTeam[] @relation("ExtAssessorMgmt")
+  extAssessorPl AssessmentTeam[] @relation("ExtAssessorPl")
 }
 
 model UserDetails {
@@ -140,6 +152,7 @@ model Sample {
     sampleReferenceId Int?
     sampleReference SampleReference? @relation(fields: [sampleReferenceId], references: [id], onDelete: Cascade)
     trackRecords TrackRecord[]
+    elrApplications ELRApplication[]
 }
 
 model TrackRecord {
@@ -193,6 +206,7 @@ model Laboratory {
   labHeadName String?
   labHeadEmail String?
   labHeadContact String?
+  labHeadCitizenShip String?
   contactNumber String?
   faxNumber String?
   tin String?
@@ -223,6 +237,7 @@ model Laboratory {
   personnel_record_complete Boolean @default(false)
   track_record_complete Boolean @default(false)
   required_files_complete Boolean @default(false)
+  elr_applications ELRApplication[]
 }
 
 enum Region {
@@ -274,4 +289,100 @@ enum Role {
   applicant
   admin
   denr_secretary
+}
+
+
+// ======================================= Application Models =======================================
+
+model ELRApplication {
+  id Int @id @default(autoincrement())
+  laboratoryId Int
+  laboratory Laboratory @relation(fields: [laboratoryId], references: [id], onDelete: Cascade)
+  assigneeId Int
+  assignee User @relation("assignedApplications", fields: [assigneeId], references: [id], onDelete: Cascade)
+  custodianId Int
+  custodian User @relation("custodianApplications", fields: [custodianId], references: [id], onDelete: Cascade)
+  status Int
+  remarks String
+  scope_of_recognition Sample[]
+  date_created DateTime @default(now())
+  date_updated DateTime @default(now())
+  elr_code String
+  onsite_assessment OnSiteAssessment?
+}
+
+model OnSiteAssessment {
+  id Int @id @default(autoincrement())
+  applicationId Int @unique
+  application ELRApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  non_compliance_reports NonComplianceReport[]
+  recommendations RecommendationReport[]
+  checklists Checklist[]
+  assessmentTeam AssessmentTeam?
+}
+
+
+model NonComplianceReport {
+  id Int @id @default(autoincrement())
+  onsiteAssessmentId Int @unique
+  onsiteAssessment OnSiteAssessment @relation(fields: [onsiteAssessmentId], references: [id], onDelete: Cascade)
+  req_document Json?
+  schedule_start DateTime
+  schedule_end DateTime
+  status Int
+  handlerId Int
+  handler User @relation("NonComplianceReportHandler", fields: [handlerId], references: [id], onDelete: Cascade)
+  addedById Int
+  addedBy User @relation("NonComplianceReportCreated", fields: [addedById], references: [id], onDelete: Cascade)
+}
+
+model RecommendationReport {
+  id Int @id @default(autoincrement())
+  onsiteAssessmentId Int @unique
+  onsiteAssessment OnSiteAssessment @relation(fields: [onsiteAssessmentId], references: [id], onDelete: Cascade)
+  req_document Json?
+  schedule_start DateTime
+  schedule_end DateTime
+  status Int
+  handlerId Int
+  handler User @relation("RecommendationReportReportHandler", fields: [handlerId], references: [id], onDelete: Cascade)
+  addedById Int
+  addedBy User @relation("RecommendationReportCreated", fields: [addedById], references: [id], onDelete: Cascade)
+}
+
+
+enum ChecklistType {
+  part1
+  part2
+  part3
+  part4a
+  part4b
+  part4c
+  part4d
+}
+
+model Checklist {
+  id Int @id @default(autoincrement())
+  onsiteAssessmentId Int @unique
+  onsiteAssessment OnSiteAssessment @relation(fields: [onsiteAssessmentId], references: [id], onDelete: Cascade)
+  data Json
+  assignees User[]
+  is_done Boolean @default(false)
+  type ChecklistType
+}
+
+
+model AssessmentTeam {
+  id Int @id @default(autoincrement())
+  onsiteAssessmentId Int @unique
+  onsiteAssessment OnSiteAssessment @relation(fields: [onsiteAssessmentId], references: [id], onDelete: Cascade)
+  liat_chairId Int
+  liat_chair User @relation("LIATChaired", fields: [liat_chairId], references: [id])
+  liat_member_co User[] @relation("LIATMemberedCO")
+  liat_member_ro User[] @relation("LIATMemberedRO")
+  external_assessor_mgmtId Int
+  external_assessor_mgmt User @relation("ExtAssessorMgmt", fields: [external_assessor_mgmtId], references: [id])
+  external_assessor_plId Int
+  external_assessor_pl User @relation("ExtAssessorPl", fields: [external_assessor_plId], references: [id])
+  isApproved Boolean @default(false)
 }

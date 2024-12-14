@@ -1,6 +1,6 @@
 'use client'
 
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import styles from './component.module.css';
 import Image from "next/image";
 import TrackForm from "./track_form";

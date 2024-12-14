@@ -175,6 +175,7 @@ export async function updateLaboratoryDetails(prevState, formData){
         const b_permit_place = formData.get("b_permit_place")
         const l_head_name = formData.get("l_head_name")
         const l_head_email = formData.get("l_head_email")
+        const l_head_citizenship = formData.get("l_head_citizenship")
         const l_head_contact = formData.get("l_head_contact")
         const scope = formData.get("scope")
         const geographical_area = formData.get("geographical_area")
@@ -205,6 +206,7 @@ export async function updateLaboratoryDetails(prevState, formData){
             b_permit_place,
             l_head_name,
             l_head_email,
+            l_head_citizenship,
             l_head_contact,
             scope,
             geographical_area,
@@ -229,6 +231,7 @@ export async function updateLaboratoryDetails(prevState, formData){
                 labHeadName:l_head_name,
                 labHeadEmail:l_head_email,
                 labHeadContact:l_head_contact,
+                labHeadCitizenShip:l_head_citizenship,
                 contactNumber:contact_number,
                 faxNumber:fax_number,
                 tin:tin,
@@ -678,9 +681,6 @@ export async function getAllLabAttachments(labId) {
         return acc;
     }, {});
 
-
-    console.log(groupedAttachments)
-
     await prisma.$disconnect()
     return groupedAttachments;
 }
@@ -945,4 +945,35 @@ export async function deleteTrackRecord(prevState, formData){
         return {error:"Unable to delete accreditation record.", success: true}
     }
 
+}
+
+
+export async function isLabReadyForApplication(labId){
+    const lab = await prisma.laboratory.findFirst({
+        where:{
+            id:parseInt(labId)
+        }
+    })
+
+    if(!lab){
+        console.log()
+        console.log()
+        console.log("Error checking if the laboratory is good for applciation")
+        console.log()
+        console.log()
+        notFound()
+    }
+
+    const parameters = [
+        lab.lab_details_complete,
+        lab.accreditation_record_complete,
+        lab.track_record_complete,
+        lab.required_files_complete,
+    ]
+
+
+    const check = parameters.every(param => param === true)
+
+
+    return check
 }

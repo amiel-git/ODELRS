@@ -15,7 +15,7 @@ import {
             isLabReadyForApplication
         } from '@/app/lib/lab_actions';
 
-export default async function PerLabPage({params}){
+export default async function PerApplicationPage({params}){
     
     const result = await verifyAuth()
     

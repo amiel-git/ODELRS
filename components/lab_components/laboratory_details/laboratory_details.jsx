@@ -129,6 +129,7 @@ export default function LaboratoryDetailsForm(props){
     const [input_l_head_name, set_input_l_head_name] = useState(nullChecker(lab.labHeadName))
     const [input_l_head_email, set_input_l_head_email] = useState(nullChecker(lab.labHeadEmail))
     const [input_l_head_contact, set_input_l_head_contact] = useState(nullChecker(lab.labHeadContact))
+    const [input_l_head_citizenship, set_input_l_head_citizenship] = useState(nullChecker(lab.labHeadCitizenShip))
 
     const [input_scope, set_input_scope] = useState(nullChecker(lab.scopeOfWork))
     const [input_geographical_area, set_input_geographical_area] = useState(nullChecker(lab.areaServed))
@@ -426,6 +427,17 @@ export default function LaboratoryDetailsForm(props){
                 </div>
                 <div className={styles.form_row}>
                     <div className={styles.form_item}>
+                        <label className={styles.label} htmlFor="l_head_email">Laboratory Head Citizenship:</label>
+                        <input 
+                            className={styles.input} 
+                            type="text" 
+                            name="l_head_citizenship" 
+                            value={input_l_head_citizenship} 
+                            onChange={generic_setter(set_input_l_head_citizenship)} 
+                            required
+                        />
+                    </div>
+                    <div className={styles.form_item}>
                         <label className={styles.label} htmlFor="l_head_contact">Laboratory Head Contact:</label>
                         <input 
                             type="text" 
@@ -436,9 +448,6 @@ export default function LaboratoryDetailsForm(props){
                             placeholder="(xxx) xxx-xxxx" 
                             required
                         />
-                    </div>
-                    <div className={styles.form_item}>
-                        {/* blank */}
                     </div>
                 </div>
 
