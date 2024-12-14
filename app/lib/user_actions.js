@@ -373,6 +373,9 @@ export async function getAllUsersForTable(userRole){
     const users = await prisma.user.findMany({
         include:{
             userDetails:true
+        },
+        orderBy:{
+            id:"desc"
         }
     })
 

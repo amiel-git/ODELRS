@@ -1,20 +1,12 @@
 "use server";
 import styles from './page.module.css';
-import PageHeaderWithAction from '@/components/page_header/page-header-action';
+import PageHeader from '@/components/page_header/page-header';
 import { verifyAuth } from '@/app/lib/auth';
-import { getLabById } from '@/app/lib/lab_actions';
 import { capitalize } from '@/app/lib/helper';
-import LabTabs from '@/components/lab_components/lab_tabs/lab_tabs';
 import { redirect } from 'next/navigation';
+import { getApplicationById } from '@/app/lib/application_actions';
 import getAllSampleTypes from '@/app/lib/lab_sample_actions';
-import { 
-            getLaboratoryAccreditationRecords,
-            getPersonnelRecords,
-            getAllTrackRecords,
-            getAllLabAttachments,
-            isLabReadyForApplication
-        } from '@/app/lib/lab_actions';
-
+import ApplicationTabs from '@/components/application_components/application_tabs/application_tabs';
 export default async function PerApplicationPage({params}){
     
     const result = await verifyAuth()
@@ -27,34 +19,18 @@ export default async function PerApplicationPage({params}){
         redirect(`/users/${result.user.id}`)
     }
 
+
     const parameters = await params
-    const lab = await getLabById(parameters.id)
-    const accreditationRecords = await getLaboratoryAccreditationRecords(parameters.id)
-    const personnelRecords = await getPersonnelRecords(parameters.id)
-    const trackRecords = await getAllTrackRecords(parameters.id)
-
+    const application = await getApplicationById(parameters.id)
     const sampleTypes = await getAllSampleTypes()
-    const labAttachments = await getAllLabAttachments(parameters.id)
 
-    const isLabReady = await isLabReadyForApplication(parameters.id)
-    
     return (
         <div className={styles.page}>
-            <PageHeaderWithAction 
-                title={capitalize(lab.laboratoryName)} 
-                showButton={isLabReady}
-                user={result.user} 
-                lab={lab}
-                sampleTypes={sampleTypes}
+            <PageHeader title={`ELR Application - ${capitalize(application.laboratory.laboratoryName)}`} 
             />
-            <LabTabs 
-                user={result.user} 
-                lab={lab}
-                accreditationRecords={accreditationRecords}
-                personnelRecords={personnelRecords}
+
+            <ApplicationTabs
                 sampleTypes={sampleTypes}
-                trackRecords={trackRecords}
-                labAttachments={labAttachments}
             />
         </div>
     )

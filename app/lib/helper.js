@@ -70,19 +70,25 @@ export function convertToStandardDate(date){
 }
 
 export function convertToStandardDateTime(date) {
-    const options = { 
+    const dateOptions = { 
         year: 'numeric', 
-        month: 'long', 
-        day: 'numeric',
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit', 
-        hour12: true      
+        month: 'short', 
+        day: 'numeric'
     };
 
-    const formattedDate = date.toLocaleDateString('en-US', options);
-    
-    return formattedDate;
+    const timeOptions = {
+        hour: '2-digit', 
+        minute: '2-digit', 
+        hour12: true
+    };
+
+    const formattedDate = date.toLocaleDateString('en-US', dateOptions);
+    const [month, day, year] = formattedDate.split(" ");
+
+    const formattedTime = date.toLocaleTimeString('en-US', timeOptions);
+
+    // Manually concatenate without a comma
+    return `${formattedTime}, ${month} ${String(day).replace(",","")} ${year}`;
 }
 
 

@@ -48,7 +48,7 @@ export default function Signature(props){
                 <input 
                     className={styles.input} 
                     type="file"
-                    accept='image/png, image/jpg' 
+                    accept='image/png' 
                     name={"signature"}
                     ref={ref}
                     onChange={handleImageChange}

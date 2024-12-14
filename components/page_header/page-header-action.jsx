@@ -6,10 +6,13 @@ import Alert from '@mui/material/Alert';
 import Image from 'next/image';
 import addApplication from '@/app/lib/application_actions';
 import { useActionState } from 'react';
+import { redirect } from "next/navigation";
+
 
 export default function PageHeaderWithAction(props){
 
     const lab = props.lab
+    const user = props.user
     const [formState, formAction] = useActionState(addApplication, {error:null})
     const [showModal, setShowModal] = useState(false)
 
@@ -27,17 +30,6 @@ export default function PageHeaderWithAction(props){
 
     function toggle_modal(result={}) {
         setShowModal(!showModal)
-        if(Object.keys(result).includes("success")){
-            if(result.error === null){
-                setSnackBarMessage("Accreditation record successfully added.")
-                setOpenSnackBar(true)
-                setSnackBarSeverity("success")
-            } else {
-                setSnackBarMessage("Unable to add accreditation record!")
-                setOpenSnackBar(true)
-                setSnackBarSeverity("error")
-            }
-        }
     }
 
 
@@ -48,8 +40,9 @@ export default function PageHeaderWithAction(props){
                 setSnackBarMessage(`Successfully created the ELR application.`)
                 setOpenSnackBar(true)
                 setSnackBarSeverity("success")
+                redirect(`/application/${formState.applicationId}`)
             } else {
-                setSnackBarMessage("Unable to create ELR application!")
+                setSnackBarMessage(`Unable to create ELR application: ${formState.error}`)
                 setOpenSnackBar(true)
                 setSnackBarSeverity("error")
             }
@@ -86,6 +79,7 @@ export default function PageHeaderWithAction(props){
                     </div>
                     <form action={formAction}>
                       <input type="text" name='labId' hidden readOnly value={lab.id}/>
+                      <input type="text" name='userId' hidden readOnly value={user.id}/>
                       <div className={styles.row_button_container}>
                             <button className={styles.add_buton_cancel} onClick={toggle_modal}>
                               Cancel
