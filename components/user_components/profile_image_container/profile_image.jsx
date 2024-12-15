@@ -48,7 +48,7 @@ export default function ProfileImage(props){
                 <input 
                     className={styles.input} 
                     type="file"
-                    accept='image/png, image/jpg' 
+                    accept='image/png, image/jpg, image/jpeg' 
                     name={"profile_picture"}
                     ref={ref}
                     onChange={handleImageChange}

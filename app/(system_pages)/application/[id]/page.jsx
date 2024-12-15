@@ -4,7 +4,7 @@ import PageHeader from '@/components/page_header/page-header';
 import { verifyAuth } from '@/app/lib/auth';
 import { capitalize } from '@/app/lib/helper';
 import { redirect } from 'next/navigation';
-import { getApplicationById } from '@/app/lib/application_actions';
+import { getApplicationById, getAllScopeForTable } from '@/app/lib/application_actions';
 import getAllSampleTypes from '@/app/lib/lab_sample_actions';
 import ApplicationTabs from '@/components/application_components/application_tabs/application_tabs';
 export default async function PerApplicationPage({params}){
@@ -19,10 +19,11 @@ export default async function PerApplicationPage({params}){
         redirect(`/users/${result.user.id}`)
     }
 
-
     const parameters = await params
-    const application = await getApplicationById(parameters.id)
+    const application = await getApplicationById(parameters.id, result.user.role)
     const sampleTypes = await getAllSampleTypes()
+    const scope_of_recognitions = await getAllScopeForTable(parameters.id)
+
 
     return (
         <div className={styles.page}>
@@ -30,7 +31,10 @@ export default async function PerApplicationPage({params}){
             />
 
             <ApplicationTabs
+                user={result.user}
+                application={application}
                 sampleTypes={sampleTypes}
+                scope={scope_of_recognitions}
             />
         </div>
     )

@@ -27,4 +27,5 @@
     width: 100%;
     flex: 5.5;
     overflow: auto;
+    background: white;
 }

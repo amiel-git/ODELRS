@@ -295,7 +295,7 @@ async function main() {
         { id: 164, parameterId: 2, name: 'Inductively Coupled Plasma - Mass Spectrometry Method (Microwave – Assisted Digestion)' },
         { id: 165, parameterId: 70, name: 'Inductively Coupled Plasma - Mass Spectrometry Method(Microwave – Assisted Digestion)' },
         { id: 166, parameterId: 34, name: 'Inductively Coupled Plasma - Mass Spectrometry Method(Nitric Acid / Hotplate Digestion)' },
-        { id: 167, parameterId: 6, name: 'Inductively Coupled Plasma - Mass Spectrometry Method(Nitric Acid / Hotplate Digestion) Inductively Coupled Plasma - Mass Spectrometry Method(Nitric Acid / Hotplate Digestion)' },
+        { id: 167, parameterId: 6, name: 'Inductively Coupled Plasma - Mass Spectrometry Method(Nitric Acid / Hotplate Digestion)' },
         { id: 168, parameterId: 7, name: 'Inductively Coupled Plasma - Mass Spectrometry Method(Nitric Acid / Hotplate Digestion)' },
         { id: 169, parameterId: 9, name: 'Inductively Coupled Plasma - Mass Spectrometry Method (Nitric Acid / Hotplate Digestion)' },
         { id: 170, parameterId: 11, name: 'Inductively Coupled Plasma - Mass Spectrometry Method (Nitric Acid / Hotplate Digestion)' },

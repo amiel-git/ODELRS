@@ -119,7 +119,7 @@ export const generic_setter = (setter) => (event) => {
 
 
 
-export async function isEMBEmployee(role){
+export function isEMBEmployee(role){
     if(
         role === "admin" || 
         role === "custodian" || 

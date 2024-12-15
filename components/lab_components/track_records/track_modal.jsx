@@ -29,11 +29,11 @@ export default function TracksModal(props) {
         setShowModal(!showModal)
         if(Object.keys(result).includes("success")){
             if(result.error === null){
-                setSnackBarMessage("Accreditation record successfully added.")
+                setSnackBarMessage("Track record successfully added.")
                 setOpenSnackBar(true)
                 setSnackBarSeverity("success")
             } else {
-                setSnackBarMessage("Unable to add accreditation record!")
+                setSnackBarMessage("Unable to add track record!")
                 setOpenSnackBar(true)
                 setSnackBarSeverity("error")
             }

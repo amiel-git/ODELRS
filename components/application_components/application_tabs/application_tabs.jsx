@@ -12,6 +12,10 @@ import FolderIcon from '@mui/icons-material/Folder';
 import Diversity3Icon from '@mui/icons-material/Diversity3';
 import MessageIcon from '@mui/icons-material/Message';
 
+
+import ApplicationDetails from '@/components/application_components/application_details/application_details';
+
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -132,7 +136,12 @@ export default function ApplicationTabs(props) {
 
 
       <TabPanel value={value} index={0}>
-        Panel one
+        <ApplicationDetails
+          user={props.user}
+          application={props.application}
+          sampleTypes={props.sampleTypes}
+          scope={props.scope}
+        />
       </TabPanel>
       <TabPanel value={value} index={1}>
          Panel two

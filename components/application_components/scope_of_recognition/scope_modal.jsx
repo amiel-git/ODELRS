@@ -1,15 +1,15 @@
 'use client'
 
-import {useEffect, useState} from "react";
-import styles from './component.module.css'
+import {useState} from "react";
+import styles from './component.module.css';
 import Image from "next/image";
-import LabForm from "../lab_form/lab_form";
+import ScopeForm from "./scope_form";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import AddIcon from '@mui/icons-material/Add';
 
 
-
-export default function LabModal(props) {
+export default function ScopeModal(props) {
 
     const [showModal, setShowModal] = useState(false)
 
@@ -27,13 +27,13 @@ export default function LabModal(props) {
 
     function toggle_modal(result={}) {
         setShowModal(!showModal)
-        if(Object.keys(result).includes("done")){
+        if(Object.keys(result).includes("success")){
             if(result.error === null){
-                setSnackBarMessage("Laboratory successfully created! Please proceed in providing the necessary details to file an ELR application.")
+                setSnackBarMessage("Accreditation record successfully added.")
                 setOpenSnackBar(true)
                 setSnackBarSeverity("success")
             } else {
-                setSnackBarMessage("Unable to create laboratory!")
+                setSnackBarMessage("Unable to add accreditation record!")
                 setOpenSnackBar(true)
                 setSnackBarSeverity("error")
             }
@@ -45,8 +45,15 @@ export default function LabModal(props) {
 
     return (
         <>  
-            <div className={styles.button_container}>
-                <button onClick={toggle_modal} className={styles.add_button}>Add Laboratory</button>
+            <div className={styles.button_container_scope}>
+                <p></p>
+                <p className={styles.profile_header_2}>Scope of Recognition</p>
+                {props.applicationStatus === 1 && 
+                    <button onClick={toggle_modal} className={styles.add_button}>
+                        <AddIcon/>
+                    </button>
+                }
+                {props.applicationStatus !== 1 && <p></p> }
             </div>
             
             {showModal && <div className={styles.overlay}></div>}
@@ -65,14 +72,17 @@ export default function LabModal(props) {
 
                     <div className={styles.form_container}>
                         <div className={styles.form_header}>
-                            <h2>Add laboratory</h2>
-                            <p>Fill out the form to add a new laboratory record.</p>
+                            <h2>Add scope of recognition.</h2>
+                            <p>Fill out the form to add a new scope of recognition.</p>
                             <hr />
                         </div>
-                        <LabForm toggle_function={toggle_modal} user={props.user}/>
+                        <ScopeForm 
+                            toggle_function={toggle_modal} 
+                            user={props.user} 
+                            sampleTypes={props.sampleTypes}
+                            applicationId={props.applicationId}
+                        />
                     </div>
-                    
-
                 </div>
             }
 
