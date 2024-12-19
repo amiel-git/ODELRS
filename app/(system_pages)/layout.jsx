@@ -10,7 +10,7 @@ export const metadata = {
 export default async function SystemLayout({ children }) {
   return (
       <div className={styles.body}>
-        <NavMenu className={styles.nav}/>
+        {/* <NavMenu className={styles.nav}/> */}
         <div className={styles.content}>{children}</div>
       </div>
 
