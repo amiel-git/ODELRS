@@ -18,7 +18,7 @@ export default async function UsersPage(){
     //     redirect(`/users/${result.user.id}`)
     // }
 
-    const users = await getAllUsersForTable(admin)
+    const users = await getAllUsersForTable("admin")
 
 
     return (
