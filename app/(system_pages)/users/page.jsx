@@ -10,18 +10,15 @@ import { redirect } from 'next/navigation';
 export default async function UsersPage(){
     const result = await verifyAuth()
     
-    // if(result.user === null){
-    //     redirect("/login")
-    // }
+    if(result.user === null){
+        redirect("/login")
+    }
 
-    // if(result.user.isDetailsComplete !== true){
-    //     redirect(`/users/${result.user.id}`)
-    // }
+    if(result.user.isDetailsComplete !== true){
+        redirect(`/users/${result.user.id}`)
+    }
 
-    // if(result.user.role !== "admin"){
-    //     redirect("/application")
-    // }
-    const users = await getAllUsersForTable("admin")
+    const users = await getAllUsersForTable(result.user.role)
 
 
     return (
