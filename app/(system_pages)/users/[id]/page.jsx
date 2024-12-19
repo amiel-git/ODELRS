@@ -13,9 +13,9 @@ export default async function ProfilePage({params}){
 
     const result = await verifyAuth()
     
-    if(result.user === null){
-        redirect("/login")
-    }
+    // if(result.user === null){
+    //     redirect("/login")
+    // }
 
     const parameters = await params
 

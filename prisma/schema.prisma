@@ -418,6 +418,6 @@ model Remark {
   created DateTime @default(now())
   content String
   elrApplicationId Int
-  elrApplication ELRApplication @relation(fields: [elrApplicationId], references: [id])
+  elrApplication ELRApplication @relation(fields: [elrApplicationId], references: [id], onDelete: Cascade)
   remarkType String
 }
