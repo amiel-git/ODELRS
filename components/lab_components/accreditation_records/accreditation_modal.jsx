@@ -24,6 +24,9 @@ export default function AccreditationModal(props) {
         setOpenSnackBar(false);
     };
 
+    const isLabOwner = props.user.id === props.lab.addedById ? false : true
+
+
 
     function toggle_modal(result={}) {
         setShowModal(!showModal)
@@ -48,10 +51,10 @@ export default function AccreditationModal(props) {
             <div className={styles.button_container}>
                 <p></p>
                 <p className={styles.profile_header_2}>Accreditation Records</p>
-                <button onClick={toggle_modal} className={styles.add_button}>
+                {!isLabOwner && <button onClick={toggle_modal} className={styles.add_button}>
                     <AddIcon/>
-                </button>
-            </div>
+                </button>}
+            </div> 
             
             {showModal && <div className={styles.overlay}></div>}
 

@@ -1,0 +1,261 @@
+"use client";
+
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
+import { useEffect, useState } from 'react';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import ClearIcon from '@mui/icons-material/Clear';
+import Link from 'next/link';
+import styles from './component.module.css';
+import Image from 'next/image';
+import { useActionState } from 'react';
+import { deleteAttachment } from '@/app/lib/lab_actions';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
+
+
+
+export default function ApplicationAttachmentTable(props){
+
+    const records = props.records === undefined ? [] : props.records
+
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [showModalDelete, setShowModalDelete] = useState(false)
+    const [selectedAttachmentId, setSelectedAttachmentId] = useState("")
+
+
+    console.log(records)
+
+    const [deleteFormState, deleteFormAction] = useActionState(deleteAttachment, {error:null})
+    
+
+
+    function toggle_delete_modal() {
+      setShowModalDelete(!showModalDelete)
+
+      if(!showModalDelete === false){
+        setSelectedAttachmentId("")
+      }
+  }
+
+
+    useEffect(() => {
+      if(Object.keys(deleteFormState).includes("success")){
+          toggle_delete_modal()
+          if(deleteFormState.error === null){
+              setSnackBarMessage(`File successfully removed.`)
+              setOpenSnackBar(true)
+              setSnackBarSeverity("success")
+          } else {
+              setSnackBarMessage("Unable to delete file!")
+              setOpenSnackBar(true)
+              setSnackBarSeverity("error")
+          }
+      }
+    },[deleteFormState])
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
+
+
+
+    const [snackBarMessage, setSnackBarMessage] = useState("")
+    const [openSnackBar, setOpenSnackBar] = useState(false)
+    const [snackBarSeverity, setSnackBarSeverity] = useState("success")
+
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+        setOpenSnackBar(false);
+    };
+
+    const columns_w_action = [
+        { id: 'file_label', label: 'File Name', minWidth: 300 },
+        { 
+          id: 'date_added', label: 'Date Added', minWidth: 200,
+
+         },
+        { id: 'addedByEmail', label: 'Added By', minWidth: 250},
+
+
+        { id: 'url_path', label: 'View', minWidth: 50, align:"center" },
+        { id: 'id', label: 'Action', minWidth: 50, align:"center" },
+      ];
+
+      const columns_wo_action = [
+        { id: 'file_label', label: 'File Name', minWidth: 300 },
+        { 
+          id: 'date_added', label: 'Date Added', minWidth: 200,
+
+         },
+        { id: 'addedByEmail', label: 'Added By', minWidth: 250},
+
+
+        { id: 'url_path', label: 'View', minWidth: 50, align:"center" },
+      ];
+
+
+      const columns = columns_wo_action
+
+      return (
+        <Paper sx={{ minHeight: "100px", border:"1px solid #ccc", borderRadius:"5px", 
+            boxShadow:"-7px -7px 16px 0 #FFFFFF, 7px 7px 10px -4px rgba(116,150,179,0.27);" 
+        }}>
+          <TableContainer>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  {columns.map((column) => (
+                    <TableCell
+                      key={column.id}
+                      align={column.align}
+                      style={{ minWidth: column.minWidth, background:"cornflowerblue",color:"white", fontWeight:"600"}}
+                    >
+                      {column.label}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {records
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, idx) => {
+                    return (
+                      <TableRow hover role="checkbox" tabIndex={-1} key={idx}>
+                        {columns.map((column) => {
+                          const value = row[column.id];
+                          if(column.id === "url_path"){
+                            //For hyperlinks
+                            return (
+                                <TableCell 
+                                    key={column.id} 
+                                    align={"center"} 
+                                >  
+                                    <Link href={`/${value}`} target={"_blank"}>                                  
+                                        <VisibilityIcon 
+                                            sx={{fill:"darkslategray", cursor:"pointer"}}
+                                        /> 
+                                    </Link>
+                                </TableCell>
+                              );
+                          }
+                          else if(column.id === "id"){
+                            //For hyperlinks
+                            return (
+                                <TableCell 
+                                    key={column.id} 
+                                    align={"center"} 
+                                >  
+                                        <ClearIcon 
+                                            sx={{fill:"darkslategray", cursor:"pointer"}}
+                                            onClick={() => {
+                                              setSelectedAttachmentId(value)
+                                              toggle_delete_modal()
+                                            }}
+                                        /> 
+                                </TableCell>
+                              );
+                          }
+                          else {
+                            return (
+                              <TableCell 
+                                  key={column.id} 
+                                  align={column.align} 
+                                  onClick={() => {
+                                      console.log("Clicked")
+                                  }}
+                                  sx={{cursor:"pointer"}}
+                              >
+                                {column.format && typeof value === 'number'
+                                  ? column.format(value)
+                                  : value}
+                              </TableCell>
+                            );
+                          }
+
+                        })}
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 100]}
+            component="div"
+            count={records.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+
+        
+          {showModalDelete && <div className={styles.overlay}></div>}
+
+          {showModalDelete &&     
+              <div className={styles.sub_modal_container}>
+                  <div className={styles.close_button_container}>
+                      <Image 
+                          src="/icons/close-icon.png" 
+                          alt="close-icon" 
+                          height={15} 
+                          width={15}
+                          onClick={toggle_delete_modal}
+                          className={styles.close_button}
+                      />
+                  </div>
+
+
+                  <div className={styles.form_container}>
+                    <div className={styles.form_header}>
+                        <h2>Delete file</h2>
+                        <p>Are you sure you want to delete this file?</p>
+                        <hr />
+                    </div>
+                    <form action={deleteFormAction}>
+                      <input type="text" name='attachmentId' hidden readOnly value={selectedAttachmentId}/>
+                      <div className={styles.row_button_container}>
+                            <button className={styles.remove_button_cancel} onClick={toggle_delete_modal}>
+                              Cancel
+                          </button>
+                          <button className={styles.remove_button}>
+                              Delete
+                          </button>
+                      </div>
+                    </form>
+                    
+                  </div>
+
+              </div>
+          }
+
+            <Snackbar open={openSnackBar} autoHideDuration={3000} onClose={handleCloseSnackBar} anchorOrigin={{vertical:"bottom", horizontal:"center"}}>
+                <Alert
+                    onClose={handleCloseSnackBar}
+                    severity={snackBarSeverity}
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    {snackBarMessage}
+                </Alert>
+            </Snackbar>
+        </Paper>
+      );
+
+
+}

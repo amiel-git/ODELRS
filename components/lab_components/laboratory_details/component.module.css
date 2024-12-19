@@ -72,9 +72,36 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
+.input:disabled {
+    border:1px solid lightgray;
+    height:35px;
+    width:inherit;
+    padding-left:10px;
+    padding-right:10px;
+    border-radius:5px;
+    cursor:text;
+    color: black;
+    background-color: white;
+}
+
+.input_textarea:disabled {
+    border:1px solid lightgray;
+    width:inherit;
+    padding-left:10px;
+    padding-right:10px;
+    padding-top: 10px;
+    padding-bottom: 5px;
+    border-radius:5px;
+    cursor:text;
+    resize: none;
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+    background-color: white;
+}
+
 .label {
     font-size:14px;
-    color:dimgray;
+    color:#1C1D22;
     font-weight: 600;
 }
 

@@ -13,7 +13,7 @@ import { useState, useEffect } from 'react';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import Link from 'next/link';
 import Image from 'next/image';
-import { deleteTrackRecord } from '@/app/lib/lab_actions';
+import { deleteScopeOfRecognition } from '@/app/lib/application_actions';
 import { useActionState } from 'react';
 import ClearIcon from '@mui/icons-material/Clear';
 import Alert from '@mui/material/Alert';
@@ -23,12 +23,12 @@ import Snackbar from '@mui/material/Snackbar';
 export default function ScopeTable(props){
 
     const records = props.records
-    const lab = props.lab
-
+    const applicationStatus = props.applicationStatus
+    const applicationId = props.applicationId
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [deleteFormState, deleteFormAction] = useActionState(deleteTrackRecord, {error:null})
+    const [deleteFormState, deleteFormAction] = useActionState(deleteScopeOfRecognition, {error:null})
     const [snackBarMessage, setSnackBarMessage] = useState("")
     const [openSnackBar, setOpenSnackBar] = useState(false)
     const [snackBarSeverity, setSnackBarSeverity] = useState("success")
@@ -47,8 +47,14 @@ export default function ScopeTable(props){
       if(!showModalDelete === false){
         setSelectedRecordId("")
       }
-  }
+    }
 
+
+
+
+  useEffect(() => {
+    console.log(selectedRecordId)
+  },[selectedRecordId])
 
     useEffect(() => {
       if(Object.keys(deleteFormState).includes("success")){
@@ -76,19 +82,27 @@ export default function ScopeTable(props){
 
 
 
-    const columns = [
+    const columns_complete = [
         { id: 'sampleType', label: 'Sample Type', minWidth: 250 },
         { id: 'parameter', label: 'Parameter', minWidth: 250 },
         { id: 'sampleMethod', label: 'Analytical Method', minWidth: 250 },
         { id: 'sampleReference', label: 'Reference', minWidth: 250 },
         { id: 'id', label: 'Action', minWidth: 50, align:"center"},
       ];
+    const columns_without_id = [
+        { id: 'sampleType', label: 'Sample Type', minWidth: 250 },
+        { id: 'parameter', label: 'Parameter', minWidth: 250 },
+        { id: 'sampleMethod', label: 'Analytical Method', minWidth: 250 },
+        { id: 'sampleReference', label: 'Reference', minWidth: 250 },
+      ];
+
+    const columns = applicationStatus === 1 ? columns_complete : columns_without_id
 
       return (
-        <Paper sx={{ minHeight: "450px", maxHeight:"500px", border:"1px solid #ccc", borderRadius:"5px", 
+        <Paper sx={{ minHeight: "450px", border:"1px solid #ccc", borderRadius:"5px", 
             boxShadow:"-7px -7px 16px 0 #FFFFFF, 7px 7px 10px -4px rgba(116,150,179,0.27);" 
         }}>
-          <TableContainer sx={{height:"i"}}>
+          <TableContainer>
             <Table stickyHeader aria-label="sticky table" sx={{overflow:"auto"}}>
               <TableHead>
                 <TableRow>
@@ -191,13 +205,13 @@ export default function ScopeTable(props){
 
                   <div className={styles.form_container}>
                     <div className={styles.form_header}>
-                        <h2>Delete track record</h2>
-                        <p>Are you sure you want to delete this track record?</p>
+                        <h2>Delete scope of recognition</h2>
+                        <p>Are you sure you want to delete this scope of recognition?</p>
                         <hr />
                     </div>
                     <form action={deleteFormAction}>
                       <input type="text" name='recordId' hidden readOnly value={selectedRecordId}/>
-                      <input type="text" name='labId' hidden readOnly value={lab.id}/>
+                      <input type="text" name='applicationId' hidden readOnly value={applicationId}/>
                       <div className={styles.row_button_container}>
                             <button className={styles.remove_button_cancel} onClick={toggle_delete_modal}>
                               Cancel

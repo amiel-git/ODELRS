@@ -6,5 +6,5 @@ export const laboratoryStatusMapping = {
     3: "Ongoing application",
     4: "Certified",
     5: "Closed",
-    6: "Inactive"
+    6: "Inactive",
 }

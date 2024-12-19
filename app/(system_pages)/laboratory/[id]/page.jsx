@@ -27,6 +27,8 @@ export default async function PerLabPage({params}){
         redirect(`/users/${result.user.id}`)
     }
 
+    
+
     const parameters = await params
     const lab = await getLabById(parameters.id)
     const accreditationRecords = await getLaboratoryAccreditationRecords(parameters.id)
@@ -36,13 +38,21 @@ export default async function PerLabPage({params}){
     const sampleTypes = await getAllSampleTypes()
     const labAttachments = await getAllLabAttachments(parameters.id)
 
-    const isLabReady = await isLabReadyForApplication(parameters.id)
+    const labCheck = await isLabReadyForApplication(parameters.id)
     
+    const isLabReady = labCheck.result
+
+    if(result.user.role === "applicant"){
+        if(result.user.id !== lab.addedById){
+            redirect("/laboratory")
+        }
+    }
+
     return (
         <div className={styles.page}>
             <PageHeaderWithAction 
                 title={capitalize(lab.laboratoryName)} 
-                showButton={isLabReady}
+                isLabReady={isLabReady}
                 user={result.user} 
                 lab={lab}
                 sampleTypes={sampleTypes}
@@ -55,6 +65,7 @@ export default async function PerLabPage({params}){
                 sampleTypes={sampleTypes}
                 trackRecords={trackRecords}
                 labAttachments={labAttachments}
+                showButton={isLabReady}
             />
         </div>
     )

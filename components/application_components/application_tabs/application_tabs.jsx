@@ -11,10 +11,15 @@ import FeedIcon from '@mui/icons-material/Feed';
 import FolderIcon from '@mui/icons-material/Folder';
 import Diversity3Icon from '@mui/icons-material/Diversity3';
 import MessageIcon from '@mui/icons-material/Message';
-
+import ArticleIcon from '@mui/icons-material/Article';
 
 import ApplicationDetails from '@/components/application_components/application_details/application_details';
+import AssessmentTeamPage from '@/components/application_components/assessment_team/assessment_team';
+import ApplicationFiles from '@/components/application_components/application_files/application_files';
+import Remarks from '@/components/application_components/remarks/remarks';
 
+//FORMS
+import FirstLevelEvaluationForm from '../../application_forms/first_level_evaluation_form';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -53,12 +58,16 @@ function a11yProps(index) {
 export default function ApplicationTabs(props) {
 
   const user = props.user
+  const application = props.application
+  const teamMemberChoices = props.teamMemberChoices
+  const teamMemberForTable = props.teamMemberForTable
+  const applicationFiles = props.applicationFiles
   const lab = props.lab
+  const remarks = props.remarks
 
+  const [value, setValue] = React.useState(1);
 
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (event, newValue) => {
+  const handleChange = (event, newValue) => { 
     setValue(newValue);
   };
 
@@ -82,27 +91,41 @@ export default function ApplicationTabs(props) {
             overflowY: 'auto', 
             zIndex: 1,
           }}
+      > 
+      <Tab style={{pointerEvents:"none"}}
+        label={
+          <p className={styles.sub_nav_header}>
+              Application
+          </p>
+          }
       >
+        
+      </Tab>
+        
+        
         <Tab 
             label={
-                    <div className={styles.tab_item}>
+                    <div className={(props.application.status === 2 && user.id === application.assigneeId) || 
+                                    (props.application.status === 7 && user.id === application.assigneeId)
+                                    ? styles.breathing_text : styles.tab_item}
+                    >
                         <FeedIcon className={styles.tab_item_icon}/>
                         Application Details
                     </div>
                     }
-                    {...a11yProps(0)} 
+                    {...a11yProps(1)} 
             sx={{
                 alignItems:"start"
             }}
         />
         <Tab 
             label={
-                      <div className={styles.tab_item}>
+                      <div  className={(props.application.status === 4 || props.application.status === 5) && user.id === application.assigneeId ? styles.breathing_text : styles.tab_item}>
                         <Diversity3Icon className={styles.tab_item_icon}/>
                         Assessment Team
                     </div>
                     }
-                    {...a11yProps(1)}
+                    {...a11yProps(2)}
             sx={{
                 alignItems:"start"
             }}
@@ -114,7 +137,7 @@ export default function ApplicationTabs(props) {
                         Remarks
                     </div>
                     }
-                    {...a11yProps(2)}
+                    {...a11yProps(3)}
             sx={{
                 alignItems:"start"
             }}
@@ -126,7 +149,32 @@ export default function ApplicationTabs(props) {
                         Applicaton Files
                     </div>
                     }
-                    {...a11yProps(2)}
+                    {...a11yProps(4)}
+            sx={{
+                alignItems:"start"
+            }}
+        />
+
+      <Tab style={{pointerEvents:"none", width:"100%"}}
+        label={
+          <div style={{width:"100%"}}>
+            <hr className={styles.nav_separator}/>
+            <p className={styles.sub_nav_header}>Forms</p>
+          </div>
+
+          }
+      >
+        
+      </Tab>
+        
+      <Tab 
+            label={
+                      <div className={props.application.status === 3 && user.id === application.assigneeId ? styles.breathing_text : styles.tab_item}>
+                        <ArticleIcon className={styles.tab_item_icon}/>
+                        First Level Evaluation
+                    </div>
+                    }
+                    {...a11yProps(6)}
             sx={{
                 alignItems:"start"
             }}
@@ -135,23 +183,51 @@ export default function ApplicationTabs(props) {
       </Tabs>
 
 
-      <TabPanel value={value} index={0}>
+      <TabPanel value={value} index={1}>
         <ApplicationDetails
-          user={props.user}
-          application={props.application}
+          user={user}
+          application={application}
           sampleTypes={props.sampleTypes}
           scope={props.scope}
+          custodians={props.custodians}
+          lab={lab}
         />
       </TabPanel>
-      <TabPanel value={value} index={1}>
-         Panel two
-      </TabPanel>
+
       <TabPanel value={value} index={2}>
-         Panel three
+         <AssessmentTeamPage
+          application={application} 
+          user={user}
+          teamMemberChoices={teamMemberChoices}
+          teamMemberForTable={teamMemberForTable}
+         />
       </TabPanel>
+
       <TabPanel value={value} index={3}>
-         Panel four
+          <Remarks
+            application={application} 
+            user={user}
+            remarks={remarks}
+          />
       </TabPanel>
+
+      <TabPanel value={value} index={4}>
+         <ApplicationFiles
+          application={application} 
+          user={user}
+          applicationFiles={applicationFiles}
+         />
+      </TabPanel>
+
+      <TabPanel value={value} index={6}>
+         <FirstLevelEvaluationForm 
+            application={application} 
+            user={user} 
+            forms={props.forms}
+            labId={props.labId}
+          />
+      </TabPanel>
+
     </Box>
   );
 }

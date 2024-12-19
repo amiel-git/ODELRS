@@ -7,10 +7,17 @@ import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import {    useState,
             useActionState,
-            useEffect
+            useEffect,
+            useRef
  } from 'react';
 
- import { submitApplicationToEMB } from '@/app/lib/application_actions';
+
+ import { updateCustodian } from '@/app/lib/application_actions';
+ import ApplicationHeader from '@/components/application_components/application_header/application_header';
+
+
+import ApplicationFormPDF from '../../pdf_components/application_form';
+import { pdf } from '@react-pdf/renderer';
 
 export default function ApplicationDetails(props){
 
@@ -18,44 +25,59 @@ export default function ApplicationDetails(props){
     const sampleTypes = props.sampleTypes
     const user = props.user
     const isEMB = isEMBEmployee(user.role)
+    const userRole = user.role
+    const custodians = props.custodians
+    const lab = props.lab
 
 
     const [snackBarMessage, setSnackBarMessage] = useState("")
     const [openSnackBar, setOpenSnackBar] = useState(false)
     const [snackBarSeverity, setSnackBarSeverity] = useState("success")
 
-    const [showSubmitModal, setShowSubmitModal] = useState(false)
-    const [submitFormState, submitFormAction] = useActionState(submitApplicationToEMB, {error:null})
+    
 
-    const toggle_submit_modal = () => {
-        setShowSubmitModal(!showSubmitModal)
+    const [custodianFormState, custodianFormAction] = useActionState(updateCustodian, {error:null})
+
+    //Input variables
+    const [selectedCustodian, setSelectedCustodian] = useState(application.custodian === null ? "" : application.custodian.id)
+
+
+    const custodianFormRef = useRef()
+    const onChangeCustodian = (event) => {
+        setSelectedCustodian(event.target.value)
+        setTimeout(() => {
+            custodianFormRef.current.requestSubmit()
+        }, 200);
+        
     }
+    
 
-    const handleSubmitApplicationToEMB = () => {
-        if(application.scope_of_recognition.length === 0){
-            setSnackBarMessage("Application cannot be submitted without a scope of recogntion")
-            setSnackBarSeverity("error")
-            setOpenSnackBar(true)
-        } 
-        else {
-            toggle_submit_modal()
-        }
-    }
+    const generatePDF = async () => {
+        const blob = await pdf(<ApplicationFormPDF lab={lab} application={application} />).toBlob();
+      
+        // Create a download link for the PDF
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'application_form.pdf';
+        a.click();
+        URL.revokeObjectURL(url);
+      };
+      
 
-    useEffect(() => {
-        if(Object.keys(submitFormState).includes("success")){
-            toggle_submit_modal()
-            if(submitFormState.error === null){
-                setSnackBarMessage(`Successfully submitted ELR application to EMB.`)
+      useEffect(() => {
+        if(Object.keys(custodianFormState).includes("success")){
+            if(custodianFormState.error === null){
+                setSnackBarMessage(`Successfully updated the application's custodian.`)
                 setOpenSnackBar(true)
                 setSnackBarSeverity("success")
             } else {
-                setSnackBarMessage("Unable to submit ELR application.")
+                setSnackBarMessage("Unable to update the application's custodian.")
                 setOpenSnackBar(true)
                 setSnackBarSeverity("error")
             }
         }
-      },[submitFormState])
+      },[custodianFormState])
 
 
     const handleCloseSnackBar = (event, reason) => {
@@ -69,39 +91,12 @@ export default function ApplicationDetails(props){
         <div className={styles.main_container}>
 
             {/*********************************** Main application header row **************************/}
-            <div className={styles.details_container_row}>
-                <div className={styles.item_container}>
-                    <p className={styles.sub_header}>
-                        Status:
-                    </p>
-                    <p className={styles.sub_header_value}>
-                        {application.convertedStatus}
-                    </p>
-                </div>
-                <div className={styles.item_container}>
-                    <p className={styles.sub_header}>
-                        Assignee:
-                    </p>
-                    <p className={styles.sub_header_value}>
-                        {
-                            application.assignee ? 
-                            isEMB ? `${capitalize(application.assignee.userDetails.firstName)} ${capitalize(application.assignee.userDetails.lastName)}` : 
-                                    convertRoleToReadable(application.assignee.role)
-                            : "---"
-                        }
-                    </p>
-                </div>
-                <div className={styles.item_container_last}>
-                    {/* QUICK ACTION Container */}
-                    {user.role === "applicant" && application.status === 1 &&
-                        <button className={styles.action_button} onClick={handleSubmitApplicationToEMB}>
-                            Submit to EMB
-                        </button>
-                    }
-                </div>
-            </div>
+                <ApplicationHeader application={application} user={user}/>
             {/* ------------------------------------------------------------------------- */}
-
+            <div className={styles.button_container}>
+                <button onClick={generatePDF} className={styles.download_button}>Download Application Form</button>
+            </div>
+            
             <div className={styles.details_container_row_borderless}>
                 <div className={styles.details_container_column}>
                     <div className={styles.item_container}>
@@ -131,12 +126,35 @@ export default function ApplicationDetails(props){
                 </div>
                 <div className={styles.details_container_column}>
                     <div className={styles.item_container}>
-                        <p className={styles.sub_header}>
+                        <p 
+                            className={application.status === 2 && selectedCustodian === "" && userRole === "elr_secretariat" ? styles.sub_header_red : styles.sub_header}
+                        >
                             Custodian:
                         </p>
-                        <p className={styles.sub_header_value}>
-                            {application.custodian ? application.custodian.email : "---"}
-                        </p>
+                        { userRole !== "elr_secretariat" && 
+                            <p className={styles.sub_header_value}>
+                                {application.custodian ? application.custodian.email : "---"}
+                            </p>
+                        }
+
+                        { userRole === "elr_secretariat" &&
+                            <form action={custodianFormAction} ref={custodianFormRef}>
+                                <input type="text" name={"applicationId"} value={application.id} hidden readOnly/>
+                                <select 
+                                    className={application.status === 2 && selectedCustodian === "" ? styles.input_red : styles.input} 
+                                    name="custodianId" 
+                                    value={selectedCustodian} 
+                                    onChange={onChangeCustodian}
+                                >
+                                    
+                                    <option value={""}>---</option>
+                                    {custodians.map((item,idx) => {
+                                        return <option key={idx} value={item.id}>{item.email}</option>
+                                    })}
+
+                                </select>
+                            </form>
+                        }
                     </div>
                     <div className={styles.item_container}>
                         <p className={styles.sub_header}>
@@ -157,7 +175,7 @@ export default function ApplicationDetails(props){
                 </div>
             </div>
 
-            <hr />
+            <hr style={{margin:"20px 0px"}}/>
             <ScopeRecords
                 user={props.user}
                 sampleTypes={sampleTypes}
@@ -178,52 +196,6 @@ export default function ApplicationDetails(props){
                   {snackBarMessage}
               </Alert>
             </Snackbar>
-
-            {/* ================================================================================== */}
-            {/* =================================== MODALS ======================================= */}
-            {/* ================================================================================== */}
-
-
-            {showSubmitModal && <div className={styles.overlay}></div>}
-
-            {showSubmitModal &&     
-                <div className={styles.confirmation_modal_container}>
-                    <div className={styles.close_button_container}>
-                        <Image src="/icons/close-icon.png" 
-                                alt="close-icon" 
-                                height={15} 
-                                width={15}
-                                onClick={toggle_submit_modal}
-                                className={styles.close_button}
-                                />
-                    </div>
-
-                    <div className={styles.form_container}>
-                        <div className={styles.form_header}>
-                            <h2 className={styles.modal_header}>Submit ELR Application to EMB?</h2>
-                            <p className={styles.modal_sub_header}>Please confirm if you want to submit the application to EMB.</p>
-                            <hr />
-                        </div>
-                        <form action={submitFormAction}>
-                            <input type="text" name='applicationId' hidden readOnly value={application.id}/>
-                            <input type="text" name='userId' hidden readOnly value={user.id}/>
-                            <div className={styles.row_button_container}>
-                                    <button className={styles.add_buton_cancel} onClick={toggle_submit_modal}>
-                                    Cancel
-                                </button>
-                                <button className={styles.add_buton}>
-                                    Submit
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            }
-
-
-            {/* ================================================================================== */}
-            {/* ================================================================================== */}
-            {/* ================================================================================== */}
         </div>
         
     )

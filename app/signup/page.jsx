@@ -127,7 +127,7 @@ export default function SignUpPage() {
                                 <input className={styles.input} type={showPassword ? "text" : "password"} name="confirm_password" value={confirmPassword} onChange={generic_setter(setConfirmPassword)} required />  
                             </div>
                             <div className={styles.form_item} style={{alignSelf:"end"}}>
-                                <FormGroup sx={{color:"dimgray",
+                                <FormGroup sx={{color:"black",
                                     "& span":{
                                         fontSize:"12px !important"
                                     },

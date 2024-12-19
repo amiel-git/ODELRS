@@ -54,7 +54,7 @@ export default async function loginAction(prevState, formData) {
     await createAuthSession(user.id)
     await prisma.$disconnect();
     
-    redirect(`/users`)
+    redirect(`/application`)
 
 }
 

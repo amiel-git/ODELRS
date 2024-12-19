@@ -396,3 +396,33 @@ export async function getAllUsersForTable(userRole){
 
     return flatData
 }
+
+
+export async function getAllUsersForCustodian(){
+
+    const users = await prisma.user.findMany({
+        where:{
+            isDetailsComplete:true,
+            OR:[
+                {role:"admin"},
+                {role:"custodian"},
+                {role:"elr_coordinator"},
+            ]
+        },
+        include:{
+            userDetails:true
+        },
+        orderBy:{
+            email:"asc"
+        }
+    })
+
+    if(!users){
+        return []
+    }
+
+
+    await prisma.$disconnect()
+    return users
+
+}

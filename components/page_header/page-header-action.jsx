@@ -54,7 +54,7 @@ export default function PageHeaderWithAction(props){
         <>
         <div className={styles.header_container_2}>
             <h1 className={styles.header_text}>{props.title}</h1>
-            {props.showButton && <button className={styles.application_button} onClick={toggle_modal}>New Application</button>}
+            {user.id === lab.addedById && props.isLabReady && <button className={styles.application_button} onClick={toggle_modal}>New Application</button>}
         </div>
 
         {showModal && <div className={styles.overlay}></div>}

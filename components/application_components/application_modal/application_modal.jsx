@@ -46,7 +46,7 @@ export default function ApplicationModal(props) {
     return (
         <>  
             <div className={styles.button_container}>
-                <button onClick={toggle_modal} className={styles.add_button}>Add ELR Application</button>
+                {/* <button onClick={toggle_modal} className={styles.add_button}>Add ELR Application</button> */}
             </div>
             
             {showModal && <div className={styles.overlay}></div>}

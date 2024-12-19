@@ -39,6 +39,7 @@ model User {
   extAssessorMgmt AssessmentTeam[] @relation("ExtAssessorMgmt")
   extAssessorPl AssessmentTeam[] @relation("ExtAssessorPl")
   remarks Remark[]
+  uploadedFiles Attachment[]
 }
 
 model UserDetails {
@@ -76,6 +77,11 @@ model Attachment {
   personnelLicense Personnel[] @relation("PersonnelLicense")
   businessPermit Laboratory[] @relation("businessPermit")
   laboratoryAttachments LaboratoryAttachments[]
+  applicationId Int?
+  application ELRApplication? @relation(fields: [applicationId], references: [id])
+  addedById Int?
+  addedBy User? @relation(fields: [addedById], references: [id], onDelete: Cascade)
+  dateAdded DateTime @default(now())
 }
 
 
@@ -313,6 +319,8 @@ model ELRApplication {
   onsite_assessment OnSiteAssessment?
   addedById Int
   addedBy User @relation("ELRApplications", fields: [addedById], references: [id], onDelete: Cascade)
+  forms Form[]
+  applicationFiles Attachment[]
 }
 
 model OnSiteAssessment {
@@ -323,6 +331,8 @@ model OnSiteAssessment {
   recommendations RecommendationReport[]
   checklists Checklist[]
   assessmentTeam AssessmentTeam?
+  scheduleStart DateTime?
+  scheduleEnd DateTime?
 }
 
 
@@ -355,6 +365,16 @@ model RecommendationReport {
 }
 
 
+model Form {
+  id Int @id @default(autoincrement())
+  applicationId Int
+  application ELRApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  updated DateTime @default(now())
+  data Json?
+  form_type String
+}
+
+
 enum ChecklistType {
   part1
   part2
@@ -367,9 +387,9 @@ enum ChecklistType {
 
 model Checklist {
   id Int @id @default(autoincrement())
-  onsiteAssessmentId Int @unique
+  onsiteAssessmentId Int
   onsiteAssessment OnSiteAssessment @relation(fields: [onsiteAssessmentId], references: [id], onDelete: Cascade)
-  data Json
+  data Json?
   assignees User[]
   is_done Boolean @default(false)
   type ChecklistType
@@ -399,4 +419,5 @@ model Remark {
   content String
   elrApplicationId Int
   elrApplication ELRApplication @relation(fields: [elrApplicationId], references: [id])
+  remarkType String
 }

@@ -17,6 +17,10 @@ export default function TracksModal(props) {
     const [openSnackBar, setOpenSnackBar] = useState(false)
     const [snackBarSeverity, setSnackBarSeverity] = useState("success")
 
+
+    //This value is reversed
+    const isLabOwner = props.user.id === props.lab.addedById ? false : true
+
     const handleCloseSnackBar = (event, reason) => {
         if (reason === 'clickaway') {
           return;
@@ -48,9 +52,9 @@ export default function TracksModal(props) {
             <div className={styles.button_container}>
                 <p></p>
                 <p className={styles.profile_header_2}>Track Records</p>
-                <button onClick={toggle_modal} className={styles.add_button}>
+                {!isLabOwner && <button onClick={toggle_modal} className={styles.add_button}>
                     <AddIcon/>
-                </button>
+                </button>}
             </div>
             
             {showModal && <div className={styles.overlay}></div>}

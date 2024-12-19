@@ -2,7 +2,7 @@
     min-height: 90vh;
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 10px;
 }
 
 .details_container_row {
@@ -50,6 +50,7 @@
     gap: 10px;
     padding: 0px 20px;
     flex:1;
+    align-items: center;
 }
 
 .item_container_last{
@@ -61,18 +62,42 @@
     justify-content: end;
 }
 
+.sub_header_red{
+    font-size: 14px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    color: red;
+}
 .sub_header{
     font-size: 14px;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 600;
-    color: dimgray;
+    color: black;
 }
 
 .sub_header_value{
     font-size: 14px;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 500;
-    color: dimgray;
+    color: black;
+}
+
+.download_button {
+    height: 25px;
+    font-size: 13px;
+    padding: 3px 10px;
+    border: none;
+    border-radius: 5px;
+    background: deepskyblue;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, scale 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.download_button:hover {
+    background-color: skyblue;
+    scale: 1.05;
+    color: white
 }
 
 .action_button {
@@ -115,6 +140,44 @@
     z-index: 10;
 }
 
+.input_red {
+    border:1px solid red;
+    height:25px;
+    width:100%;
+    padding-left:10px;
+    padding-right:10px;
+    border-radius:5px;
+    cursor:text;
+}
+
+.input {
+    border:1px solid lightgray;
+    height:25px;
+    width:100%;
+    padding-left:10px;
+    padding-right:10px;
+    border-radius:5px;
+    cursor:text;
+}
+
+.input_textarea {
+    border:1px solid lightgray;
+    width:inherit;
+    padding-left:10px;
+    padding-right:10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius:5px;
+    cursor:text;
+    resize: none;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.label {
+    font-size:14px;
+    color:#1C1D22;
+}
+
 .form_container {
     width: inherit;
     padding: 20px 40px;
@@ -128,7 +191,7 @@
 }
 
 .form_header p {
-    color: dimgray;
+    color: black;
 }
 
 .file_name {
@@ -189,7 +252,6 @@
 
 .button_container {
     text-align: right;
-    padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 5px;

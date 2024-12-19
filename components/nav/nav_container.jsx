@@ -37,7 +37,7 @@ export default async function NavMenu(props) {
                 <section className={styles.nav_item_container}>
                     <NavItem icon={"/icons/application-icon.png"} label={"ELR Applications"} url={`/application`}/>
                     <NavItem icon={"/icons/laboratory_icon.png"} label={"Laboratories"} url={`/laboratory`}/>
-                    <NavItem icon={"/icons/user-icon.png"} label={"Users"} url={`/users`}/>
+                    { result.user.role === "admin" && <NavItem icon={"/icons/user-icon.png"} label={"Users"} url={`/users`}/>}
                 </section>
                 
 

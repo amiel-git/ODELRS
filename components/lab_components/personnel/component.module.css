@@ -1,6 +1,6 @@
 .profile_header_2{
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    color:dimgray;
+    color:#1C1D22;
     font-size: 18px;
     font-weight: 700;
     width:100%;
@@ -83,7 +83,7 @@
 
 .label {
     font-size:14px;
-    color:dimgray;
+    color:#1C1D22;
     font-weight: 600;
 }
 
@@ -185,7 +185,7 @@
 }
 
 .form_header p {
-    color: dimgray;
+    color: black;
 }
 
 
@@ -291,7 +291,7 @@
 }
 
 .form_header p {
-    color: dimgray;
+    color: black;
 }
 
 
@@ -368,7 +368,7 @@
     height:30px;
     width:100px;
     background:none;
-    color:black;
+    color:#1C1D22;
     border:none;
     border-radius:10px;
     cursor:pointer;

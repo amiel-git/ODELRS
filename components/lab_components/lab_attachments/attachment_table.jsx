@@ -32,6 +32,9 @@ export default function AttachmentTable(props){
 
 
     const [deleteFormState, deleteFormAction] = useActionState(deleteAttachment, {error:null})
+    
+    //This value is reversed
+    const isLabOwner = props.user.id === props.lab.addedById ? false : true
 
     function toggle_delete_modal() {
       setShowModalDelete(!showModalDelete)
@@ -79,7 +82,7 @@ export default function AttachmentTable(props){
         setOpenSnackBar(false);
     };
 
-    const columns = [
+    const columns_w_action = [
         { id: 'attachment_name', label: 'File Name', minWidth: 300 },
         { 
           id: 'date_added', label: 'Date Added', minWidth: 200,
@@ -92,13 +95,25 @@ export default function AttachmentTable(props){
         { id: 'id', label: 'Action', minWidth: 50, align:"center" },
       ];
 
-      
+    const columns_wo_action = [
+        { id: 'attachment_name', label: 'File Name', minWidth: 300 },
+        { 
+          id: 'date_added', label: 'Date Added', minWidth: 200,
+
+         },
+        { id: 'addedByEmail', label: 'Added By', minWidth: 250 },
+
+
+        { id: 'url_path', label: 'View', minWidth: 50, align:"center" },
+      ];
+
+      const columns = isLabOwner ? columns_wo_action : columns_w_action
 
       return (
-        <Paper sx={{ minHeight: "100px", maxHeight:"350px", border:"1px solid #ccc", borderRadius:"5px", 
+        <Paper sx={{ minHeight: "100px", border:"1px solid #ccc", borderRadius:"5px", 
             boxShadow:"-7px -7px 16px 0 #FFFFFF, 7px 7px 10px -4px rgba(116,150,179,0.27);" 
         }}>
-          <TableContainer sx={{height:"i"}}>
+          <TableContainer>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>

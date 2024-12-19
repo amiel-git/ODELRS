@@ -33,6 +33,9 @@ export default function PersonnelTable(props){
     const [selectedRecordId, setSelectedRecordId] = useState("")
     const [showModalDelete, setShowModalDelete] = useState(false)
 
+    //This value is reversed
+    const isLabOwner = props.user.id === props.lab.addedById ? false : true
+
     const handleCloseSnackBar = (event, reason) => {
         if (reason === 'clickaway') {
           return;
@@ -75,7 +78,7 @@ export default function PersonnelTable(props){
 
 
 
-    const columns = [
+    const columns_w_action = [
         { id: 'name', label: 'Name', minWidth: 280 },
         { 
           id: 'education',
@@ -109,11 +112,43 @@ export default function PersonnelTable(props){
         },
       ];
 
+      const columns_wo_action = [
+        { id: 'name', label: 'Name', minWidth: 280 },
+        { 
+          id: 'education',
+          label: 'Education / License Number',
+          minWidth: 280,
+        },
+        { id: 'position', label: 'Job Title', minWidth: 280 },
+        { 
+          id: 'yearsOfExperience',
+          label: 'Years of Experience',
+          minWidth: 200,
+          align:"center"
+        },
+        { 
+          id: 'cv',
+          label: 'CV / Resume',
+          minWidth: 150,
+          align:"center"
+        },
+        { 
+          id: 'license',
+          label: 'License',
+          minWidth: 150,
+          align:"center"
+        }
+      ];
+
+
+      const columns = isLabOwner ? columns_wo_action : columns_w_action
+
+
       return (
-        <Paper sx={{ minHeight: "450px", maxHeight:"500px", border:"1px solid #ccc", borderRadius:"5px", 
+        <Paper sx={{ minHeight: "450px", border:"1px solid #ccc", borderRadius:"5px", 
             boxShadow:"-7px -7px 16px 0 #FFFFFF, 7px 7px 10px -4px rgba(116,150,179,0.27);"
         }}>
-          <TableContainer sx={{height:"i"}}>
+          <TableContainer>
             <Table stickyHeader aria-label="sticky table" sx={{overflow:"auto"}}>
               <TableHead>
                 <TableRow>

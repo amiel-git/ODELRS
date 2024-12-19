@@ -18,6 +18,9 @@ export default async function UsersPage(){
         redirect(`/users/${result.user.id}`)
     }
 
+    if(result.user.role !== "admin"){
+        redirect("/application")
+    }
     const users = await getAllUsersForTable(result.user.role)
 
 

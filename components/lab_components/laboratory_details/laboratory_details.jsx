@@ -56,15 +56,6 @@ export default function LaboratoryDetailsForm(props){
     const lab = props.lab
     const establishment = lab.establishment
 
-    console.log()
-    console.log()
-    console.log()
-    console.log(lab)
-    console.log()
-    console.log()
-    console.log()
-
-
     const nullChecker = (variable) => {
         if(variable === null){
             return ""
@@ -77,13 +68,16 @@ export default function LaboratoryDetailsForm(props){
         if(item === null || item === ""){
             return ""
         } else {
-            return new Date(lab.dateEstablished).toISOString().slice(0,10)
+            return new Date(item).toISOString().slice(0,10)
         }
     }
 
     const theme = useTheme();
     const [categories, setCategories] = useState(lab.categoryOfClient !== null ? lab.categoryOfClient : []);
     const [services, setServices] = useState(lab.ServicesOffered !== null ? lab.ServicesOffered : []);
+
+
+    const isLabOwner = props.user.id === props.lab.addedById ? false : true
 
     const handleChangeCategories = (event) => {
         const {
@@ -198,14 +192,14 @@ export default function LaboratoryDetailsForm(props){
                 <div className={styles.form_row}>
                     <div className={styles.form_item}>
                         <label className={styles.label} htmlFor="lab_name">Laboratory name:</label>
-                        <input className={styles.input} type="text" name="lab_name" value={input_lab_name} onChange={generic_setter(set_input_lab_name)} required/>
+                        <input className={styles.input} type="text" name="lab_name" value={input_lab_name} onChange={generic_setter(set_input_lab_name)} disabled={isLabOwner} required/>
                     </div>
                 </div>
 
                 <div className={styles.form_row}>
                     <div className={styles.form_item}>
                         <label className={styles.label} htmlFor="region">Region:</label>
-                        <select name='region' className={styles.input} value={selectedRegion} onChange={generic_setter(setSelectedRegion)} required>
+                        <select name='region' className={styles.input} value={selectedRegion} onChange={generic_setter(setSelectedRegion)} disabled={isLabOwner} required>
                             <option value="car">CAR</option>
                             <option value="ncr">NCR</option>
                             <option value="r1">Region 1</option>
@@ -227,7 +221,7 @@ export default function LaboratoryDetailsForm(props){
 
                     <div className={styles.form_item}>
                         <label className={styles.label} htmlFor="province">Province:</label>
-                        <select name='province' className={styles.input} value={selectedProvince} onChange={generic_setter(setSelectedProvince)} required>
+                        <select name='province' className={styles.input} value={selectedProvince} onChange={generic_setter(setSelectedProvince)} disabled={isLabOwner} required>
                             {provincesByRegion[selectedRegion].map((province, idx) => {
                                 return (
                                     <option value={province.value} key={idx}>{province.label}</option>
@@ -248,6 +242,7 @@ export default function LaboratoryDetailsForm(props){
                             value={input_lab_address} 
                             onChange={generic_setter(set_input_lab_address)} 
                             required
+                            disabled={isLabOwner}
                         />
                     </div>
                 </div>
@@ -255,11 +250,11 @@ export default function LaboratoryDetailsForm(props){
                 <div className={styles.form_row}>
                     <div className={styles.form_item}>
                         <label className={styles.label} htmlFor="lat">Latitude:</label>
-                        <input className={styles.input} type="number" name="lat" step={0.0000000000000000000001} value={input_lat} onChange={generic_setter(set_input_lat)} required/>
+                        <input className={styles.input}  disabled={isLabOwner} type="number" name="lat" step={0.0000000000000000000001} value={input_lat} onChange={generic_setter(set_input_lat)} required/>
                     </div>
                     <div className={styles.form_item}>
                         <label className={styles.label} htmlFor="lon">Longitude:</label>
-                        <input className={styles.input} type="number" name="lon" step={0.0000000000000000000001} value={input_lon} onChange={generic_setter(set_input_lon)} required/>
+                        <input className={styles.input}  disabled={isLabOwner} type="number" name="lon" step={0.0000000000000000000001} value={input_lon} onChange={generic_setter(set_input_lon)} required/>
                     </div>
                 </div>
 
@@ -273,6 +268,7 @@ export default function LaboratoryDetailsForm(props){
                             value={input_date_established} 
                             onChange={generic_setter(set_input_date_established)}
                             required
+                            disabled={isLabOwner}
                         />
                     </div>
                     <div className={styles.form_item}>
@@ -289,6 +285,7 @@ export default function LaboratoryDetailsForm(props){
                             type="text" 
                             name="mission_statement" 
                             value={input_mission_statement} 
+                            disabled={isLabOwner}
                             onChange={generic_setter(set_input_mission_statement)} 
                         />
                     </div>
@@ -310,6 +307,7 @@ export default function LaboratoryDetailsForm(props){
                             onChange={handlePhoneChange(set_input_contact)} 
                             placeholder="(xxx) xxx-xxxx"
                             required
+                            disabled={isLabOwner}
                         />
                     </div>
                     <div className={styles.form_item}>
@@ -321,6 +319,7 @@ export default function LaboratoryDetailsForm(props){
                             onChange={handlePhoneChange(set_input_fax)} 
                             placeholder="(xxx) xxx-xxxx" 
                             required
+                            disabled={isLabOwner}
                         />
                     </div>
                 </div>
@@ -341,6 +340,7 @@ export default function LaboratoryDetailsForm(props){
                             placeholder='XXX-XXX-XXX-XXX' 
                             onChange={handleTINChange(set_input_tin)}
                             required
+                            disabled={isLabOwner}
                         />
                     </div>
                     <div className={styles.form_item}>
@@ -352,6 +352,7 @@ export default function LaboratoryDetailsForm(props){
                             value={input_b_permit_number} 
                             onChange={generic_setter(set_input_b_permit_number)}
                             required
+                            disabled={isLabOwner}
                         />
                     </div>
                 </div>
@@ -366,6 +367,7 @@ export default function LaboratoryDetailsForm(props){
                             value={input_b_permit_issue_date} 
                             onChange={generic_setter(set_input_b_permit_issue_date)}
                             required
+                            disabled={isLabOwner}
                         />
                     </div>
                     <div className={styles.form_item}>
@@ -377,6 +379,7 @@ export default function LaboratoryDetailsForm(props){
                             value={input_b_permit_expiry_date} 
                             onChange={generic_setter(set_input_b_permit_expiry_date)}
                             required
+                            disabled={isLabOwner}
                         />
                     </div>
                 </div>
@@ -392,6 +395,7 @@ export default function LaboratoryDetailsForm(props){
                             value={input_b_permit_place} 
                             onChange={generic_setter(set_input_b_permit_place)} 
                             required
+                            disabled={isLabOwner}
                         />
                     </div>
                 </div>
@@ -411,6 +415,7 @@ export default function LaboratoryDetailsForm(props){
                             value={input_l_head_name} 
                             onChange={generic_setter(set_input_l_head_name)} 
                             required
+                            disabled={isLabOwner}
                         />
                     </div>
                     <div className={styles.form_item}>
@@ -422,6 +427,7 @@ export default function LaboratoryDetailsForm(props){
                             value={input_l_head_email} 
                             onChange={generic_setter(set_input_l_head_email)} 
                             required
+                            disabled={isLabOwner}
                         />
                     </div>
                 </div>
@@ -435,6 +441,7 @@ export default function LaboratoryDetailsForm(props){
                             value={input_l_head_citizenship} 
                             onChange={generic_setter(set_input_l_head_citizenship)} 
                             required
+                            disabled={isLabOwner}
                         />
                     </div>
                     <div className={styles.form_item}>
@@ -447,6 +454,7 @@ export default function LaboratoryDetailsForm(props){
                             onChange={handlePhoneChange(set_input_l_head_contact)}
                             placeholder="(xxx) xxx-xxxx" 
                             required
+                            disabled={isLabOwner}
                         />
                     </div>
                 </div>
@@ -464,6 +472,7 @@ export default function LaboratoryDetailsForm(props){
                             name={"categories"}
                             multiple
                             required
+                            disabled={isLabOwner}
                             value={categories}
                             onChange={handleChangeCategories}
                             input={<OutlinedInput id="select-multiple-chip" />}
@@ -498,6 +507,7 @@ export default function LaboratoryDetailsForm(props){
                             name={"services"}
                             multiple
                             required
+                            disabled={isLabOwner}
                             value={services}
                             onChange={handleChangeServices}
                             input={<OutlinedInput id="select-multiple-chip" />}
@@ -529,6 +539,7 @@ export default function LaboratoryDetailsForm(props){
                         <label className={styles.label} htmlFor="address">Scope and nature of work of the laboratory:</label>
                         <textarea 
                             rows={3} 
+                            disabled={isLabOwner}
                             className={styles.input_textarea} 
                             type="text" 
                             name="scope" 
@@ -547,6 +558,7 @@ export default function LaboratoryDetailsForm(props){
                         </label>
                         <textarea 
                             rows={3} 
+                            disabled={isLabOwner}
                             className={styles.input_textarea} 
                             type="text" 
                             name="geographical_area" 
@@ -560,17 +572,21 @@ export default function LaboratoryDetailsForm(props){
                 <input type="text" value={user.id} name='userId' readOnly hidden required/>
                 <input type="text" value={lab.id} name='labId' readOnly hidden required/>
 
-                <hr />
-                <div className={styles.button_container}>
-                    {formState.error && <small 
-                                                        style={{textAlign:"left", width:"100%", color:"red"}}>
-                                                            {formState.error}
-                                                    </small>}
-                    <button className={styles.add_button}>
-                        <SaveIcon style={{fill:"white", scale:"0.8"}}/>
-                        Save
-                    </button>
-                </div>
+                {!isLabOwner &&  <hr /> }
+
+                {!isLabOwner && 
+                
+                    <div className={styles.button_container}>
+                        {formState.error && <small 
+                                                            style={{textAlign:"left", width:"100%", color:"red"}}>
+                                                                {formState.error}
+                                                        </small>}
+                        <button className={styles.add_button}>
+                            <SaveIcon style={{fill:"white", scale:"0.8"}}/>
+                            Save
+                        </button>
+                    </div>
+                }
 
             </form>
             <Snackbar open={openSnackBar} autoHideDuration={5000} onClose={handleCloseSnackBar} anchorOrigin={{ vertical:"bottom", horizontal:"center" }}>

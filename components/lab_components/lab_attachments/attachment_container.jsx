@@ -51,6 +51,9 @@ export default function AttachmentContainer(props){
     const [openSnackBar, setOpenSnackBar] = useState(false)
     const [snackBarSeverity, setSnackBarSeverity] = useState("success")
 
+    //This value is reversed
+    const isLabOwner = props.user.id === props.lab.addedById ? false : true
+
     const handleCloseSnackBar = (event, reason) => {
         if (reason === 'clickaway') {
           return;
@@ -97,12 +100,12 @@ export default function AttachmentContainer(props){
                 }>
                     {props.title}
                 </p>
-                <button onClick={toggle_modal} className={styles.add_button}>
+                {!isLabOwner && <button onClick={toggle_modal} className={styles.add_button}>
                     <AddIcon/>
-                </button>
+                </button>}
             </div>
             <div className={styles.attachment_table_container}>
-                <AttachmentTable records={props.records}/>
+                <AttachmentTable records={props.records} user={props.user} lab={props.lab}/>
             </div>
 
 
@@ -130,23 +133,6 @@ export default function AttachmentContainer(props){
 
                        
                         <form action={formAction} className={styles.form_style}>
-
-                            {/* <div className={styles.form_row}>
-                                <div className={styles.form_item}>
-                                    <label className={styles.label} htmlFor="title">File Type:</label>
-                                    <input 
-                                        className={styles.input} 
-                                        type="text" 
-                                        name="title"
-                                        value={title_without_s}
-                                        readOnly
-                                        disabled
-                                        required
-                                    />
-                                </div>
-                            </div> */}
-
-
                             <div className={styles.form_row}>
                                 <div className={styles.form_item}>
                                     <label className={styles.label} htmlFor="input_file">File:</label>

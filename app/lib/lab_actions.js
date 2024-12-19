@@ -138,7 +138,16 @@ export async function getLabById(labId){
             businessPermit:true,
             accreditationRecords:true,
             personnels:true,
-            trackRecords:true,
+            trackRecords:{
+                include:{
+                    sample:{
+                        include:{
+                            sampleType:true,
+                            parameter:true
+                        }
+                    }
+                }
+            },
         }
     })
 
@@ -310,6 +319,8 @@ export async function addAccreditationRecord(prevState, formData){
     const scope = formData.get("scope")
     const expiration = new Date(formData.get("expiration"))
     const labId = parseInt(formData.get("labId"))
+    const userId = parseInt(formData.get("userId"))
+    
 
     const certificate = formData.get("certificate")
 
@@ -321,7 +332,7 @@ export async function addAccreditationRecord(prevState, formData){
         //Upload certificate
         try {
 
-            const certificate_attachment = await uploadFile(certificate,"uploads/laboratory/attachment_records/","other")    
+            const certificate_attachment = await uploadFile(certificate,"uploads/laboratory/attachment_records/","other",userId)    
             const accreditation_record = await prisma.accreditationRecord.create({
                 data:{
                     scope:scope,
@@ -403,7 +414,7 @@ export async function addPersonnelRecord(prevState, formData){
     const experience = parseInt(formData.get("experience"))
     const cv = formData.get("cv")
     const license = formData.get("license")
-
+    const userId = parseInt(formData.get("userId"))
     const labId = parseInt(formData.get("labId"))
 
     try {
@@ -411,12 +422,12 @@ export async function addPersonnelRecord(prevState, formData){
         var license_file = {}
         if(cv.size > 0){
             //Upload CV
-            cv_file = await uploadFile(cv,'uploads/laboratory/personnel_cv/',"other")
+            cv_file = await uploadFile(cv,'uploads/laboratory/personnel_cv/',"other",userId)
         }
 
         if(license.size > 0){
             //Upload license
-            license_file = await uploadFile(license,'uploads/laboratory/personnel_license/',"other")
+            license_file = await uploadFile(license,'uploads/laboratory/personnel_license/',"other",userId)
         }
 
         var personnel_record = {}
@@ -956,11 +967,6 @@ export async function isLabReadyForApplication(labId){
     })
 
     if(!lab){
-        console.log()
-        console.log()
-        console.log("Error checking if the laboratory is good for applciation")
-        console.log()
-        console.log()
         notFound()
     }
 
@@ -973,7 +979,36 @@ export async function isLabReadyForApplication(labId){
 
 
     const check = parameters.every(param => param === true)
+    
+    if(check === true){
+        if(lab.status === 1){
+            await prisma.laboratory.update({
+                where:{
+                    id:parseInt(labId)
+                },
+                data:{
+                    status:2,
+                }
+            })
 
+            await prisma.$disconnect()
+            return {result: check, refresh:true}
+        }
+    } else {
+        if(lab.status === 2){
+            await prisma.laboratory.update({
+                where:{
+                    id:parseInt(labId)
+                },
+                data:{
+                    status:1,
+                }
+            })
+            await prisma.$disconnect()
+            return {result: check, refresh:true}
+        } 
+    }
 
-    return check
+    return {result: check, refresh:false}
+    
 }

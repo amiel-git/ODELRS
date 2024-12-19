@@ -34,6 +34,10 @@ export default function AccreditationRecordsTable(props){
     const [selectedRecordId, setSelectedRecordId] = useState("")
     const [showModalDelete, setShowModalDelete] = useState(false)
 
+
+    //This value is reversed
+    const isLabOwner = props.user.id === props.lab.addedById ? false : true
+
     const handleCloseSnackBar = (event, reason) => {
         if (reason === 'clickaway') {
           return;
@@ -76,7 +80,7 @@ export default function AccreditationRecordsTable(props){
 
 
 
-    const columns = [
+    const columns_w_action = [
         { id: 'accreditation_body', label: 'Accrediting Body / Address', minWidth: 250 },
         { id: 'scope', label: 'Nature / Scope of Accreditation', minWidth: 250 },
         { id: 'expiration', label: 'Expiration Date', minWidth: 250 },
@@ -84,11 +88,21 @@ export default function AccreditationRecordsTable(props){
         { id: 'id', label: 'Action', minWidth: 100, align:"center"},
       ];
 
+    const columns_wo_action = [
+      { id: 'accreditation_body', label: 'Accrediting Body / Address', minWidth: 250 },
+      { id: 'scope', label: 'Nature / Scope of Accreditation', minWidth: 250 },
+      { id: 'expiration', label: 'Expiration Date', minWidth: 250 },
+      { id: 'certificate', label: 'Certificate', minWidth: 100, align:"center"},
+    ];
+
+
+    const columns = isLabOwner ? columns_wo_action : columns_w_action
+
       return (
-        <Paper sx={{ minHeight: "450px", maxHeight:"500px", border:"1px solid #ccc", borderRadius:"5px", 
+        <Paper sx={{ minHeight: "450px", border:"1px solid #ccc", borderRadius:"5px", 
             boxShadow:"-7px -7px 16px 0 #FFFFFF, 7px 7px 10px -4px rgba(116,150,179,0.27);" 
         }}>
-          <TableContainer sx={{height:"i"}}>
+          <TableContainer>
             <Table stickyHeader aria-label="sticky table" sx={{overflow:"auto"}}>
               <TableHead>
                 <TableRow>

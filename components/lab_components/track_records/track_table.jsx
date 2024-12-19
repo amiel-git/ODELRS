@@ -34,6 +34,10 @@ export default function TrackRecordsTable(props){
     const [selectedRecordId, setSelectedRecordId] = useState("")
     const [showModalDelete, setShowModalDelete] = useState(false)
 
+    //This value is reversed
+    const isLabOwner = props.user.id === props.lab.addedById ? false : true
+
+
     const handleCloseSnackBar = (event, reason) => {
         if (reason === 'clickaway') {
           return;
@@ -75,7 +79,7 @@ export default function TrackRecordsTable(props){
 
 
 
-    const columns = [
+    const columns_w_action = [
         { id: 'sampleType', label: 'Sample Type', minWidth: 250 },
         { id: 'parameter', label: 'Parameter', minWidth: 250 },
         { id: 'sampleMethod', label: 'Analytical Method', minWidth: 250 },
@@ -85,11 +89,23 @@ export default function TrackRecordsTable(props){
         { id: 'id', label: 'Action', minWidth: 50, align:"center"},
       ];
 
+    const columns_wo_action = [
+        { id: 'sampleType', label: 'Sample Type', minWidth: 250 },
+        { id: 'parameter', label: 'Parameter', minWidth: 250 },
+        { id: 'sampleMethod', label: 'Analytical Method', minWidth: 250 },
+        { id: 'sampleReference', label: 'Reference', minWidth: 250 },
+        { id: 'num_of_samples', label: '# of Samples Analyzed', minWidth: 250 },
+        { id: 'date_coverage', label: 'Date Coverage', minWidth: 250},
+      ];
+
+
+    const columns = isLabOwner ? columns_wo_action : columns_w_action
+
       return (
-        <Paper sx={{ minHeight: "450px", maxHeight:"500px", border:"1px solid #ccc", borderRadius:"5px", 
+        <Paper sx={{ minHeight: "450px", border:"1px solid #ccc", borderRadius:"5px", 
             boxShadow:"-7px -7px 16px 0 #FFFFFF, 7px 7px 10px -4px rgba(116,150,179,0.27);" 
         }}>
-          <TableContainer sx={{height:"i"}}>
+          <TableContainer>
             <Table stickyHeader aria-label="sticky table" sx={{overflow:"auto"}}>
               <TableHead>
                 <TableRow>

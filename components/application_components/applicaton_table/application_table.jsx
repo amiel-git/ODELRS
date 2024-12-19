@@ -40,10 +40,10 @@ export default function ApplicationTable(props){
       ];
 
       return (
-        <Paper sx={{ minHeight: "400px", maxHeight:"550px", border:"1px solid #ccc", borderRadius:"5px", 
+        <Paper sx={{ minHeight: "400px", border:"1px solid #ccc", borderRadius:"5px", 
             boxShadow:"-7px -7px 16px 0 #FFFFFF, 7px 7px 10px -4px rgba(116,150,179,0.27);" 
         }}>
-          <TableContainer sx={{height:"i"}}>
+          <TableContainer>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>

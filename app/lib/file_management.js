@@ -8,7 +8,7 @@ import { getAllLabAttachments } from './lab_actions';
 
 const prisma = new PrismaClient()
 
-export default async function uploadFile(file, path, file_type){
+export default async function uploadFile(file, path, file_type, userId){
     const extension = file.name.split(".").pop()
     const fileName = crypto.randomUUID() + "." + extension
     //Save image
@@ -28,8 +28,13 @@ export default async function uploadFile(file, path, file_type){
         data:{
             file_label:file.name,
             file_path:`${path}${fileName}`,
-            url_path:`${path.replace(/^uploads\/laboratory/, 'api/files/laboratory')}${fileName}`,
-            file_type: file_type
+            url_path:`${path.replace(/^uploads\/([^/]+)/, 'api/files/$1')}${fileName}`,
+            file_type: file_type,
+            addedBy:{
+                connect:{
+                    id:userId
+                }
+            }
         }
     })
 
@@ -39,6 +44,39 @@ export default async function uploadFile(file, path, file_type){
 }
 
 
+
+export async function uploadApplicationFile(prevState, formData){
+
+    try {
+        const file = formData.get("input_file")
+        const userId = parseInt(formData.get("userId"))
+        const applicationId = parseInt(formData.get("applicationId"))
+        const fileType = formData.get("fileType")
+    
+        if(file.size > 0){
+            const new_attachment = await uploadFile(file,"uploads/application/other/",fileType,userId)
+            await prisma.attachment.update({
+                where:{
+                    id:new_attachment.id
+                },
+                data:{
+                    application:{
+                        connect:{
+                            id:applicationId
+                        }
+                    }
+                }
+            })
+        }
+        
+        await prisma.$disconnect()
+        revalidatePath("application/")
+        return {error:null, success:true}
+    } catch (error) {
+        return {error:"Unable to upload file."}
+    }
+
+}
 
 
 
@@ -62,7 +100,7 @@ export async function UploadLabAttachment(prevState, formData){
     ]
 
     try {
-        const uploaded_file = await uploadFile(file,file_path,fileType)
+        const uploaded_file = await uploadFile(file,file_path,fileType,userId)
         
         const new_attachment_record = await prisma.laboratoryAttachments.create({
             data:{
