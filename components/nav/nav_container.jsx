@@ -25,14 +25,6 @@ export default async function NavMenu(props) {
         }
     }
 
-    name = result.user.first_name + " " + result.user.last_name
-        region = result.user.region
-        region_wo_all = result.user.region
-        if(region === "central_office"){
-            region = "all"
-            region_wo_all = "r1"
-        }
-
     const profile_picture = result.user.profile_picture === null ? "/images/default_profile.png" : result.user.profile_picture //"/images/default_profile.png"
     
     return (
