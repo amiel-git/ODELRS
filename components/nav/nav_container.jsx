@@ -13,25 +13,25 @@ export default async function NavMenu(props) {
     const result = await verifyAuth()
     const current_year = new Date().getFullYear()
     
-    // if(result.user === null){
-    //     redirect("/login")
-    // } else {
-    //     name = result.user.first_name + " " + result.user.last_name
-    //     region = result.user.region
-    //     region_wo_all = result.user.region
-    //     if(region === "central_office"){
-    //         region = "all"
-    //         region_wo_all = "r1"
-    //     }
-    // }
+    if(result.user === null){
+        redirect("/login")
+    } else {
+        name = result.user.first_name + " " + result.user.last_name
+        region = result.user.region
+        region_wo_all = result.user.region
+        if(region === "central_office"){
+            region = "all"
+            region_wo_all = "r1"
+        }
+    }
 
     name = result.user.first_name + " " + result.user.last_name
-    region = result.user.region
-    region_wo_all = result.user.region
-    if(region === "central_office"){
-        region = "all"
-        region_wo_all = "r1"
-    }
+        region = result.user.region
+        region_wo_all = result.user.region
+        if(region === "central_office"){
+            region = "all"
+            region_wo_all = "r1"
+        }
 
     const profile_picture = result.user.profile_picture === null ? "/images/default_profile.png" : result.user.profile_picture //"/images/default_profile.png"
     
