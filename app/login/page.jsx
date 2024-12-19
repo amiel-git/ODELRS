@@ -41,7 +41,7 @@ export default function LoginPage() {
                         </div>
                     </form>
                     <div className={styles.signup_container}>
-                        <small>Don't have an account yet? <Link href={"/signup"} style={{fontWeight:"700"}}>SIGN UP</Link></small>
+                        <small>{"Don' have an account yet?"} <Link href={"/signup"} style={{fontWeight:"700"}}>SIGN UP</Link></small>
                     </div>
                 </div>
             </div>
