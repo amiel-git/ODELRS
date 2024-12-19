@@ -13,9 +13,9 @@ export default async function ApplicationPage(){
 
     const result = await verifyAuth()
     
-    // if(result.user === null){
-    //     redirect("/login")
-    // }
+    if(result.user === null){
+        redirect("/login")
+    }
 
     if(result.user.isDetailsComplete !== true){
         redirect(`/users/${result.user.id}`)
