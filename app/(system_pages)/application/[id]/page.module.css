@@ -13,3 +13,24 @@
     margin-top:20px;
     margin-bottom:20px;
 }
+
+@media (prefers-color-scheme: dark) {
+
+.page{
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+    background-color: #f5f9fc;
+}
+
+.table_container{
+    width:95%;
+    align-self:center;
+    overflow:auto;
+    height:600px;
+    margin-top:20px;
+    margin-bottom:20px;
+}
+
+
+}

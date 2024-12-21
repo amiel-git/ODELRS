@@ -112,6 +112,7 @@ model Personnel {
   license Attachment? @relation("PersonnelLicense", fields: [licenseId], references: [id], onDelete: Cascade)
   laboratoryId Int
   laboratory Laboratory @relation(fields: [laboratoryId], references: [id], onDelete: Cascade)
+  checklists Checklist[]
 }
 
 
@@ -387,6 +388,8 @@ enum ChecklistType {
 
 model Checklist {
   id Int @id @default(autoincrement())
+  personnelInterviewedId Int?
+  personnelInterviewed Personnel? @relation(fields: [personnelInterviewedId], references: [id])
   onsiteAssessmentId Int
   onsiteAssessment OnSiteAssessment @relation(fields: [onsiteAssessmentId], references: [id], onDelete: Cascade)
   data Json?

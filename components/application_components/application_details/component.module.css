@@ -83,19 +83,23 @@
 }
 
 .download_button {
-    height: 25px;
+    height: 28px;
     font-size: 13px;
     padding: 3px 10px;
     border: none;
     border-radius: 5px;
-    background: deepskyblue;
+    background: cadetblue;
     color: white;
     cursor: pointer;
     transition: background-color 0.3s ease-in-out, scale 0.3s ease-in-out, color 0.3s ease-in-out;
+    display: flex;
+    flex-direction: row;
+    gap:5px;
+    align-items: center;
 }
 
 .download_button:hover {
-    background-color: skyblue;
+    background-color: slategray;
     scale: 1.05;
     color: white
 }
@@ -148,6 +152,35 @@
     padding-right:10px;
     border-radius:5px;
     cursor:text;
+}
+
+@media (prefers-color-scheme: dark) {
+    .input {
+        border:1px solid lightgray;
+        height:25px;
+        width:100%;
+        padding-left:10px;
+        padding-right:10px;
+        border-radius:5px;
+        cursor:text;
+        background: white;
+        color: black;
+    }
+    
+    .input_textarea {
+        border:1px solid lightgray;
+        width:inherit;
+        padding-left:10px;
+        padding-right:10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border-radius:5px;
+        cursor:text;
+        resize: none;
+        font-family: Arial, Helvetica, sans-serif;
+        background: white;
+        color: black;
+    }
 }
 
 .input {
@@ -257,6 +290,18 @@
     gap: 5px;
     justify-content: end;
     align-items: end;
+}
+
+.button_container_right {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+    align-items: end;
+    padding-right: 10px;
+    margin-top:5px;
+    margin-bottom:5px;
 }
 
 .row_button_container {

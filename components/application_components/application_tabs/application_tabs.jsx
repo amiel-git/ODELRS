@@ -10,13 +10,16 @@ import styles from './component.module.css'
 import FeedIcon from '@mui/icons-material/Feed';
 import FolderIcon from '@mui/icons-material/Folder';
 import Diversity3Icon from '@mui/icons-material/Diversity3';
-import MessageIcon from '@mui/icons-material/Message';
+import TextsmsIcon from '@mui/icons-material/Textsms';
 import ArticleIcon from '@mui/icons-material/Article';
+import DomainIcon from '@mui/icons-material/Domain';
+
 
 import ApplicationDetails from '@/components/application_components/application_details/application_details';
 import AssessmentTeamPage from '@/components/application_components/assessment_team/assessment_team';
 import ApplicationFiles from '@/components/application_components/application_files/application_files';
 import Remarks from '@/components/application_components/remarks/remarks';
+import OnsiteAssessment from '@/components/application_components/onsite_assessment/onsite_assessment';
 
 //FORMS
 import FirstLevelEvaluationForm from '../../application_forms/first_level_evaluation_form';
@@ -64,6 +67,7 @@ export default function ApplicationTabs(props) {
   const applicationFiles = props.applicationFiles
   const lab = props.lab
   const remarks = props.remarks
+  const checklists = props.checklists
 
   const [value, setValue] = React.useState(1);
 
@@ -132,12 +136,24 @@ export default function ApplicationTabs(props) {
         />
         <Tab 
             label={
-                      <div className={styles.tab_item}>
-                        <MessageIcon className={styles.tab_item_icon}/>
-                        Remarks
+                      <div  className={(props.application.status === 8) ? styles.breathing_text : styles.tab_item}>
+                        <DomainIcon className={styles.tab_item_icon}/>
+                        Onsite Assessment
                     </div>
                     }
                     {...a11yProps(3)}
+            sx={{
+                alignItems:"start"
+            }}
+        />
+        <Tab 
+            label={
+                      <div className={styles.tab_item}>
+                        <TextsmsIcon className={styles.tab_item_icon}/>
+                        Remarks
+                    </div>
+                    }
+                    {...a11yProps(4)}
             sx={{
                 alignItems:"start"
             }}
@@ -149,7 +165,7 @@ export default function ApplicationTabs(props) {
                         Applicaton Files
                     </div>
                     }
-                    {...a11yProps(4)}
+                    {...a11yProps(5)}
             sx={{
                 alignItems:"start"
             }}
@@ -174,7 +190,7 @@ export default function ApplicationTabs(props) {
                         First Level Evaluation
                     </div>
                     }
-                    {...a11yProps(6)}
+                    {...a11yProps(7)}
             sx={{
                 alignItems:"start"
             }}
@@ -204,6 +220,15 @@ export default function ApplicationTabs(props) {
       </TabPanel>
 
       <TabPanel value={value} index={3}>
+         <OnsiteAssessment
+          application={application} 
+          user={user}
+          lab={lab}
+          checklists={checklists}
+         />
+      </TabPanel>
+
+      <TabPanel value={value} index={4}>
           <Remarks
             application={application} 
             user={user}
@@ -211,7 +236,7 @@ export default function ApplicationTabs(props) {
           />
       </TabPanel>
 
-      <TabPanel value={value} index={4}>
+      <TabPanel value={value} index={5}>
          <ApplicationFiles
           application={application} 
           user={user}
@@ -219,7 +244,7 @@ export default function ApplicationTabs(props) {
          />
       </TabPanel>
 
-      <TabPanel value={value} index={6}>
+      <TabPanel value={value} index={7}>
          <FirstLevelEvaluationForm 
             application={application} 
             user={user} 

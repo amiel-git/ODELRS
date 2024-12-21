@@ -378,7 +378,35 @@ export async function getApplicationById(applicationId, userRole){
             },  
             onsite_assessment: {
               include: {
-                assessmentTeam: true,
+                assessmentTeam: {
+                    include:{
+                        liat_chair:{
+                            include:{
+                                userDetails:true
+                            }
+                        },
+                        liat_member_co:{
+                            include:{
+                                userDetails:true
+                            }
+                        },
+                        liat_member_ro:{
+                            include:{
+                                userDetails:true
+                            }
+                        },
+                        external_assessor_mgmt:{
+                            include:{
+                                userDetails:true
+                            }
+                        },
+                        external_assessor_pl:{
+                            include:{
+                                userDetails:true
+                            }
+                        }
+                    }
+                },
               },
             },
             scope_of_recognition:{
@@ -1630,6 +1658,73 @@ export async function getAllApplicationRemark(applicationId){
         return output
     } catch (error) {
         return []
+    }
+}
+
+export async function getApplicationChecklists(applicationId){
+
+    try {
+        const onsiteAssessment = await prisma.onSiteAssessment.findFirst({
+            where:{
+                applicationId:parseInt(applicationId)
+            }
+        })
+    
+        const checklists = await prisma.checklist.findMany({
+            where:{
+                onsiteAssessmentId:onsiteAssessment.id
+            },
+            include:{
+                personnelInterviewed:true
+            }
+        })
+    
+        const output = {}
+    
+        for(var item of checklists){
+            output[item.type] = item
+        }
+        
+        await prisma.$disconnect()
+        return output
+    } catch (error) {
+        return {}   
+    }
+
+}
+
+export async function assignPersonnelInterviewed(prevState, formData){
+
+    try {
+        const personnelId = parseInt(formData.get("personnel"))
+        const onsiteId = parseInt(formData.get("onsiteId"))
+        const part = formData.get("part")
+    
+        const checklist = await prisma.checklist.findFirst({
+            where:{
+                type:part,
+                onsiteAssessmentId:onsiteId
+            }
+        })
+    
+    
+        await prisma.checklist.update({
+            where:{
+                id:checklist.id
+            },
+            data:{
+                personnelInterviewed:{
+                    connect:{
+                        id:personnelId
+                    }
+                }
+            }
+        })
+        await prisma.$disconnect()
+        revalidatePath("application/")
+        return {error:null, success:true}
+    } catch (error) {
+        return {error:"Unable to set personnel interviewed",success:true}
     }
 
 }

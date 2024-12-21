@@ -10,6 +10,7 @@ import {    useState,
             useEffect,
             useRef
  } from 'react';
+ import DownloadIcon from '@mui/icons-material/Download';
 
 
  import { updateCustodian } from '@/app/lib/application_actions';
@@ -93,10 +94,9 @@ export default function ApplicationDetails(props){
             {/*********************************** Main application header row **************************/}
                 <ApplicationHeader application={application} user={user}/>
             {/* ------------------------------------------------------------------------- */}
-            <div className={styles.button_container}>
-                <button onClick={generatePDF} className={styles.download_button}>Download Application Form</button>
+            <div className={styles.button_container_right}>
+                <button onClick={generatePDF} className={styles.download_button}><DownloadIcon style={{scale:0.7}}/> Download Application Form</button>
             </div>
-            
             <div className={styles.details_container_row_borderless}>
                 <div className={styles.details_container_column}>
                     <div className={styles.item_container}>

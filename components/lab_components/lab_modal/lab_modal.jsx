@@ -65,8 +65,8 @@ export default function LabModal(props) {
 
                     <div className={styles.form_container}>
                         <div className={styles.form_header}>
-                            <h2>Add laboratory</h2>
-                            <p>Fill out the form to add a new laboratory record.</p>
+                            <h2 className={styles.header_text}>Add laboratory</h2>
+                            <p className={styles.header_text}>Fill out the form to add a new laboratory record.</p>
                             <hr />
                         </div>
                         <LabForm toggle_function={toggle_modal} user={props.user}/>

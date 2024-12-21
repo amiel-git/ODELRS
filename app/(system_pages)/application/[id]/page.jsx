@@ -10,7 +10,8 @@ import { getApplicationById,
          getAllTeamMemberChoices,
          getTeamMembersForTable,
          getApplicationFilesForTable,
-         getAllApplicationRemark
+         getAllApplicationRemark,
+         getApplicationChecklists
         } from '@/app/lib/application_actions';
 import getAllSampleTypes from '@/app/lib/lab_sample_actions';
 import ApplicationTabs from '@/components/application_components/application_tabs/application_tabs';
@@ -41,6 +42,7 @@ export default async function PerApplicationPage({params}){
     const teamMemberForTable = await getTeamMembersForTable(parameters.id)
     const applicationFiles = await getApplicationFilesForTable(parameters.id)
     const remarks = await getAllApplicationRemark(parameters.id)
+    const checklists = await getApplicationChecklists(parameters.id)
 
     return (
         <div className={styles.page}>
@@ -60,6 +62,7 @@ export default async function PerApplicationPage({params}){
                 teamMemberForTable={teamMemberForTable}
                 applicationFiles={applicationFiles}
                 remarks={remarks}
+                checklists={checklists}
             />
         </div>
     )
