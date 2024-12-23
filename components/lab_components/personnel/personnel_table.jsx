@@ -88,7 +88,7 @@ export default function PersonnelTable(props){
         { id: 'position', label: 'Job Title', minWidth: 280 },
         { 
           id: 'yearsOfExperience',
-          label: 'Years of Experience',
+          label: 'Years of Experience in Environmental Analysis/Management',
           minWidth: 200,
           align:"center"
         },
@@ -122,7 +122,7 @@ export default function PersonnelTable(props){
         { id: 'position', label: 'Job Title', minWidth: 280 },
         { 
           id: 'yearsOfExperience',
-          label: 'Years of Experience',
+          label: 'Years of Experience in Environmental Analysis/Management',
           minWidth: 200,
           align:"center"
         },

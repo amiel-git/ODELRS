@@ -211,6 +211,7 @@ model Laboratory {
   establishmentId Int
   establishment Establishment @relation(fields: [establishmentId], references: [id], onDelete: Cascade)
   certificationDate DateTime?
+  sector String?
   certificationExpiration DateTime?
   labHeadName String?
   labHeadEmail String?
@@ -227,6 +228,8 @@ model Laboratory {
   businessPermitIssueDate DateTime?
   businessPermitExpiration DateTime?
   businessPermitPlaceOfIssuance String?
+  dti_registration String?
+  sec_registration String?
   categoryOfClient Json?
   ServicesOffered Json?
   scopeOfWork String?

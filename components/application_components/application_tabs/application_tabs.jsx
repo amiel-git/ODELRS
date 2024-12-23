@@ -225,6 +225,7 @@ export default function ApplicationTabs(props) {
           user={user}
           lab={lab}
           checklists={checklists}
+          personnelRecords={props.personnelRecords}
          />
       </TabPanel>
 

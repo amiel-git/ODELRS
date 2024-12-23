@@ -173,6 +173,9 @@ export async function updateLaboratoryDetails(prevState, formData){
         const address = formData.get("address")
         const lat = parseFloat(formData.get("lat"))
         const lon = parseFloat(formData.get("lon"))
+        const sector = formData.get("sector")
+        const dti_registration = formData.get("dti_registration")
+        const sec_registration = formData.get("sec_registration")
         const date_established = new Date(formData.get("date_established"))
         const mission_statement = formData.get("mission_statement")
         const contact_number = formData.get("contact_number")
@@ -205,6 +208,9 @@ export async function updateLaboratoryDetails(prevState, formData){
             lat,
             lon,    
             date_established,
+            sector,
+            dti_registration,
+            sec_registration,
             mission_statement,
             contact_number,
             fax_number,
@@ -241,6 +247,9 @@ export async function updateLaboratoryDetails(prevState, formData){
                 labHeadEmail:l_head_email,
                 labHeadContact:l_head_contact,
                 labHeadCitizenShip:l_head_citizenship,
+                sector:sector,
+                dti_registration:dti_registration,
+                sec_registration:sec_registration,
                 contactNumber:contact_number,
                 faxNumber:fax_number,
                 tin:tin,

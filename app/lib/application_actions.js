@@ -1728,3 +1728,45 @@ export async function assignPersonnelInterviewed(prevState, formData){
     }
 
 }
+
+
+
+export async function realTimeFormFunction(prevState, formData){
+
+
+    try {
+        console.log(formData)
+        const onsiteId = parseInt(formData.get("onsiteId"))
+        const part = formData.get("part")
+        const identifier = formData.get("identifier") 
+        const form_value = formData.get("form_value") 
+    
+        const curr_checklist = await prisma.checklist.findFirst({
+            where:{
+                onsiteAssessmentId:onsiteId,
+                type:part
+            }
+        })
+    
+        const curr_checklist_data = curr_checklist.data === null ? {} : curr_checklist.data
+    
+    
+        curr_checklist_data[identifier] = form_value
+    
+        const updated = await prisma.checklist.update({
+            where:{
+                id:curr_checklist.id
+            },
+            data:{
+                data:curr_checklist_data
+            }
+        })
+    
+        await prisma.$disconnect()
+        return {error:null, success:true, data:updated.data}
+    } catch (error) {
+        console.log("unable to update checklist data")
+        return {error:"Unable to update checklist data",success:true}
+    }
+
+}

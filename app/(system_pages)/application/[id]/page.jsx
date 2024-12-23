@@ -16,7 +16,7 @@ import { getApplicationById,
 import getAllSampleTypes from '@/app/lib/lab_sample_actions';
 import ApplicationTabs from '@/components/application_components/application_tabs/application_tabs';
 import { getAllUsersForCustodian } from '@/app/lib/user_actions';
-import { getLabById } from '@/app/lib/lab_actions';
+import { getLabById,getPersonnelRecords } from '@/app/lib/lab_actions';
 
 export default async function PerApplicationPage({params}){
     
@@ -44,6 +44,9 @@ export default async function PerApplicationPage({params}){
     const remarks = await getAllApplicationRemark(parameters.id)
     const checklists = await getApplicationChecklists(parameters.id)
 
+    const personnelRecords = await getPersonnelRecords(application.laboratory.id)
+
+
     return (
         <div className={styles.page}>
             <PageHeader title={`ELR Application - ${capitalize(application.laboratory.laboratoryName)}`} 
@@ -63,6 +66,7 @@ export default async function PerApplicationPage({params}){
                 applicationFiles={applicationFiles}
                 remarks={remarks}
                 checklists={checklists}
+                personnelRecords={personnelRecords}
             />
         </div>
     )

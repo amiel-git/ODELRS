@@ -112,6 +112,7 @@ export default function LaboratoryDetailsForm(props){
     const [input_date_established, set_input_date_established] = useState(convertDateInputToCompatibleFormat(nullChecker(lab.dateEstablished)))
     const [input_contact, set_input_contact] = useState(nullChecker(lab.contactNumber))
     const [input_fax, set_input_fax] = useState(nullChecker(lab.faxNumber))
+    const [input_sector, set_input_sector] = useState(nullChecker(lab.sector))
 
     const [input_mission_statement, set_input_mission_statement] = useState(nullChecker(lab.missionStatement))
     const [input_tin, set_input_tin] = useState(nullChecker(lab.tin))
@@ -119,6 +120,8 @@ export default function LaboratoryDetailsForm(props){
     const [input_b_permit_issue_date, set_input_b_permit_issue_date] = useState(convertDateInputToCompatibleFormat(nullChecker(lab.businessPermitIssueDate)))
     const [input_b_permit_expiry_date, set_input_b_permit_expiry_date] = useState(convertDateInputToCompatibleFormat(nullChecker(lab.businessPermitExpiration)))
     const [input_b_permit_place, set_input_b_permit_place] = useState(nullChecker(lab.businessPermitPlaceOfIssuance))
+    const [input_sec_registration, set_input_sec_registration] = useState(nullChecker(lab.sec_registration))
+    const [input_dti_registration, set_input_dti_registration] = useState(nullChecker(lab.dti_registration))
 
     const [input_l_head_name, set_input_l_head_name] = useState(nullChecker(lab.labHeadName))
     const [input_l_head_email, set_input_l_head_email] = useState(nullChecker(lab.labHeadEmail))
@@ -272,7 +275,12 @@ export default function LaboratoryDetailsForm(props){
                         />
                     </div>
                     <div className={styles.form_item}>
-                        {/* blank item */}
+                        <label className={styles.label} htmlFor="sector">Sector</label>
+                        <select name='sector' className={styles.input} disabled={isLabOwner} value={input_sector} onChange={generic_setter(set_input_sector)}required>
+                            <option value="">---</option>
+                            <option value="private">Private</option>
+                            <option value="government">Government</option>
+                        </select>
                     </div>
                 </div>
 
@@ -394,6 +402,33 @@ export default function LaboratoryDetailsForm(props){
                             name="b_permit_place" 
                             value={input_b_permit_place} 
                             onChange={generic_setter(set_input_b_permit_place)} 
+                            required
+                            disabled={isLabOwner}
+                        />
+                    </div>
+                </div>
+
+                <div className={styles.form_row}>
+                    <div className={styles.form_item}>
+                        <label className={styles.label} htmlFor="b_permit_issue_date">SEC Registration #:</label>
+                        <input 
+                            className={styles.input} 
+                            type="text" 
+                            name="sec_registration"
+                            value={input_sec_registration} 
+                            onChange={generic_setter(set_input_sec_registration)}
+                            required
+                            disabled={isLabOwner}
+                        />
+                    </div>
+                    <div className={styles.form_item}>
+                        <label className={styles.label} htmlFor="b_permit_expiry_date">DTI Registration #:</label>
+                        <input 
+                            className={styles.input} 
+                            type="text" 
+                            name="dti_registration"
+                            value={input_dti_registration} 
+                            onChange={generic_setter(set_input_dti_registration)}
                             required
                             disabled={isLabOwner}
                         />

@@ -99,6 +99,7 @@ export default function OnsiteAssessment(props){
                 lab={lab}
                 part="part1"
                 checklists={checklists}
+                personnelRecords={props.personnelRecords}
             />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
