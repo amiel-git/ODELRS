@@ -135,3 +135,18 @@ export function isEMBEmployee(role){
         return false
     }
 }
+
+
+export function convertArrayToString(array){
+    try {
+        var output = []
+        var counter = 1
+        for(var item of array){
+            output.push(capitalize(`• ${item.replaceAll("_"," ")}`))
+            counter += 1;
+        }
+        return output.join("\n")
+    } catch (error) {
+        return []
+    }
+}

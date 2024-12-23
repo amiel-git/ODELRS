@@ -1492,7 +1492,8 @@ export async function getApplicationFilesForTable(applicationId){
                         file_label:file.file_label,
                         url_path:file.url_path,
                         date_added:convertToStandardDate(file.dateAdded),
-                        addedByEmail:file.addedBy.email
+                        addedByEmail:file.addedBy.email,
+                        isEMB:isEMBEmployee(file.addedBy.role)
                     })
                 }
             }
@@ -1735,7 +1736,6 @@ export async function realTimeFormFunction(prevState, formData){
 
 
     try {
-        console.log(formData)
         const onsiteId = parseInt(formData.get("onsiteId"))
         const part = formData.get("part")
         const identifier = formData.get("identifier") 
@@ -1769,4 +1769,101 @@ export async function realTimeFormFunction(prevState, formData){
         return {error:"Unable to update checklist data",success:true}
     }
 
+}
+
+
+export async function addOnsiteTrackRecord(prevState, formData){
+
+    try {
+        
+        const onsiteId = parseInt(formData.get("onsiteId"))
+        const part = formData.get("part")
+
+        const curr_checklist = await prisma.checklist.findFirst({
+            where:{
+                onsiteAssessmentId:onsiteId,
+                type:part
+            }
+        })
+    
+        var curr_checklist_data = curr_checklist.data === null ? {} : curr_checklist.data
+
+        const track_records = curr_checklist_data?.track_records ?? []
+
+        const sample_data = JSON.parse(formData.get("sample"))
+
+        track_records.push({
+            sampleType:capitalize(sample_data.sampleType),
+            parameter:capitalize(sample_data.parameter),
+            sampleMethod:capitalize(sample_data?.sampleMethod ?? ""),
+            sampleReference:capitalize(sample_data?.sampleReference ?? ""),
+            total_samples:sample_data?.num_of_samples ?? "",
+            date_coverage:sample_data?.date_coverage ?? "",
+            personnel: capitalize(formData.get("personnel")),
+            no_samples: formData.get("no_samples"),
+            remarks: capitalize(formData.get("remarks")),
+            denr_approved: formData.get("denr_approved")
+        })
+
+
+        curr_checklist_data.track_records = track_records
+
+
+        await prisma.checklist.update({
+            where:{
+                id:curr_checklist.id
+            },
+            data:{
+                data:curr_checklist_data
+            }
+        })
+
+
+        await prisma.$disconnect()
+        revalidatePath("application/")
+        return {error:null, success:true, data:curr_checklist_data}
+    } catch (error) {
+        return {error:"Unable to add track record.",success:true}
+    }
+}
+
+
+export async function deleteOnsiteTrackRecord(prevState, formData){
+
+    try {
+
+        const onsiteId = parseInt(formData.get("onsiteId"))
+        const part = formData.get("part")
+        const indexToRemove = parseInt(formData.get("recordIdx"))
+
+
+        const curr_checklist = await prisma.checklist.findFirst({
+            where:{
+                onsiteAssessmentId:onsiteId,
+                type:part
+            }
+        })
+    
+        var curr_checklist_data = curr_checklist.data === null ? {} : curr_checklist.data
+
+        var track_records = curr_checklist_data?.track_records ?? []
+        track_records = track_records.filter((_, index) => index !== indexToRemove);
+
+        curr_checklist_data.track_records = track_records
+
+        await prisma.checklist.update({
+            where:{
+                id:curr_checklist.id
+            },
+            data:{
+                data:curr_checklist_data
+            }
+        })
+
+        await prisma.$disconnect()
+        revalidatePath("application/")
+        return {error:null, success:true, data:curr_checklist_data}
+    } catch (error) {
+        return {error:"Unable to delete track record.",success:true}
+    }
 }

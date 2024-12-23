@@ -226,6 +226,9 @@ export default function ApplicationTabs(props) {
           lab={lab}
           checklists={checklists}
           personnelRecords={props.personnelRecords}
+          trackRecords={props.trackRecords}
+          applicationFiles={props.applicationFiles}
+          accreditationRecords={props.accreditationRecords}
          />
       </TabPanel>
 

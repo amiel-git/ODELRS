@@ -16,7 +16,11 @@ import { getApplicationById,
 import getAllSampleTypes from '@/app/lib/lab_sample_actions';
 import ApplicationTabs from '@/components/application_components/application_tabs/application_tabs';
 import { getAllUsersForCustodian } from '@/app/lib/user_actions';
-import { getLabById,getPersonnelRecords } from '@/app/lib/lab_actions';
+import {    getLabById,
+            getPersonnelRecords,
+            getAllTrackRecords,
+            getLaboratoryAccreditationRecords
+        } from '@/app/lib/lab_actions';
 
 export default async function PerApplicationPage({params}){
     
@@ -45,6 +49,8 @@ export default async function PerApplicationPage({params}){
     const checklists = await getApplicationChecklists(parameters.id)
 
     const personnelRecords = await getPersonnelRecords(application.laboratory.id)
+    const trackRecords = await getAllTrackRecords(application.laboratory.id)
+    const accreditationRecords = await getLaboratoryAccreditationRecords(application.laboratory.id)
 
 
     return (
@@ -67,6 +73,8 @@ export default async function PerApplicationPage({params}){
                 remarks={remarks}
                 checklists={checklists}
                 personnelRecords={personnelRecords}
+                trackRecords={trackRecords}
+                accreditationRecords={accreditationRecords}
             />
         </div>
     )
