@@ -49,6 +49,22 @@
     justify-content: space-between;
 }
 
+.warning_container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 40px;
+    background: orange;
+    border-radius: 10px;
+    align-items: left;
+    padding: 5px;
+    color:white;
+    justify-content: space-between;
+    font-size: 15px;
+    padding:15px;
+    gap:10px;
+}
+
 .details_container_column {
     display: flex;
     flex-direction: column;

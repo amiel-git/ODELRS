@@ -60,6 +60,62 @@ export default function Part3(props){
     const realtimeForm3 = useRef()
     const realtimeForm4 = useRef()
     const realtimeForm5 = useRef()
+    const realtimeForm6 = useRef()
+    const realtimeForm7 = useRef()
+    const realtimeForm8 = useRef()
+    const realtimeForm9 = useRef()
+    const realtimeForm10 = useRef()
+    const realtimeForm11 = useRef()
+    const realtimeForm12 = useRef()
+    const realtimeForm13 = useRef()
+    const realtimeForm14 = useRef()
+    const realtimeForm15 = useRef()
+    const realtimeForm16 = useRef()
+    const realtimeForm17 = useRef()
+    const realtimeForm18 = useRef()
+    const realtimeForm19 = useRef()
+    const realtimeForm20 = useRef()
+    const realtimeForm21 = useRef()
+    const realtimeForm22 = useRef()
+    const realtimeForm23 = useRef()
+    const realtimeForm24 = useRef()
+    const realtimeForm25 = useRef()
+    const realtimeForm26 = useRef()
+    const realtimeForm27 = useRef()
+    const realtimeForm28 = useRef();
+    const realtimeForm29 = useRef();
+    const realtimeForm30 = useRef();
+
+    const [item1, set_item1] = useState(checklist_data?.item1 ?? "");
+    const [item2, set_item2] = useState(checklist_data?.item2 ?? "");
+    const [item3, set_item3] = useState(checklist_data?.item3 ?? "");
+    const [item4, set_item4] = useState(checklist_data?.item4 ?? "");
+    const [item5, set_item5] = useState(checklist_data?.item5 ?? "");
+    const [item6, set_item6] = useState(checklist_data?.item6 ?? "");
+    const [item7, set_item7] = useState(checklist_data?.item7 ?? "");
+    const [item8, set_item8] = useState(checklist_data?.item8 ?? "");
+    const [item9, set_item9] = useState(checklist_data?.item9 ?? "");
+    const [item10, set_item10] = useState(checklist_data?.item10 ?? "");
+    const [item11, set_item11] = useState(checklist_data?.item11 ?? "");
+    const [item12, set_item12] = useState(checklist_data?.item12 ?? "");
+    const [item13, set_item13] = useState(checklist_data?.item13 ?? "");
+    const [item14, set_item14] = useState(checklist_data?.item14 ?? "");
+    const [item15, set_item15] = useState(checklist_data?.item15 ?? "");
+    const [item16, set_item16] = useState(checklist_data?.item16 ?? "");
+    const [item17, set_item17] = useState(checklist_data?.item17 ?? "");
+    const [item18, set_item18] = useState(checklist_data?.item18 ?? "");
+    const [item19, set_item19] = useState(checklist_data?.item19 ?? "");
+    const [item20, set_item20] = useState(checklist_data?.item20 ?? "");
+    const [item21, set_item21] = useState(checklist_data?.item21 ?? "");
+    const [item22, set_item22] = useState(checklist_data?.item22 ?? "");
+    const [item23, set_item23] = useState(checklist_data?.item23 ?? "");
+    const [item24, set_item24] = useState(checklist_data?.item24 ?? "");
+    const [item25, set_item25] = useState(checklist_data?.item25 ?? "");
+    const [item26, set_item26] = useState(checklist_data?.item26 ?? "");
+    const [item27, set_item27] = useState(checklist_data?.item27 ?? "");
+    const [item28, set_item28] = useState(checklist_data?.item28 ?? "");
+    const [item29, set_item29] = useState(checklist_data?.item29 ?? "")
+    const [item30, set_item30] = useState(checklist_data?.item30 ?? "");
 
     const [complete_documents, set_complete_documents] = useState(checklist_data?.complete_documents ?? "")
     const [complete_accreditation, set_complete_accreditation] = useState(checklist_data?.complete_accreditation ?? "")
@@ -230,276 +286,606 @@ export default function Part3(props){
             
             <hr className={styles.separator}/>
 
-            <div className={styles.form_section}>
-                <p className={styles.section_header}>Track Record</p>
-                <div style={{width:"100%", display:"flex", justifyContent:"end"}}>
-                    <button onClick={toggle_modal} className={styles.add_button}>
-                        <AddIcon/>
-                    </button>
-                </div>
-                
-                <table className={styles.information_table}>
-                    <tbody>
-                        <tr className={styles.fillout_table_header}>
-                            <td className={styles.fillout_table_cell_header}>Type of sample/s</td>
-                            <td className={styles.fillout_table_cell_header}>Parameter</td>
-                            <td className={styles.fillout_table_cell_header}>Analytical Method</td>
-                            <td className={styles.fillout_table_cell_header}>Reference</td>
-                            <td className={styles.fillout_table_cell_header}>Total # of Samples Analyzed</td>
-                            <td className={styles.fillout_table_cell_header}>Period covered</td>
-                            <td className={styles.fillout_table_cell_header}>Name of Analyst</td>
-                            <td className={styles.fillout_table_cell_header}># of Samples Analyzed</td>
-                            <td className={styles.fillout_table_cell_header}>Remarks</td>
-                            <td className={styles.fillout_table_cell_header_yesno}>DENR Approved?</td>
-                            <td className={styles.action_col}>action</td>
-                        </tr>
-                        
-                        {
-                            checklist_data?.track_records?.map((item,idx) => {
-                                return (
-                                    <tr key={idx} className={styles.fillout_table_row}>
-                                        <td className={styles.fillout_table_cell}>{item.sampleType}</td>
-                                        <td className={styles.fillout_table_cell}>{item.parameter}</td>
-                                        <td className={styles.fillout_table_cell}>{item.sampleMethod}</td>
-                                        <td className={styles.fillout_table_cell}>{item.sampleReference}</td>
-                                        <td className={styles.fillout_table_cell}>{item.total_samples}</td>
-                                        <td className={styles.fillout_table_cell}>{item.date_coverage}</td>
-                                        <td className={styles.fillout_table_cell}>{item.personnel}</td>
-                                        <td className={styles.fillout_table_cell}>{item.no_samples}</td>
-                                        <td className={styles.fillout_table_cell}>{item.remarks}</td>
-                                        <td className={styles.fillout_table_yesno_cell}>{item.denr_approved}</td>
-                                        <td className={styles.action_col}>
-                                            <form action={deleteTrackFormAction}>
-                                                <input type="text" name="recordIdx" value={idx} hidden readOnly />
-                                                <input type="text" name="part" value={part} hidden readOnly />
-                                                <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
-                                                <button>
-                                                    <ClearIcon style={{fill:"red", cursor:"pointer", scale:"0.8"}}
-                                                        onClick={() => {
-                                                            console.log(idx)
-                                                        }}
-                                                    />
-                                                </button>
-                                            </form>
 
-                                            
-                                        </td>
-                                    </tr>
-                                )
-                            })
-                        }
-                    </tbody>
-                </table>
+            <div className={styles.form_section}>
+                <div className={styles.details_container_row_borderless}>
+                    <p className={styles.section_header}>Quality control</p>
+                </div>
             </div>
+
+            <table className={styles.information_table}>
+                <tbody>
+                    <tr className={styles.fillout_table_header}>
+                        <td className={styles.fillout_table_cell_header}>Item</td>
+                        <td className={styles.fillout_table_cell_header_yesno}>Yes/No</td>
+                        <td className={styles.fillout_table_cell_header}>Comment</td>
+                    </tr>
+
+                    <tr className={styles.fillout_table_row}>
+                        <td className={styles.fillout_table_cell}>
+                            <p>{`The laboratory shall prepare and adopt a quality assurance program to enhance the quality of data generated by the laboratory.`}</p>
+                            <p></p>
+                            <p>{`Note: Secure a copy of laboratory quality manual and/ or procedures to verify compliance to their documented QA program. Any non-compliance to the Lab’s QA program is considered as non-compliance.`}</p>
+                        </td>
+                        <td className={styles.fillout_table_yesno_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm2} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <select name="form_value" className={styles.input_max} value={item1} onChange={(event) => {
+                                        set_item1(event.target.value)
+                                        handleRealTimeSubmit(realtimeForm2)
+                                    }}>
+                                        <option value={""}>---</option>
+                                        <option value={"yes"}>Yes</option>
+                                        <option value={"no"}>No</option>
+                                    </select>
+                                    <input type="text" name="identifier" value={"item1"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form> 
+                        </td>
+                        <td className={styles.fillout_table_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm3} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <textarea rows={4} type="text"  name="form_value" className={styles.textarea} value={item2} onChange={generic_setter(set_item2)} onBlur={(event) => {
+                                        handleRealTimeSubmit(realtimeForm3)
+                                    }}/>
+                                    <input type="text" name="identifier" value={"item2"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form> 
+                        </td>
+                    </tr>
+
+                    <tr className={styles.fillout_table_row}>
+                        <td className={styles.fillout_table_cell}>
+                            <p>{`Documented Quality Assurance programme i.e.`}</p>
+                            <p></p>
+                            <p>{`Data verification practices including interlaboratory comparison and proficiency testing programs`}</p>
+                        </td>
+                        <td className={styles.fillout_table_yesno_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm4} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <select name="form_value" className={styles.input_max} value={item3} onChange={(event) => {
+                                        set_item3(event.target.value)
+                                        handleRealTimeSubmit(realtimeForm4)
+                                    }}>
+                                        <option value={""}>---</option>
+                                        <option value={"yes"}>Yes</option>
+                                        <option value={"no"}>No</option>
+                                    </select>
+                                    <input type="text" name="identifier" value={"item3"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form> 
+                        </td>
+                        <td className={styles.fillout_table_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm5} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <textarea rows={4} type="text"  name="form_value" className={styles.textarea} value={item4} onChange={generic_setter(set_item2)} onBlur={(event) => {
+                                        handleRealTimeSubmit(realtimeForm5)
+                                    }}/>
+                                    <input type="text" name="identifier" value={"item4"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form> 
+                        </td>
+                    </tr>
+
+
+                    <tr className={styles.fillout_table_row}>
+                        <td className={styles.fillout_table_cell}>
+                            <p>{`data verification, validation and reporting`}</p>
+                        </td>
+                        <td className={styles.fillout_table_yesno_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm6} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <select name="form_value" className={styles.input_max} value={item5} onChange={(event) => {
+                                        set_item5(event.target.value)
+                                        handleRealTimeSubmit(realtimeForm6)
+                                    }}>
+                                        <option value={""}>---</option>
+                                        <option value={"yes"}>Yes</option>
+                                        <option value={"no"}>No</option>
+                                    </select>
+                                    <input type="text" name="identifier" value={"item5"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                        <td className={styles.fillout_table_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm7} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item6} onChange={generic_setter(set_item6)} onBlur={(event) => {
+                                        handleRealTimeSubmit(realtimeForm7)
+                                    }}/>
+                                    <input type="text" name="identifier" value={"item6"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td className={styles.information_table_row_header}>
+                            <p style={{width:"100%", textAlign:"center", fontSize:"15px"}}>Test Report Information</p>
+                        </td>
+                    </tr>
+                    <tr className={styles.fillout_table_row}>
+                        <td className={styles.fillout_table_cell}>
+                            <p>{`unique test report ID`}</p>
+                        </td>
+                        <td className={styles.fillout_table_yesno_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm8} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <select name="form_value" className={styles.input_max} value={item7} onChange={(event) => {
+                                        set_item7(event.target.value)
+                                        handleRealTimeSubmit(realtimeForm8)
+                                    }}>
+                                        <option value={""}>---</option>
+                                        <option value={"yes"}>Yes</option>
+                                        <option value={"no"}>No</option>
+                                    </select>
+                                    <input type="text" name="identifier" value={"item7"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                        <td className={styles.fillout_table_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm9} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item8} onChange={generic_setter(set_item8)} onBlur={(event) => {
+                                        handleRealTimeSubmit(realtimeForm9)
+                                    }}/>
+                                    <input type="text" name="identifier" value={"item8"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+
+                    <tr className={styles.fillout_table_row}>
+                        <td className={styles.fillout_table_cell}>
+                            <p>{`Name/ address of laboratory`}</p>
+                        </td>
+                        <td className={styles.fillout_table_yesno_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm10} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <select name="form_value" className={styles.input_max} value={item9} onChange={(event) => {
+                                        set_item9(event.target.value)
+                                        handleRealTimeSubmit(realtimeForm10)
+                                    }}>
+                                        <option value={""}>---</option>
+                                        <option value={"yes"}>Yes</option>
+                                        <option value={"no"}>No</option>
+                                    </select>
+                                    <input type="text" name="identifier" value={"item9"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                        <td className={styles.fillout_table_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm11} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item10} onChange={generic_setter(set_item10)} onBlur={(event) => {
+                                        handleRealTimeSubmit(realtimeForm11)
+                                    }}/>
+                                    <input type="text" name="identifier" value={"item10"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+
+                    <tr className={styles.fillout_table_row}>
+                        <td className={styles.fillout_table_cell}>
+                            <p>{`Name/ address of client`}</p>
+                        </td>
+                        <td className={styles.fillout_table_yesno_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm12} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <select name="form_value" className={styles.input_max} value={item11} onChange={(event) => {
+                                        set_item11(event.target.value)
+                                        handleRealTimeSubmit(realtimeForm12)
+                                    }}>
+                                        <option value={""}>---</option>
+                                        <option value={"yes"}>Yes</option>
+                                        <option value={"no"}>No</option>
+                                    </select>
+                                    <input type="text" name="identifier" value={"item11"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                        <td className={styles.fillout_table_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm13} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item12} onChange={generic_setter(set_item12)} onBlur={(event) => {
+                                        handleRealTimeSubmit(realtimeForm13)
+                                    }}/>
+                                    <input type="text" name="identifier" value={"item12"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+
+                    <tr className={styles.fillout_table_row}>
+                        <td className={styles.fillout_table_cell}>
+                            <p>{`Unique sample ID`}</p>
+                        </td>
+                        <td className={styles.fillout_table_yesno_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm14} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <select name="form_value" className={styles.input_max} value={item13} onChange={(event) => {
+                                        set_item13(event.target.value)
+                                        handleRealTimeSubmit(realtimeForm14)
+                                    }}>
+                                        <option value={""}>---</option>
+                                        <option value={"yes"}>Yes</option>
+                                        <option value={"no"}>No</option>
+                                    </select>
+                                    <input type="text" name="identifier" value={"item13"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                        <td className={styles.fillout_table_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm15} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item14} onChange={generic_setter(set_item14)} onBlur={(event) => {
+                                        handleRealTimeSubmit(realtimeForm15)
+                                    }}/>
+                                    <input type="text" name="identifier" value={"item14"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+
+
+                    <tr className={styles.fillout_table_row}>
+                        <td className={styles.fillout_table_cell}>
+                            <p>{`Type of sample`}</p>
+                        </td>
+                        <td className={styles.fillout_table_yesno_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm16} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <select name="form_value" className={styles.input_max} value={item15} onChange={(event) => {
+                                        set_item15(event.target.value)
+                                        handleRealTimeSubmit(realtimeForm16)
+                                    }}>
+                                        <option value={""}>---</option>
+                                        <option value={"yes"}>Yes</option>
+                                        <option value={"no"}>No</option>
+                                    </select>
+                                    <input type="text" name="identifier" value={"item15"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                        <td className={styles.fillout_table_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm17} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item16} onChange={generic_setter(set_item16)} onBlur={(event) => {
+                                        handleRealTimeSubmit(realtimeForm17)
+                                    }}/>
+                                    <input type="text" name="identifier" value={"item16"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+
+                    <tr className={styles.fillout_table_row}>
+                        <td className={styles.fillout_table_cell}>
+                            <p>{`Station ID/ sample source`}</p>
+                        </td>
+                        <td className={styles.fillout_table_yesno_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm18} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <select name="form_value" className={styles.input_max} value={item17} onChange={(event) => {
+                                        set_item17(event.target.value)
+                                        handleRealTimeSubmit(realtimeForm18)
+                                    }}>
+                                        <option value={""}>---</option>
+                                        <option value={"yes"}>Yes</option>
+                                        <option value={"no"}>No</option>
+                                    </select>
+                                    <input type="text" name="identifier" value={"item17"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                        <td className={styles.fillout_table_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm19} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item18} onChange={generic_setter(set_item18)} onBlur={(event) => {
+                                        handleRealTimeSubmit(realtimeForm19)
+                                    }}/>
+                                    <input type="text" name="identifier" value={"item18"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+
+                    <tr className={styles.fillout_table_row}>
+                        <td className={styles.fillout_table_cell}>
+                            <p>{`Date of sampling`}</p>
+                        </td>
+                        <td className={styles.fillout_table_yesno_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm20} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <select name="form_value" className={styles.input_max} value={item19} onChange={(event) => {
+                                        set_item19(event.target.value)
+                                        handleRealTimeSubmit(realtimeForm20)
+                                    }}>
+                                        <option value={""}>---</option>
+                                        <option value={"yes"}>Yes</option>
+                                        <option value={"no"}>No</option>
+                                    </select>
+                                    <input type="text" name="identifier" value={"item19"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                        <td className={styles.fillout_table_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm21} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item20} onChange={generic_setter(set_item20)} onBlur={(event) => {
+                                        handleRealTimeSubmit(realtimeForm21)
+                                    }}/>
+                                    <input type="text" name="identifier" value={"item20"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+
+                    <tr className={styles.fillout_table_row}>
+                        <td className={styles.fillout_table_cell}>
+                            <p>{`Date of analysis`}</p>
+                        </td>
+                        <td className={styles.fillout_table_yesno_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm22} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <select name="form_value" className={styles.input_max} value={item21} onChange={(event) => {
+                                        set_item21(event.target.value)
+                                        handleRealTimeSubmit(realtimeForm22)
+                                    }}>
+                                        <option value={""}>---</option>
+                                        <option value={"yes"}>Yes</option>
+                                        <option value={"no"}>No</option>
+                                    </select>
+                                    <input type="text" name="identifier" value={"item21"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                        <td className={styles.fillout_table_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm23} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item22} onChange={generic_setter(set_item22)} onBlur={(event) => {
+                                        handleRealTimeSubmit(realtimeForm23)
+                                    }}/>
+                                    <input type="text" name="identifier" value={"item22"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+
+                    <tr className={styles.fillout_table_row}>
+                        <td className={styles.fillout_table_cell}>
+                            <p>{`Date sample received`}</p>
+                        </td>
+                        <td className={styles.fillout_table_yesno_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm18} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <select name="form_value" className={styles.input_max} value={item17} onChange={(event) => {
+                                        set_item17(event.target.value)
+                                        handleRealTimeSubmit(realtimeForm18)
+                                    }}>
+                                        <option value={""}>---</option>
+                                        <option value={"yes"}>Yes</option>
+                                        <option value={"no"}>No</option>
+                                    </select>
+                                    <input type="text" name="identifier" value={"item17"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                        <td className={styles.fillout_table_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm19} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item18} onChange={generic_setter(set_item18)} onBlur={(event) => {
+                                        handleRealTimeSubmit(realtimeForm19)
+                                    }}/>
+                                    <input type="text" name="identifier" value={"item18"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+
+                    <tr className={styles.fillout_table_row}>
+                        <td className={styles.fillout_table_cell}>
+                            <p>{`Date test report issued`}</p>
+                        </td>
+                        <td className={styles.fillout_table_yesno_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm20} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <select name="form_value" className={styles.input_max} value={item19} onChange={(event) => {
+                                        set_item19(event.target.value)
+                                        handleRealTimeSubmit(realtimeForm20)
+                                    }}>
+                                        <option value={""}>---</option>
+                                        <option value={"yes"}>Yes</option>
+                                        <option value={"no"}>No</option>
+                                    </select>
+                                    <input type="text" name="identifier" value={"item19"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                        <td className={styles.fillout_table_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm21} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item20} onChange={generic_setter(set_item20)} onBlur={(event) => {
+                                        handleRealTimeSubmit(realtimeForm21)
+                                    }}/>
+                                    <input type="text" name="identifier" value={"item20"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+
+                    <tr className={styles.fillout_table_row}>
+                        <td className={styles.fillout_table_cell}>
+                            <p>{`Test result name/ signature of person authorizing report`}</p>
+                        </td>
+                        <td className={styles.fillout_table_yesno_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm22} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <select name="form_value" className={styles.input_max} value={item21} onChange={(event) => {
+                                        set_item21(event.target.value)
+                                        handleRealTimeSubmit(realtimeForm22)
+                                    }}>
+                                        <option value={""}>---</option>
+                                        <option value={"yes"}>Yes</option>
+                                        <option value={"no"}>No</option>
+                                    </select>
+                                    <input type="text" name="identifier" value={"item21"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                        <td className={styles.fillout_table_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm23} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item22} onChange={generic_setter(set_item22)} onBlur={(event) => {
+                                        handleRealTimeSubmit(realtimeForm23)
+                                    }}/>
+                                    <input type="text" name="identifier" value={"item22"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+
+                    <tr className={styles.fillout_table_row}>
+                        <td className={styles.fillout_table_cell}>
+                            <p>{`Name/ signature of analyst`}</p>
+                        </td>
+                        <td className={styles.fillout_table_yesno_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm24} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <select name="form_value" className={styles.input_max} value={item23} onChange={(event) => {
+                                        set_item23(event.target.value)
+                                        handleRealTimeSubmit(realtimeForm24)
+                                    }}>
+                                        <option value={""}>---</option>
+                                        <option value={"yes"}>Yes</option>
+                                        <option value={"no"}>No</option>
+                                    </select>
+                                    <input type="text" name="identifier" value={"item23"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                        <td className={styles.fillout_table_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm25} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item24} onChange={generic_setter(set_item24)} onBlur={(event) => {
+                                        handleRealTimeSubmit(realtimeForm25)
+                                    }}/>
+                                    <input type="text" name="identifier" value={"item24"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+
+                    <tr className={styles.fillout_table_row}>
+                        <td className={styles.fillout_table_cell}>
+                            <p>{`Method of analysis (cited analytical method and reference)`}</p>
+                        </td>
+                        <td className={styles.fillout_table_yesno_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm26} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <select name="form_value" className={styles.input_max} value={item25} onChange={(event) => {
+                                        set_item23(event.target.value)
+                                        handleRealTimeSubmit(realtimeForm26)
+                                    }}>
+                                        <option value={""}>---</option>
+                                        <option value={"yes"}>Yes</option>
+                                        <option value={"no"}>No</option>
+                                    </select>
+                                    <input type="text" name="identifier" value={"item25"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                        <td className={styles.fillout_table_cell}>
+                            <form action={realtimeFormAction} ref={realtimeForm27} className={styles.form}>
+                                <div className={styles.item_container_row}>
+                                    <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item26} onChange={generic_setter(set_item24)} onBlur={(event) => {
+                                        handleRealTimeSubmit(realtimeForm27)
+                                    }}/>
+                                    <input type="text" name="identifier" value={"item26"} hidden readOnly />
+                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                    <input type="text" name="part" value={part} hidden readOnly />
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+
+
+
+                </tbody>
+            </table>
 
 
             <hr className={styles.separator}/>
 
-            <div className={styles.form_section}>
-                <div className={styles.item_container_row}>
-                    <p className={styles.section_header}>Documents submitted by the laboratory for the assessment</p>
-                    <form action={realtimeFormAction} ref={realtimeForm1} className={styles.form}>
-                        <div className={styles.item_container_row}>
-                            <p className={styles.sub_header}>Documents Complete?</p>
-                            <select name="form_value" value={complete_documents} className={styles.input} onChange={(event) => {
-                                            set_complete_documents(event.target.value)
-                                            handleRealTimeSubmit(realtimeForm1)
-                                        }}>
-                                <option value={""}>---</option>
-                                <option value={"yes"}>Yes</option>
-                                <option value={"no"}>No</option>
-                            </select>
-                            <input type="text" name="identifier" value={"complete_documents"} hidden readOnly />
-                            <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
-                            <input type="text" name="part" value={part} hidden readOnly />
-                        </div>
-                    </form> 
-                </div>
-
-                <table className={styles.information_table}>
-                    <tbody>
-                        <tr className={styles.fillout_table_header}>
-                            <td className={styles.fillout_table_cell_header}>Title</td>
-                            <td className={styles.fillout_table_cell_header}>Date Added</td>
-                            <td className={styles.fillout_table_cell_header}>Added By</td>
-                            <td className={styles.fillout_table_cell_header}>View</td>
-                        </tr>
-
-                        {
-                            applicationFiles?.map((item, idx) => {
-                                if(item.isEMB === false){
-                                    return (
-                                        <tr key={idx} className={styles.fillout_table_row}>
-                                            <td className={styles.fillout_table_cell}>{item.file_label}</td>
-                                            <td className={styles.fillout_table_cell}>{item.date_added}</td>
-                                            <td className={styles.fillout_table_cell}>{item.addedByEmail}</td>
-                                            <td className={styles.fillout_table_cell_centered}>
-                                                <Link href={`/${item.url_path}`} target={"_blank"}>                                  
-                                                    <VisibilityIcon 
-                                                        sx={{fill:"darkslategray", cursor:"pointer"}}
-                                                    /> 
-                                                </Link>
-                                            </td>
-                                        </tr>
-                                    )
-                                }
-                                
-                            })
-                        }
-                    </tbody>
-                </table>
-            </div>
-
-
-            <hr className={styles.separator}/>
 
             <div className={styles.form_section}>
-                <div className={styles.item_container_row}>
-                    <p className={styles.section_header}>Accreditation Records</p>
-                    <form action={realtimeFormAction} ref={realtimeForm2} className={styles.form}>
-                            <div className={styles.item_container_row}>
-                                <p className={styles.sub_header}>Accreditation Records Complete?</p>
-                                <select name="form_value" value={complete_accreditation} className={styles.input} onChange={(event) => {
-                                                set_complete_accreditation(event.target.value)
-                                                handleRealTimeSubmit(realtimeForm2)
-                                            }}>
-                                    <option value={""}>---</option>
-                                    <option value={"yes"}>Yes</option>
-                                    <option value={"no"}>No</option>
-                                </select>
-                                <input type="text" name="identifier" value={"complete_accreditation"} hidden readOnly />
-                                <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
-                                <input type="text" name="part" value={part} hidden readOnly />
-                            </div>
-                        </form> 
+                <div className={styles.warning_container}>
+                    <b>Note: </b>
+                    <p>Check qualifications based on DAO 98-63, 03b Personnel. DENR criteria includes education, licentiate, relevant training and experience in environmental analysis and/ or management.</p>
                 </div>
-
-                <table className={styles.information_table}>
-                    <tbody>
-                        <tr className={styles.fillout_table_header}>
-                            <td className={styles.fillout_table_cell_header}>Accrediting Body / Address</td>
-                            <td className={styles.fillout_table_cell_header}>Nature / Scope of Accreditation</td>
-                            <td className={styles.fillout_table_cell_header}>Expiration Date</td>
-                            <td className={styles.fillout_table_cell_header}>Certificate</td>
-                        </tr>
-
-                        {
-                            accreditationRecords?.map((item, idx) => {
-                                return (
-                                    <tr key={idx} className={styles.fillout_table_row}>
-                                        <td className={styles.fillout_table_cell}>{item.accreditation_body}</td>
-                                        <td className={styles.fillout_table_cell}>{item.scope}</td>
-                                        <td className={styles.fillout_table_cell}>{item.expiration}</td>
-                                        <td className={styles.fillout_table_cell_centered}>
-                                            <Link href={`/${item.certificate}`} target={"_blank"}>                                  
-                                                <VisibilityIcon 
-                                                    sx={{fill:"darkslategray", cursor:"pointer"}}
-                                                /> 
-                                            </Link>
-                                        </td>
-                                    </tr>
-                                )
-                            })
-                        }
-                    </tbody>
-                </table>
             </div>
-
-
-            <hr className={styles.separator} />
-                
-
-            <div className={styles.form_section}>
-                <div className={styles.details_container_row_borderless}>
-                    <div className={styles.item_container_row}>
-                        <p className={styles.section_header}>Geographical area currently served by the laboratory</p>
-                        <form action={realtimeFormAction} ref={realtimeForm3} className={styles.form}>
-                            <div className={styles.item_container_row}>
-                                <p className={styles.sub_header}>Are details correct?</p>
-                                <select name="form_value" value={geographical_area} className={styles.input} onChange={(event) => {
-                                                set_geographical_area(event.target.value)
-                                                handleRealTimeSubmit(realtimeForm3)
-                                            }}>
-                                    <option value={""}>---</option>
-                                    <option value={"yes"}>Yes</option>
-                                    <option value={"no"}>No</option>
-                                </select>
-                                <input type="text" name="identifier" value={"geographical_area"} hidden readOnly />
-                                <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
-                                <input type="text" name="part" value={part} hidden readOnly />
-                            </div>
-                        </form> 
-                    </div>
-                </div>
-                <table className={styles.information_table}>
-                    <tbody>
-                        <tr className={styles.fillout_table_row}>
-                            <td className={styles.fillout_table_cell}>{capitalize(lab.areaServed)}</td>
-                        </tr>
-                        
-                    </tbody>
-                </table>
-            </div>
-
-            <div className={styles.form_section}>
-                <div className={styles.details_container_row_borderless}>
-                    <div className={styles.item_container_row}>
-                        <p className={styles.section_header}>Categories of clients which use its services/ or whether the laboratory will accept testing work from</p>
-                        <form action={realtimeFormAction} ref={realtimeForm4} className={styles.form}>
-                            <div className={styles.item_container_row}>
-                                <p className={styles.sub_header}>Are details correct?</p>
-                                <select name="form_value" value={client_category} className={styles.input} onChange={(event) => {
-                                                set_client_category(event.target.value)
-                                                handleRealTimeSubmit(realtimeForm4)
-                                            }}>
-                                    <option value={""}>---</option>
-                                    <option value={"yes"}>Yes</option>
-                                    <option value={"no"}>No</option>
-                                </select>
-                                <input type="text" name="identifier" value={"client_category"} hidden readOnly />
-                                <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
-                                <input type="text" name="part" value={part} hidden readOnly />
-                            </div>
-                        </form> 
-                    </div>
-                </div>
-
-                <p className={styles.fillout_table_cell}>{convertArrayToString(lab.categoryOfClient)}</p>
-    
-            </div>
-
-            <div className={styles.form_section}>
-                <div className={styles.details_container_row_borderless}>
-                    <div className={styles.item_container_row}>
-                        <p className={styles.section_header}>Other technical role / services offered by the laboratory</p>
-                        <form action={realtimeFormAction} ref={realtimeForm5} className={styles.form}>
-                            <div className={styles.item_container_row}>
-                                <p className={styles.sub_header}>Are details correct?</p>
-                                <select name="form_value" value={services} className={styles.input} onChange={(event) => {
-                                                set_services(event.target.value)
-                                                handleRealTimeSubmit(realtimeForm5)
-                                            }}>
-                                    <option value={""}>---</option>
-                                    <option value={"yes"}>Yes</option>
-                                    <option value={"no"}>No</option>
-                                </select>
-                                <input type="text" name="identifier" value={"services"} hidden readOnly />
-                                <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
-                                <input type="text" name="part" value={part} hidden readOnly />
-                            </div>
-                        </form> 
-                    </div>
-                </div>
-                <table className={styles.information_table}>
-                    <tbody>
-                        <tr className={styles.fillout_table_row}>
-                            <td className={styles.fillout_table_cell}>{convertArrayToString(lab.ServicesOffered)}</td>
-                        </tr>
-                        
-                    </tbody>
-                </table>
-            </div>
-
                 
             
             {showModal && <div className={styles.overlay}></div>}
