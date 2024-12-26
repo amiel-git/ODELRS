@@ -35,12 +35,15 @@ export default function Remarks(props){
         setFilteredRemarks(allRemarks[remarkType])
     },[remarkType])
 
+
+
     useEffect(() => {
             if(Object.keys(formState).includes("success")){
                 if(formState.error === null){
                     setSnackBarMessage(`Successfully added a remark.`)
                     setOpenSnackBar(true)
                     setSnackBarSeverity("success")
+                    setFilteredRemarks(allRemarks[remarkType])
                 } else {
                     setSnackBarMessage("Unable to add remark.")
                     setOpenSnackBar(true)

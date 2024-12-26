@@ -135,7 +135,7 @@ export default function ApplicationTabs(props) {
             }}
         />
 
-        {application.status === 8 && 
+         
             <Tab 
                 label={
                           <div  className={(props.application.status === 8) ? styles.breathing_text : styles.tab_item}>
@@ -148,7 +148,7 @@ export default function ApplicationTabs(props) {
                     alignItems:"start"
                 }}
             />
-        }
+        
         <Tab 
 
             label={
@@ -187,7 +187,7 @@ export default function ApplicationTabs(props) {
         
       </Tab>
         
-      <Tab 
+       <Tab 
             label={
                       <div className={props.application.status === 3 && user.id === application.assigneeId ? styles.breathing_text : styles.tab_item}>
                         <ArticleIcon className={styles.tab_item_icon}/>
