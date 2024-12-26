@@ -45,7 +45,7 @@ export default function AccreditationForm({toggle_function, user, lab}){
             <form action={formAction} className={styles.form_style}>
                 <div className={styles.form_row}>
                     <div className={styles.form_item}>
-                        <label className={styles.label} htmlFor="body">Accrediation Body/Address:</label>
+                        <label className={styles.label} htmlFor="body">Accrediting Body/Address:</label>
                         <input className={styles.input} type="text" name="body" required/>
                     </div>
                 </div>
