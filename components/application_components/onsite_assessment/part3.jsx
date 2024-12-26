@@ -833,7 +833,7 @@ export default function Part3(props){
                         <td className={styles.fillout_table_cell}>
                             <form action={realtimeFormAction} ref={realtimeForm5} className={styles.form}>
                                 <div className={styles.item_container_row}>
-                                    <textarea disabled={!isEditor} rows={4} type="text"  name="form_value" className={styles.textarea} value={item4} onChange={generic_setter(set_item2)} onBlur={(event) => {
+                                    <textarea disabled={!isEditor} rows={4} type="text"  name="form_value" className={styles.textarea} value={item4} onChange={generic_setter(set_item4)} onBlur={(event) => {
                                         handleRealTimeSubmit(realtimeForm5)
                                     }}/>
                                     <input disabled={!isEditor} type="text" name="identifier" value={"item4"} hidden readOnly />
