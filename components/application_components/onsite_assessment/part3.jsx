@@ -725,7 +725,7 @@ export default function Part3(props){
                     </div>
                     <div className={styles.item_container}>
                         <p className={styles.sub_header}>Email:</p>
-                        <p className={styles.sub_header_value}>{team.external_assessor_pl.email}</p>
+                        <p className={styles.sub_header_value}>{team?.external_assessor_pl?.email}</p>
                     </div>
                 </div>
             </div>
