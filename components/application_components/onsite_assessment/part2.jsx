@@ -211,18 +211,24 @@ export default function Part2(props){
         <div className={styles.main_container}>
             <div className={styles.form_section}>
                 <p className={styles.section_header}>Assessor</p>
-                <div className={styles.details_container_row}>
-                    <div className={styles.item_container}>
-                        <p className={styles.sub_header}>Name:</p>
-                        <p className={styles.sub_header_value}>
-                            {`${capitalize(team.liat_chair?.userDetails?.firstName ?? "")} ${capitalize(team.liat_chair?.userDetails?.lastName ?? "")}`}
-                        </p>
-                    </div>
-                    <div className={styles.item_container}>
-                        <p className={styles.sub_header}>Email:</p>
-                        <p className={styles.sub_header_value}>{team?.liat_chair?.email}</p>
-                    </div>
-                </div>
+                {
+                        checklists[part]?.assignees.map((item,idx) => {
+                            return (
+                                <div className={styles.details_container_row} key={idx}>
+                                    <div className={styles.item_container}>
+                                        <p className={styles.sub_header}>Name:</p>
+                                        <p className={styles.sub_header_value}>
+                                            {`${capitalize(item.userDetails?.firstName ?? "")} ${capitalize(item.userDetails?.lastName ?? "")}`}
+                                        </p>
+                                    </div>
+                                    <div className={styles.item_container}>
+                                        <p className={styles.sub_header}>Email:</p>
+                                        <p className={styles.sub_header_value}>{item?.email}</p>
+                                    </div>
+                                </div>
+                            )
+                        })
+                    }
             </div>
 
             <hr />

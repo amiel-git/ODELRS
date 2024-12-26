@@ -1676,7 +1676,11 @@ export async function getApplicationChecklists(applicationId){
             },
             include:{
                 personnelInterviewed:true,
-                assignees:true
+                assignees:{
+                    include:{
+                        userDetails:true
+                    }
+                }
             }
         })
     
