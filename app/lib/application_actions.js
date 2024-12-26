@@ -1867,3 +1867,467 @@ export async function deleteOnsiteTrackRecord(prevState, formData){
         return {error:"Unable to delete track record.",success:true}
     }
 }
+
+
+
+export async function addPersonResposible(prevState, formData){
+    try {
+        const onsiteId = parseInt(formData.get("onsiteId"))
+        const userId = parseInt(formData.get("userId"))
+        const part = formData.get("part")
+        const name = formData.get("name")
+        const type_of_report = formData.get("type_of_report")
+        const signed = formData.get("signed")
+        const denr_approved = formData.get("denr_approved")
+        const input_file = formData.get("input_file")
+
+        const curr_checklist = await prisma.checklist.findFirst({
+            where:{
+                onsiteAssessmentId:onsiteId,
+                type:part
+            }
+        })
+    
+        var curr_checklist_data = curr_checklist.data === null ? {} : curr_checklist.data
+
+        const persons_responsible = curr_checklist_data?.persons_responsible ?? []
+
+
+        if(input_file.size > 0){
+            const attachment = await uploadFile(input_file,"uploads/checklists/attachments/","checklist_person", userId)
+            persons_responsible.push({
+                name:name,
+                type_of_report:type_of_report,
+                signed:signed,
+                denr_approved:denr_approved,
+                attachment:attachment.url_path
+            })
+        }
+
+        else {
+            persons_responsible.push({
+                name:name,
+                type_of_report:type_of_report,
+                signed:signed,
+                denr_approved:denr_approved,
+            })
+        }
+        
+        curr_checklist_data.persons_responsible = persons_responsible
+
+
+        await prisma.checklist.update({
+            where:{
+                id:curr_checklist.id
+            },
+            data:{
+                data:curr_checklist_data
+            }
+        })
+
+        await prisma.$disconnect()
+        revalidatePath("application/")
+        return {error:null, success:true, data:curr_checklist_data}
+    } catch (error) {
+        return {error:"Unable to add record.",success:true}
+    }
+}
+
+
+export async function deletePersonResponsible(prevState, formData){
+
+    try {
+
+        const onsiteId = parseInt(formData.get("onsiteId"))
+        const part = formData.get("part")
+        const indexToRemove = parseInt(formData.get("recordIdx"))
+
+
+        const curr_checklist = await prisma.checklist.findFirst({
+            where:{
+                onsiteAssessmentId:onsiteId,
+                type:part
+            }
+        })
+    
+        var curr_checklist_data = curr_checklist.data === null ? {} : curr_checklist.data
+
+        var persons_responsible = curr_checklist_data?.persons_responsible ?? []
+        persons_responsible = persons_responsible.filter((_, index) => index !== indexToRemove);
+
+        curr_checklist_data.persons_responsible = persons_responsible
+
+        await prisma.checklist.update({
+            where:{
+                id:curr_checklist.id
+            },
+            data:{
+                data:curr_checklist_data
+            }
+        })
+
+        await prisma.$disconnect()
+        revalidatePath("application/")
+        return {error:null, success:true, data:curr_checklist_data}
+    } catch (error) {
+        return {error:"Unable to delete track record.",success:true}
+    }
+}
+
+
+
+export async function addPersonRecognized(prevState, formData){
+    try {
+        const onsiteId = parseInt(formData.get("onsiteId"))
+        const userId = parseInt(formData.get("userId"))
+        const part = formData.get("part")
+        const name = formData.get("name")
+        const education = formData.get("education")
+        const profession = formData.get("profession")
+        const license = formData.get("license")
+        const responsibility = formData.get("responsibility")
+
+        const curr_checklist = await prisma.checklist.findFirst({
+            where:{
+                onsiteAssessmentId:onsiteId,
+                type:part
+            }
+        })
+    
+        var curr_checklist_data = curr_checklist.data === null ? {} : curr_checklist.data
+
+        const persons_recognized = curr_checklist_data?.persons_recognized ?? []
+
+
+
+        persons_recognized.push({
+            name:name,
+            education:education,
+            profession:profession,
+            license:license,
+            responsibility:responsibility,
+        })
+
+        
+        curr_checklist_data.persons_recognized = persons_recognized
+
+
+        await prisma.checklist.update({
+            where:{
+                id:curr_checklist.id
+            },
+            data:{
+                data:curr_checklist_data
+            }
+        })
+
+        await prisma.$disconnect()
+        revalidatePath("application/")
+        return {error:null, success:true, data:curr_checklist_data}
+    } catch (error) {
+        return {error:"Unable to add record.",success:true}
+    }
+}
+
+
+export async function deletePersonRecognized(prevState, formData){
+
+    try {
+
+        const onsiteId = parseInt(formData.get("onsiteId"))
+        const part = formData.get("part")
+        const indexToRemove = parseInt(formData.get("recordIdx"))
+
+
+        const curr_checklist = await prisma.checklist.findFirst({
+            where:{
+                onsiteAssessmentId:onsiteId,
+                type:part
+            }
+        })
+    
+        var curr_checklist_data = curr_checklist.data === null ? {} : curr_checklist.data
+
+        var persons_recognized = curr_checklist_data?.persons_recognized ?? []
+        persons_recognized = persons_recognized.filter((_, index) => index !== indexToRemove);
+
+        curr_checklist_data.persons_recognized = persons_recognized
+
+        await prisma.checklist.update({
+            where:{
+                id:curr_checklist.id
+            },
+            data:{
+                data:curr_checklist_data
+            }
+        })
+
+        await prisma.$disconnect()
+        revalidatePath("application/")
+        return {error:null, success:true, data:curr_checklist_data}
+    } catch (error) {
+        return {error:"Unable to delete track record.",success:true}
+    }
+}
+
+
+export async function addProficiencyTest(prevState, formData){
+    try {
+        const onsiteId = parseInt(formData.get("onsiteId"))
+        const userId = parseInt(formData.get("userId"))
+        const part = formData.get("part")
+        const date_from = formData.get("date_from")
+        const date_to = formData.get("date_to")
+        const date_value = `${convertToStandardDate(new Date(date_from))} to ${convertToStandardDate(new Date(date_to))}`
+        const title = formData.get("title")
+        const organizing_body = formData.get("organizing_body")
+        const matrix = formData.get("matrix")
+        const parameters = formData.get("parameters")
+        const performance = formData.get("performance")
+
+
+        const curr_checklist = await prisma.checklist.findFirst({
+            where:{
+                onsiteAssessmentId:onsiteId,
+                type:part
+            }
+        })
+    
+        var curr_checklist_data = curr_checklist.data === null ? {} : curr_checklist.data
+
+        const proficiency_tests = curr_checklist_data?.proficiency_tests ?? []
+
+        proficiency_tests.push({
+            date:date_value,
+            title:title,
+            organizing_body:organizing_body,
+            matrix:matrix,
+            parameters:parameters,
+            performance:performance,
+        })
+
+        
+        curr_checklist_data.proficiency_tests = proficiency_tests
+
+
+        await prisma.checklist.update({
+            where:{
+                id:curr_checklist.id
+            },
+            data:{
+                data:curr_checklist_data
+            }
+        })
+
+        await prisma.$disconnect()
+        revalidatePath("application/")
+        return {error:null, success:true, data:curr_checklist_data}
+    } catch (error) {
+        return {error:"Unable to add record.",success:true}
+    }
+}
+
+
+export async function deleteProficiencyTest(prevState, formData){
+
+    try {
+
+        const onsiteId = parseInt(formData.get("onsiteId"))
+        const part = formData.get("part")
+        const indexToRemove = parseInt(formData.get("recordIdx"))
+
+
+        const curr_checklist = await prisma.checklist.findFirst({
+            where:{
+                onsiteAssessmentId:onsiteId,
+                type:part
+            }
+        })
+    
+        var curr_checklist_data = curr_checklist.data === null ? {} : curr_checklist.data
+
+        var proficiency_tests = curr_checklist_data?.proficiency_tests ?? []
+        proficiency_tests = proficiency_tests.filter((_, index) => index !== indexToRemove);
+
+        curr_checklist_data.proficiency_tests = proficiency_tests
+
+        await prisma.checklist.update({
+            where:{
+                id:curr_checklist.id
+            },
+            data:{
+                data:curr_checklist_data
+            }
+        })
+
+        await prisma.$disconnect()
+        revalidatePath("application/")
+        return {error:null, success:true, data:curr_checklist_data}
+    } catch (error) {
+        return {error:"Unable to delete track record.",success:true}
+    }
+}
+
+
+export async function addPart4Table1Data(prevState, formData){
+    try {
+        const onsiteId = parseInt(formData.get("onsiteId"))
+        const userId = parseInt(formData.get("userId"))
+        const part = formData.get("part")
+        const matrix = formData.get("matrix")
+        const parameters = formData.get("parameters")
+        const tr_compliance = formData.get("tr_compliance")
+        const lp_compliance = formData.get("lp_compliance")
+        const mdl = formData.get("mdl")
+        const reagents_compliance = formData.get("reagents_compliance")
+        const equipment_compliance = formData.get("equipment_compliance")
+        const qc_analyzed = formData.get("qc_analyzed")
+        const qc_charts = formData.get("qc_charts")
+        const source = formData.get("source")
+        const comments = formData.get("comments")
+
+        const curr_checklist = await prisma.checklist.findFirst({
+            where:{
+                onsiteAssessmentId:onsiteId,
+                type:part
+            }
+        })
+    
+        var curr_checklist_data = curr_checklist.data === null ? {} : curr_checklist.data
+
+        const part4Table1 = curr_checklist_data?.part4Table1 ?? []
+
+        part4Table1.push({
+            matrix:matrix,
+            parameters:parameters,
+            tr_compliance:tr_compliance,
+            lp_compliance:lp_compliance,
+            mdl:mdl,
+            reagents_compliance:reagents_compliance,
+            equipment_compliance:equipment_compliance,
+            qc_analyzed:qc_analyzed,
+            qc_charts:qc_charts,
+            source:source,
+            comments:comments,
+        })
+
+        
+        curr_checklist_data.part4Table1 = part4Table1
+
+
+        await prisma.checklist.update({
+            where:{
+                id:curr_checklist.id
+            },
+            data:{
+                data:curr_checklist_data
+            }
+        })
+
+        await prisma.$disconnect()
+        revalidatePath("application/")
+        return {error:null, success:true, data:curr_checklist_data}
+    } catch (error) {
+        return {error:"Unable to add record.",success:true}
+    }
+}
+
+
+export async function deletePart4Table1Data(prevState, formData){
+
+    try {
+
+        const onsiteId = parseInt(formData.get("onsiteId"))
+        const part = formData.get("part")
+        const indexToRemove = parseInt(formData.get("recordIdx"))
+
+
+        const curr_checklist = await prisma.checklist.findFirst({
+            where:{
+                onsiteAssessmentId:onsiteId,
+                type:part
+            }
+        })
+    
+        var curr_checklist_data = curr_checklist.data === null ? {} : curr_checklist.data
+
+        var part4Table1 = curr_checklist_data?.part4Table1 ?? []
+        part4Table1 = part4Table1.filter((_, index) => index !== indexToRemove);
+
+        curr_checklist_data.part4Table1 = part4Table1
+
+        await prisma.checklist.update({
+            where:{
+                id:curr_checklist.id
+            },
+            data:{
+                data:curr_checklist_data
+            }
+        })
+
+        await prisma.$disconnect()
+        revalidatePath("application/")
+        return {error:null, success:true, data:curr_checklist_data}
+    } catch (error) {
+        return {error:"Unable to delete track record.",success:true}
+    }
+}
+
+
+export async function addCalibrationData(prevState, formData){
+    try {
+        const onsiteId = parseInt(formData.get("onsiteId"))
+        const userId = parseInt(formData.get("userId"))
+        const part = formData.get("part")
+        const instrument = formData.get("instrument")
+        const parameters = formData.get("parameters")
+        const program_calibration = formData.get("program_calibration")
+        const internal_calibration = formData.get("internal_calibration")
+        const external_calibration = formData.get("external_calibration")
+        const program_maintenance = formData.get("program_maintenance")
+        const internal_maintenance = formData.get("internal_maintenance")
+        const external_maintenance = formData.get("external_maintenance")
+
+
+        const curr_checklist = await prisma.checklist.findFirst({
+            where:{
+                onsiteAssessmentId:onsiteId,
+                type:part
+            }
+        })
+    
+        var curr_checklist_data = curr_checklist.data === null ? {} : curr_checklist.data
+
+        const calibration_data = curr_checklist_data?.calibration_data ?? []
+
+        calibration_data.push({
+            instrument:instrument,
+            parameters:parameters,
+            program_calibration:program_calibration,
+            internal_calibration:internal_calibration,
+            external_calibration:external_calibration,
+            program_maintenance:program_maintenance,
+            internal_maintenance:internal_maintenance,
+            external_maintenance:external_maintenance,
+        })
+
+        
+        curr_checklist_data.calibration_data = calibration_data
+
+
+        await prisma.checklist.update({
+            where:{
+                id:curr_checklist.id
+            },
+            data:{
+                data:curr_checklist_data
+            }
+        })
+
+        await prisma.$disconnect()
+        revalidatePath("application/")
+        return {error:null, success:true}
+    } catch (error) {
+        return {error:"Unable to add record.",success:true}
+    }
+}

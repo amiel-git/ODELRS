@@ -19,6 +19,7 @@ import Box from '@mui/material/Box';
 import Part1 from './part1';
 import Part2 from './part2';
 import Part3 from './part3';
+import Part4 from './part4';
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -125,7 +126,13 @@ export default function OnsiteAssessment(props){
             />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={3}>
-            Part 4A
+          <Part4
+              user={user}
+              application={application}
+              lab={lab}
+              part="part4a"
+              checklists={checklists}
+            />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={4}>
             Part 4B

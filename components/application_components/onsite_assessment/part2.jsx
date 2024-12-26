@@ -274,15 +274,9 @@ export default function Part2(props){
                                                 <input type="text" name="part" value={part} hidden readOnly />
                                                 <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
                                                 <button>
-                                                    <ClearIcon style={{fill:"red", cursor:"pointer", scale:"0.8"}}
-                                                        onClick={() => {
-                                                            console.log(idx)
-                                                        }}
-                                                    />
+                                                    <ClearIcon style={{fill:"red", cursor:"pointer", scale:"0.8"}}/>
                                                 </button>
                                             </form>
-
-                                            
                                         </td>
                                     </tr>
                                 )
