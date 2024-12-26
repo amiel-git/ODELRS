@@ -432,7 +432,6 @@ export async function getApplicationById(applicationId, userRole){
 
     application.convertedStatus = isEMB ? ApplicationStatusMapping[application.status] : ApplicationStatusMappingExternal[application.status]
 
-    console.log(application.scope_of_recognition)
     await prisma.$disconnect()    
     return application
 
@@ -1676,7 +1675,8 @@ export async function getApplicationChecklists(applicationId){
                 onsiteAssessmentId:onsiteAssessment.id
             },
             include:{
-                personnelInterviewed:true
+                personnelInterviewed:true,
+                assignees:true
             }
         })
     
@@ -2284,9 +2284,12 @@ export async function addCalibrationData(prevState, formData){
         const program_calibration = formData.get("program_calibration")
         const internal_calibration = formData.get("internal_calibration")
         const external_calibration = formData.get("external_calibration")
+        const record_calibration = formData.get("record_calibration")
         const program_maintenance = formData.get("program_maintenance")
         const internal_maintenance = formData.get("internal_maintenance")
         const external_maintenance = formData.get("external_maintenance")
+        const record_maintenance = formData.get("record_maintenance")
+
 
 
         const curr_checklist = await prisma.checklist.findFirst({
@@ -2306,9 +2309,11 @@ export async function addCalibrationData(prevState, formData){
             program_calibration:program_calibration,
             internal_calibration:internal_calibration,
             external_calibration:external_calibration,
+            record_calibration:record_calibration,
             program_maintenance:program_maintenance,
             internal_maintenance:internal_maintenance,
             external_maintenance:external_maintenance,
+            record_maintenance:record_maintenance,
         })
 
         
@@ -2326,8 +2331,49 @@ export async function addCalibrationData(prevState, formData){
 
         await prisma.$disconnect()
         revalidatePath("application/")
-        return {error:null, success:true}
+        return {error:null, success:true, data:curr_checklist_data}
     } catch (error) {
         return {error:"Unable to add record.",success:true}
+    }
+}
+
+
+export async function deleteCalibrationData(prevState, formData){
+
+    try {
+
+        const onsiteId = parseInt(formData.get("onsiteId"))
+        const part = formData.get("part")
+        const indexToRemove = parseInt(formData.get("recordIdx"))
+
+
+        const curr_checklist = await prisma.checklist.findFirst({
+            where:{
+                onsiteAssessmentId:onsiteId,
+                type:part
+            }
+        })
+    
+        var curr_checklist_data = curr_checklist.data === null ? {} : curr_checklist.data
+
+        var calibration_data = curr_checklist_data?.calibration_data ?? []
+        calibration_data = calibration_data.filter((_, index) => index !== indexToRemove);
+
+        curr_checklist_data.calibration_data = calibration_data
+
+        await prisma.checklist.update({
+            where:{
+                id:curr_checklist.id
+            },
+            data:{
+                data:curr_checklist_data
+            }
+        })
+
+        await prisma.$disconnect()
+        revalidatePath("application/")
+        return {error:null, success:true, data:curr_checklist_data}
+    } catch (error) {
+        return {error:"Unable to delete track record.",success:true}
     }
 }

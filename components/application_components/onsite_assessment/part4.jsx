@@ -4,15 +4,13 @@
 import { capitalize, convertArrayToString, generic_setter } from '@/app/lib/helper';
 import styles from './component.module.css';
 import { useState,useActionState, useEffect, useRef } from 'react';
-import { assignPersonnelInterviewed, realTimeFormFunction,deletePart4Table1Data, addPart4Table1Data, addCalibrationData } from '@/app/lib/application_actions';
+import { assignPersonnelInterviewed, realTimeFormFunction,deletePart4Table1Data, addPart4Table1Data, addCalibrationData, deleteCalibrationData } from '@/app/lib/application_actions';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
 import Image from 'next/image';
 import ClearIcon from '@mui/icons-material/Clear';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import Link from 'next/link';
 
 export default function Part4(props){
     const user = props.user
@@ -55,6 +53,28 @@ export default function Part4(props){
 
 
     const [deleteTable1FormState, deleteTable1FormAction] = useActionState(deletePart4Table1Data, {error:null})
+    const [deleteCalibrationFormState, deleteCalibrationFormAction] = useActionState(deleteCalibrationData, {error:null})
+
+    const [isEditor, setIsEditor] = useState(false)
+        useEffect(() => {
+                const assignees__ = checklists[part]?.assignees
+        
+                if(assignees__ !== null && assignees__ !== undefined){
+                    for(var assignee of assignees__){
+                        if(assignee.id === user.id && application.status === 8){
+                            setIsEditor(true)
+                        }
+                    }
+                }
+            },[])
+        
+        
+            useEffect(() => {
+                if(isEditor){
+                    console.log("YOU ARE AN EDITOR")
+                }
+            },[isEditor])
+    
 
 
     const realtimeForm1 = useRef();
@@ -173,17 +193,33 @@ export default function Part4(props){
     useEffect(() => {
         if(Object.keys(deleteTable1FormState).includes("success")){
             if(deleteTable1FormState.error === null){
-                setSnackBarMessage(`Successfully deleted track record.`)
+                setSnackBarMessage(`Successfully deleted record.`)
                 setOpenSnackBar(true)
                 setSnackBarSeverity("success")
                 set_checklist_data(deleteTable1FormState.data)
             } else {
-                setSnackBarMessage("Unable to delete new track record.")
+                setSnackBarMessage("Unable to delete record.")
                 setOpenSnackBar(true)
                 setSnackBarSeverity("error")
             }
         }
       },[deleteTable1FormState])
+
+
+    useEffect(() => {
+        if(Object.keys(deleteCalibrationFormState).includes("success")){
+            if(deleteCalibrationFormState.error === null){
+                setSnackBarMessage(`Successfully deleted record.`)
+                setOpenSnackBar(true)
+                setSnackBarSeverity("success")
+                set_checklist_data(deleteCalibrationFormState.data)
+            } else {
+                setSnackBarMessage("Unable to delete new record.")
+                setOpenSnackBar(true)
+                setSnackBarSeverity("error")
+            }
+        }
+      },[deleteCalibrationFormState])
 
 
     useEffect(() => {
@@ -292,7 +328,7 @@ export default function Part4(props){
                         <form action={personnelFormAction} ref={personnelFormRef}>
                             <div className={styles.item_container}>
                                 <p className={styles.sub_header}>Personnel:</p>
-                                <select name="personnel" value={selectedPersonnel} onChange={onChangeInterviewedPersonnel} className={styles.input}>
+                                <select disabled={!isEditor} name="personnel" value={selectedPersonnel} onChange={onChangeInterviewedPersonnel} className={styles.input}>
                                     <option value={""}>---</option>
                                     {personnels.map((item, idx) => {
                                         return(
@@ -300,8 +336,8 @@ export default function Part4(props){
                                         )
                                     })}
                                 </select>
-                                <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
-                                <input type="text" name="part" value={part} hidden readOnly />
+                                <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />
                             </div>
                         </form> 
                     </div>
@@ -343,7 +379,7 @@ export default function Part4(props){
                 
 
                 <div style={{width:"100%", display:"flex", justifyContent:"end", marginBottom:"-20px"}}>
-                    <button onClick={toggle_modal} className={styles.add_button}>
+                    <button disabled={!isEditor} onClick={toggle_modal} className={styles.add_button}>
                         <AddIcon/>
                     </button>
                 </div>
@@ -393,10 +429,10 @@ export default function Part4(props){
                                             <td className={styles.fillout_table_cell_no_flex}>{item.comments}</td>
                                             <td className={styles.action_col_no_flex}>
                                                 <form action={deleteTable1FormAction}>
-                                                    <input type="text" name="recordIdx" value={idx} hidden readOnly />
-                                                    <input type="text" name="part" value={part} hidden readOnly />
-                                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
-                                                    <button>
+                                                    <input disabled={!isEditor} type="text" name="recordIdx" value={idx} hidden readOnly />
+                                                    <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />
+                                                    <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                                    <button disabled={!isEditor}>
                                                         <ClearIcon style={{fill:"red", cursor:"pointer", scale:"0.8"}}/>
                                                     </button>
                                                 </form>
@@ -425,7 +461,7 @@ export default function Part4(props){
                             <td className={styles.fillout_table_yesno_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm1} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <select name="form_value" className={styles.input_max} value={item1} onChange={(event) => {  
+                                        <select disabled={!isEditor} name="form_value" className={styles.input_max} value={item1} onChange={(event) => {  
                                             set_item1(event.target.value)  
                                             handleRealTimeSubmit(realtimeForm1)  
                                         }}>  
@@ -433,21 +469,21 @@ export default function Part4(props){
                                             <option value={"yes"}>Yes</option>  
                                             <option value={"no"}>No</option>  
                                         </select>  
-                                        <input type="text" name="identifier" value={"item1"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item1"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
                             <td className={styles.fillout_table_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm2} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item2} onChange={generic_setter(set_item2)} onBlur={(event) => {  
+                                        <textarea disabled={!isEditor} rows={4} type="text" name="form_value" className={styles.textarea} value={item2} onChange={generic_setter(set_item2)} onBlur={(event) => {  
                                             handleRealTimeSubmit(realtimeForm2)  
                                         }}/>  
-                                        <input type="text" name="identifier" value={"item2"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item2"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
@@ -464,7 +500,7 @@ export default function Part4(props){
                             <td className={styles.fillout_table_yesno_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm3} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <select name="form_value" className={styles.input_max} value={item3} onChange={(event) => {  
+                                        <select disabled={!isEditor} name="form_value" className={styles.input_max} value={item3} onChange={(event) => {  
                                             set_item3(event.target.value)  
                                             handleRealTimeSubmit(realtimeForm3)  
                                         }}>  
@@ -472,21 +508,21 @@ export default function Part4(props){
                                             <option value={"yes"}>Yes</option>  
                                             <option value={"no"}>No</option>  
                                         </select>  
-                                        <input type="text" name="identifier" value={"item3"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item3"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
                             <td className={styles.fillout_table_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm4} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item4} onChange={generic_setter(set_item4)} onBlur={(event) => {  
+                                        <textarea disabled={!isEditor} rows={4} type="text" name="form_value" className={styles.textarea} value={item4} onChange={generic_setter(set_item4)} onBlur={(event) => {  
                                             handleRealTimeSubmit(realtimeForm4)  
                                         }}/>  
-                                        <input type="text" name="identifier" value={"item4"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item4"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
@@ -499,7 +535,7 @@ export default function Part4(props){
                             <td className={styles.fillout_table_yesno_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm5} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <select name="form_value" className={styles.input_max} value={item5} onChange={(event) => {  
+                                        <select disabled={!isEditor} name="form_value" className={styles.input_max} value={item5} onChange={(event) => {  
                                             set_item5(event.target.value)  
                                             handleRealTimeSubmit(realtimeForm5)  
                                         }}>  
@@ -507,21 +543,21 @@ export default function Part4(props){
                                             <option value={"yes"}>Yes</option>  
                                             <option value={"no"}>No</option>  
                                         </select>  
-                                        <input type="text" name="identifier" value={"item5"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item5"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
                             <td className={styles.fillout_table_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm6} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item6} onChange={generic_setter(set_item6)} onBlur={(event) => {  
+                                        <textarea disabled={!isEditor} rows={4} type="text" name="form_value" className={styles.textarea} value={item6} onChange={generic_setter(set_item6)} onBlur={(event) => {  
                                             handleRealTimeSubmit(realtimeForm6)  
                                         }}/>  
-                                        <input type="text" name="identifier" value={"item6"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item6"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
@@ -534,7 +570,7 @@ export default function Part4(props){
                             <td className={styles.fillout_table_yesno_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm7} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <select name="form_value" className={styles.input_max} value={item7} onChange={(event) => {  
+                                        <select disabled={!isEditor} name="form_value" className={styles.input_max} value={item7} onChange={(event) => {  
                                             set_item7(event.target.value)  
                                             handleRealTimeSubmit(realtimeForm7)  
                                         }}>  
@@ -542,21 +578,21 @@ export default function Part4(props){
                                             <option value={"yes"}>Yes</option>  
                                             <option value={"no"}>No</option>  
                                         </select>  
-                                        <input type="text" name="identifier" value={"item7"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item7"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
                             <td className={styles.fillout_table_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm8} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item8} onChange={generic_setter(set_item8)} onBlur={(event) => {  
+                                        <textarea disabled={!isEditor} rows={4} type="text" name="form_value" className={styles.textarea} value={item8} onChange={generic_setter(set_item8)} onBlur={(event) => {  
                                             handleRealTimeSubmit(realtimeForm8)  
                                         }}/>  
-                                        <input type="text" name="identifier" value={"item8"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item8"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
@@ -569,7 +605,7 @@ export default function Part4(props){
                             <td className={styles.fillout_table_yesno_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm9} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <select name="form_value" className={styles.input_max} value={item9} onChange={(event) => {  
+                                        <select disabled={!isEditor} name="form_value" className={styles.input_max} value={item9} onChange={(event) => {  
                                             set_item9(event.target.value)  
                                             handleRealTimeSubmit(realtimeForm9)  
                                         }}>  
@@ -577,21 +613,21 @@ export default function Part4(props){
                                             <option value={"yes"}>Yes</option>  
                                             <option value={"no"}>No</option>  
                                         </select>  
-                                        <input type="text" name="identifier" value={"item9"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item9"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
                             <td className={styles.fillout_table_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm10} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item10} onChange={generic_setter(set_item10)} onBlur={(event) => {  
+                                        <textarea disabled={!isEditor} rows={4} type="text" name="form_value" className={styles.textarea} value={item10} onChange={generic_setter(set_item10)} onBlur={(event) => {  
                                             handleRealTimeSubmit(realtimeForm10)  
                                         }}/>  
-                                        <input type="text" name="identifier" value={"item10"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item10"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
@@ -604,7 +640,7 @@ export default function Part4(props){
                             <td className={styles.fillout_table_yesno_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm11} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <select name="form_value" className={styles.input_max} value={item11} onChange={(event) => {  
+                                        <select disabled={!isEditor} name="form_value" className={styles.input_max} value={item11} onChange={(event) => {  
                                             set_item11(event.target.value)  
                                             handleRealTimeSubmit(realtimeForm11)  
                                         }}>  
@@ -612,21 +648,21 @@ export default function Part4(props){
                                             <option value={"yes"}>Yes</option>  
                                             <option value={"no"}>No</option>  
                                         </select>  
-                                        <input type="text" name="identifier" value={"item11"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item11"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
                             <td className={styles.fillout_table_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm12} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item12} onChange={generic_setter(set_item12)} onBlur={(event) => {  
+                                        <textarea disabled={!isEditor} rows={4} type="text" name="form_value" className={styles.textarea} value={item12} onChange={generic_setter(set_item12)} onBlur={(event) => {  
                                             handleRealTimeSubmit(realtimeForm12)  
                                         }}/>  
-                                        <input type="text" name="identifier" value={"item12"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item12"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
@@ -640,7 +676,7 @@ export default function Part4(props){
                             <td className={styles.fillout_table_yesno_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm13} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <select name="form_value" className={styles.input_max} value={item13} onChange={(event) => {  
+                                        <select disabled={!isEditor} name="form_value" className={styles.input_max} value={item13} onChange={(event) => {  
                                             set_item13(event.target.value)  
                                             handleRealTimeSubmit(realtimeForm13)  
                                         }}>  
@@ -648,21 +684,21 @@ export default function Part4(props){
                                             <option value={"yes"}>Yes</option>  
                                             <option value={"no"}>No</option>  
                                         </select>  
-                                        <input type="text" name="identifier" value={"item13"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item13"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
                             <td className={styles.fillout_table_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm14} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item14} onChange={generic_setter(set_item14)} onBlur={(event) => {  
+                                        <textarea disabled={!isEditor} rows={4} type="text" name="form_value" className={styles.textarea} value={item14} onChange={generic_setter(set_item14)} onBlur={(event) => {  
                                             handleRealTimeSubmit(realtimeForm14)  
                                         }}/>  
-                                        <input type="text" name="identifier" value={"item14"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item14"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
@@ -675,7 +711,7 @@ export default function Part4(props){
                             <td className={styles.fillout_table_yesno_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm15} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <select name="form_value" className={styles.input_max} value={item15} onChange={(event) => {  
+                                        <select disabled={!isEditor} name="form_value" className={styles.input_max} value={item15} onChange={(event) => {  
                                             set_item15(event.target.value)  
                                             handleRealTimeSubmit(realtimeForm15)  
                                         }}>  
@@ -683,21 +719,21 @@ export default function Part4(props){
                                             <option value={"yes"}>Yes</option>  
                                             <option value={"no"}>No</option>  
                                         </select>  
-                                        <input type="text" name="identifier" value={"item15"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item15"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
                             <td className={styles.fillout_table_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm16} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item16} onChange={generic_setter(set_item16)} onBlur={(event) => {  
+                                        <textarea disabled={!isEditor} rows={4} type="text" name="form_value" className={styles.textarea} value={item16} onChange={generic_setter(set_item16)} onBlur={(event) => {  
                                             handleRealTimeSubmit(realtimeForm16)  
                                         }}/>  
-                                        <input type="text" name="identifier" value={"item16"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item16"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
@@ -710,7 +746,7 @@ export default function Part4(props){
                             <td className={styles.fillout_table_yesno_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm17} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <select name="form_value" className={styles.input_max} value={item17} onChange={(event) => {  
+                                        <select disabled={!isEditor} name="form_value" className={styles.input_max} value={item17} onChange={(event) => {  
                                             set_item17(event.target.value)  
                                             handleRealTimeSubmit(realtimeForm17)  
                                         }}>  
@@ -718,21 +754,21 @@ export default function Part4(props){
                                             <option value={"yes"}>Yes</option>  
                                             <option value={"no"}>No</option>  
                                         </select>  
-                                        <input type="text" name="identifier" value={"item17"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item17"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
                             <td className={styles.fillout_table_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm18} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item18} onChange={generic_setter(set_item18)} onBlur={(event) => {  
+                                        <textarea disabled={!isEditor} rows={4} type="text" name="form_value" className={styles.textarea} value={item18} onChange={generic_setter(set_item18)} onBlur={(event) => {  
                                             handleRealTimeSubmit(realtimeForm18)  
                                         }}/>  
-                                        <input type="text" name="identifier" value={"item18"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item18"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
@@ -745,7 +781,7 @@ export default function Part4(props){
                             <td className={styles.fillout_table_yesno_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm19} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <select name="form_value" className={styles.input_max} value={item19} onChange={(event) => {  
+                                        <select disabled={!isEditor} name="form_value" className={styles.input_max} value={item19} onChange={(event) => {  
                                             set_item19(event.target.value)  
                                             handleRealTimeSubmit(realtimeForm19)  
                                         }}>  
@@ -753,21 +789,21 @@ export default function Part4(props){
                                             <option value={"yes"}>Yes</option>  
                                             <option value={"no"}>No</option>  
                                         </select>  
-                                        <input type="text" name="identifier" value={"item19"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item19"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
                             <td className={styles.fillout_table_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm20} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item20} onChange={generic_setter(set_item20)} onBlur={(event) => {  
+                                        <textarea disabled={!isEditor} rows={4} type="text" name="form_value" className={styles.textarea} value={item20} onChange={generic_setter(set_item20)} onBlur={(event) => {  
                                             handleRealTimeSubmit(realtimeForm20)  
                                         }}/>  
-                                        <input type="text" name="identifier" value={"item20"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item20"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
@@ -781,7 +817,7 @@ export default function Part4(props){
                         <td className={styles.fillout_table_yesno_cell}>  
                             <form action={realtimeFormAction} ref={realtimeForm21} className={styles.form}>  
                                 <div className={styles.item_container_row}>  
-                                    <select name="form_value" className={styles.input_max} value={item21} onChange={(event) => {  
+                                    <select disabled={!isEditor} name="form_value" className={styles.input_max} value={item21} onChange={(event) => {  
                                         set_item21(event.target.value)  
                                         handleRealTimeSubmit(realtimeForm21)  
                                     }}>  
@@ -789,21 +825,21 @@ export default function Part4(props){
                                         <option value={"yes"}>Yes</option>  
                                         <option value={"no"}>No</option>  
                                     </select>  
-                                    <input type="text" name="identifier" value={"item21"} hidden readOnly />  
-                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                    <input type="text" name="part" value={part} hidden readOnly />  
+                                    <input disabled={!isEditor} type="text" name="identifier" value={"item21"} hidden readOnly />  
+                                    <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                    <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                 </div>  
                             </form>  
                         </td>  
                         <td className={styles.fillout_table_cell}>  
                             <form action={realtimeFormAction} ref={realtimeForm22} className={styles.form}>  
                                 <div className={styles.item_container_row}>  
-                                    <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item22} onChange={generic_setter(set_item22)} onBlur={(event) => {  
+                                    <textarea disabled={!isEditor} rows={4} type="text" name="form_value" className={styles.textarea} value={item22} onChange={generic_setter(set_item22)} onBlur={(event) => {  
                                         handleRealTimeSubmit(realtimeForm22)  
                                     }}/>  
-                                    <input type="text" name="identifier" value={"item22"} hidden readOnly />  
-                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                    <input type="text" name="part" value={part} hidden readOnly />  
+                                    <input disabled={!isEditor} type="text" name="identifier" value={"item22"} hidden readOnly />  
+                                    <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                    <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                 </div>  
                             </form>  
                         </td>  
@@ -816,7 +852,7 @@ export default function Part4(props){
                         <td className={styles.fillout_table_yesno_cell}>  
                             <form action={realtimeFormAction} ref={realtimeForm23} className={styles.form}>  
                                 <div className={styles.item_container_row}>  
-                                    <select name="form_value" className={styles.input_max} value={item23} onChange={(event) => {  
+                                    <select disabled={!isEditor} name="form_value" className={styles.input_max} value={item23} onChange={(event) => {  
                                         set_item23(event.target.value)  
                                         handleRealTimeSubmit(realtimeForm23)  
                                     }}>  
@@ -824,21 +860,21 @@ export default function Part4(props){
                                         <option value={"yes"}>Yes</option>  
                                         <option value={"no"}>No</option>  
                                     </select>  
-                                    <input type="text" name="identifier" value={"item23"} hidden readOnly />  
-                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                    <input type="text" name="part" value={part} hidden readOnly />  
+                                    <input disabled={!isEditor} type="text" name="identifier" value={"item23"} hidden readOnly />  
+                                    <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                    <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                 </div>  
                             </form>  
                         </td>  
                         <td className={styles.fillout_table_cell}>  
                             <form action={realtimeFormAction} ref={realtimeForm24} className={styles.form}>  
                                 <div className={styles.item_container_row}>  
-                                    <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item24} onChange={generic_setter(set_item24)} onBlur={(event) => {  
+                                    <textarea disabled={!isEditor} rows={4} type="text" name="form_value" className={styles.textarea} value={item24} onChange={generic_setter(set_item24)} onBlur={(event) => {  
                                         handleRealTimeSubmit(realtimeForm24)  
                                     }}/>  
-                                    <input type="text" name="identifier" value={"item24"} hidden readOnly />  
-                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                    <input type="text" name="part" value={part} hidden readOnly />  
+                                    <input disabled={!isEditor} type="text" name="identifier" value={"item24"} hidden readOnly />  
+                                    <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                    <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                 </div>  
                             </form>  
                         </td>  
@@ -851,7 +887,7 @@ export default function Part4(props){
                         <td className={styles.fillout_table_yesno_cell}>  
                             <form action={realtimeFormAction} ref={realtimeForm25} className={styles.form}>  
                                 <div className={styles.item_container_row}>  
-                                    <select name="form_value" className={styles.input_max} value={item25} onChange={(event) => {  
+                                    <select disabled={!isEditor} name="form_value" className={styles.input_max} value={item25} onChange={(event) => {  
                                         set_item25(event.target.value)  
                                         handleRealTimeSubmit(realtimeForm25)  
                                     }}>  
@@ -859,21 +895,21 @@ export default function Part4(props){
                                         <option value={"yes"}>Yes</option>  
                                         <option value={"no"}>No</option>  
                                     </select>  
-                                    <input type="text" name="identifier" value={"item25"} hidden readOnly />  
-                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                    <input type="text" name="part" value={part} hidden readOnly />  
+                                    <input disabled={!isEditor} type="text" name="identifier" value={"item25"} hidden readOnly />  
+                                    <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                    <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                 </div>  
                             </form>  
                         </td>  
                         <td className={styles.fillout_table_cell}>  
                             <form action={realtimeFormAction} ref={realtimeForm26} className={styles.form}>  
                                 <div className={styles.item_container_row}>  
-                                    <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item26} onChange={generic_setter(set_item26)} onBlur={(event) => {  
+                                    <textarea disabled={!isEditor} rows={4} type="text" name="form_value" className={styles.textarea} value={item26} onChange={generic_setter(set_item26)} onBlur={(event) => {  
                                         handleRealTimeSubmit(realtimeForm26)  
                                     }}/>  
-                                    <input type="text" name="identifier" value={"item26"} hidden readOnly />  
-                                    <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                    <input type="text" name="part" value={part} hidden readOnly />  
+                                    <input disabled={!isEditor} type="text" name="identifier" value={"item26"} hidden readOnly />  
+                                    <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                    <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                 </div>  
                             </form>  
                         </td>  
@@ -900,7 +936,7 @@ export default function Part4(props){
                             <td className={styles.fillout_table_yesno_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm27} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <select name="form_value" className={styles.input_max} value={item27} onChange={(event) => {  
+                                        <select disabled={!isEditor} name="form_value" className={styles.input_max} value={item27} onChange={(event) => {  
                                             set_item27(event.target.value)  
                                             handleRealTimeSubmit(realtimeForm27)  
                                         }}>  
@@ -908,21 +944,21 @@ export default function Part4(props){
                                             <option value={"yes"}>Yes</option>  
                                             <option value={"no"}>No</option>  
                                         </select>  
-                                        <input type="text" name="identifier" value={"item27"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item27"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
                             <td className={styles.fillout_table_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm28} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item28} onChange={generic_setter(set_item28)} onBlur={(event) => {  
+                                        <textarea disabled={!isEditor} rows={4} type="text" name="form_value" className={styles.textarea} value={item28} onChange={generic_setter(set_item28)} onBlur={(event) => {  
                                             handleRealTimeSubmit(realtimeForm28)  
                                         }}/>  
-                                        <input type="text" name="identifier" value={"item28"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item28"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
@@ -935,7 +971,7 @@ export default function Part4(props){
                             <td className={styles.fillout_table_yesno_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm29} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <select name="form_value" className={styles.input_max} value={item29} onChange={(event) => {  
+                                        <select disabled={!isEditor} name="form_value" className={styles.input_max} value={item29} onChange={(event) => {  
                                             set_item29(event.target.value)  
                                             handleRealTimeSubmit(realtimeForm29)  
                                         }}>  
@@ -943,21 +979,21 @@ export default function Part4(props){
                                             <option value={"yes"}>Yes</option>  
                                             <option value={"no"}>No</option>  
                                         </select>  
-                                        <input type="text" name="identifier" value={"item29"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item29"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
                             <td className={styles.fillout_table_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm30} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item30} onChange={generic_setter(set_item30)} onBlur={(event) => {  
+                                        <textarea disabled={!isEditor} rows={4} type="text" name="form_value" className={styles.textarea} value={item30} onChange={generic_setter(set_item30)} onBlur={(event) => {  
                                             handleRealTimeSubmit(realtimeForm30)  
                                         }}/>  
-                                        <input type="text" name="identifier" value={"item30"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item30"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
@@ -970,7 +1006,7 @@ export default function Part4(props){
                             <td className={styles.fillout_table_yesno_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm31} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <select name="form_value" className={styles.input_max} value={item31} onChange={(event) => {  
+                                        <select disabled={!isEditor} name="form_value" className={styles.input_max} value={item31} onChange={(event) => {  
                                             set_item31(event.target.value)  
                                             handleRealTimeSubmit(realtimeForm31)  
                                         }}>  
@@ -978,21 +1014,21 @@ export default function Part4(props){
                                             <option value={"yes"}>Yes</option>  
                                             <option value={"no"}>No</option>  
                                         </select>  
-                                        <input type="text" name="identifier" value={"item31"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item31"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
                             <td className={styles.fillout_table_cell}>  
                                 <form action={realtimeFormAction} ref={realtimeForm32} className={styles.form}>  
                                     <div className={styles.item_container_row}>  
-                                        <textarea rows={4} type="text" name="form_value" className={styles.textarea} value={item32} onChange={generic_setter(set_item32)} onBlur={(event) => {  
+                                        <textarea disabled={!isEditor} rows={4} type="text" name="form_value" className={styles.textarea} value={item32} onChange={generic_setter(set_item32)} onBlur={(event) => {  
                                             handleRealTimeSubmit(realtimeForm32)  
                                         }}/>  
-                                        <input type="text" name="identifier" value={"item32"} hidden readOnly />  
-                                        <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
-                                        <input type="text" name="part" value={part} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="identifier" value={"item32"} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />  
+                                        <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />  
                                     </div>  
                                 </form>  
                             </td>  
@@ -1011,7 +1047,7 @@ export default function Part4(props){
                         <p className={styles.section_header}>Instrument / Equipment Calibration</p>
                     </div>
                     <div style={{width:"100%", display:"flex", justifyContent:"end"}}>
-                        <button onClick={toggle_modal_calibration} className={styles.add_button}>
+                        <button disabled={!isEditor} onClick={toggle_modal_calibration} className={styles.add_button}>
                             <AddIcon/>
                         </button>
                     </div>
@@ -1040,9 +1076,33 @@ export default function Part4(props){
 
 
                             {
-                                
+                                checklist_data?.calibration_data?.map((item,idx) => {
+                                    return (
+                                        <tr key={idx} >
+                                            <td className={styles.fillout_table_cell_no_flex}>{item.instrument}</td>
+                                            <td className={styles.fillout_table_cell_no_flex}>{item.parameters}</td>
+                                            <td className={styles.fillout_table_cell_no_flex}>{capitalize(item.program_calibration)}</td>
+                                            <td className={styles.fillout_table_cell_no_flex}>{capitalize(item.internal_calibration)}</td>
+                                            <td className={styles.fillout_table_cell_no_flex}>{capitalize(item.external_calibration)}</td>
+                                            <td className={styles.fillout_table_cell_no_flex}>{capitalize(item.record_calibration)}</td>
+                                            <td className={styles.fillout_table_cell_no_flex}>{capitalize(item.program_maintenance)}</td>
+                                            <td className={styles.fillout_table_cell_no_flex}>{capitalize(item.internal_maintenance)}</td>
+                                            <td className={styles.fillout_table_cell_no_flex}>{capitalize(item.external_maintenance)}</td>
+                                            <td className={styles.fillout_table_cell_no_flex}>{capitalize(item.record_maintenance)}</td>
+                                            <td className={styles.action_col_no_flex}>
+                                                <form action={deleteCalibrationFormAction}>
+                                                    <input disabled={!isEditor} type="text" name="recordIdx" value={idx} hidden readOnly />
+                                                    <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />
+                                                    <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                                                    <button disabled={!isEditor}>
+                                                        <ClearIcon style={{fill:"red", cursor:"pointer", scale:"0.8"}}/>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    )
+                                })
                             }
-
 
                         </tbody>
                     </table>
@@ -1074,20 +1134,20 @@ export default function Part4(props){
                             <div className={styles.form_row}>
                                 <div className={styles.form_item}>
                                     <label className={styles.sub_header} htmlFor="matrix">Matrix</label>
-                                    <input type="text" name='matrix' className={styles.input_max} required/>
+                                    <input disabled={!isEditor} type="text" name='matrix' className={styles.input_max} required/>
                                 </div>
                             </div>
                             <div className={styles.form_row}>
                                 <div className={styles.form_item}>
                                     <label className={styles.sub_header} htmlFor="parameters">Parameters</label>
-                                    <input type="text" name='parameters' className={styles.input_max} required/>
+                                    <input disabled={!isEditor} type="text" name='parameters' className={styles.input_max} required/>
                                 </div>
                             </div>
 
                             <div className={styles.form_row}>
                                 <div className={styles.form_item}>
                                     <label className={styles.sub_header} htmlFor="tr_compliance">Track Record Compliance?</label>
-                                    <select name="tr_compliance" className={styles.input_max}>
+                                    <select disabled={!isEditor} name="tr_compliance" className={styles.input_max}>
                                         <option value={""}>---</option>
                                         <option value={"compliant"}>Compliant</option>
                                         <option value={"non_compliant"}>Non-Compliant</option>
@@ -1097,7 +1157,7 @@ export default function Part4(props){
                             <div className={styles.form_row}>
                                 <div className={styles.form_item}>
                                     <label className={styles.sub_header} htmlFor="lp_compliance">Laboratory Procedure/s Compliance?</label>
-                                    <select name="lp_compliance" className={styles.input_max}>
+                                    <select disabled={!isEditor} name="lp_compliance" className={styles.input_max}>
                                         <option value={""}>---</option>
                                         <option value={"compliant"}>Compliant</option>
                                         <option value={"non_compliant"}>Non-Compliant</option>
@@ -1108,7 +1168,7 @@ export default function Part4(props){
                             <div className={styles.form_row}>
                                 <div className={styles.form_item}>
                                     <label className={styles.sub_header} htmlFor="mdl">MDL</label>
-                                    <input type="text" name='mdl' className={styles.input_max} required/>
+                                    <input disabled={!isEditor} type="text" name='mdl' className={styles.input_max} required/>
                                 </div>
                             </div>
 
@@ -1116,7 +1176,7 @@ export default function Part4(props){
                             <div className={styles.form_row}>
                                 <div className={styles.form_item}>
                                     <label className={styles.sub_header} htmlFor="reagents_compliance">Reagents Compliance?</label>
-                                    <select name="reagents_compliance" className={styles.input_max}>
+                                    <select disabled={!isEditor} name="reagents_compliance" className={styles.input_max}>
                                         <option value={""}>---</option>
                                         <option value={"compliant"}>Compliant</option>
                                         <option value={"non_compliant"}>Non-Compliant</option>
@@ -1127,7 +1187,7 @@ export default function Part4(props){
                             <div className={styles.form_row}>
                                 <div className={styles.form_item}>
                                     <label className={styles.sub_header} htmlFor="equipment_compliance">Equipment/ instruments Compliance?</label>
-                                    <select name="equipment_compliance" className={styles.input_max}>
+                                    <select disabled={!isEditor} name="equipment_compliance" className={styles.input_max}>
                                         <option value={""}>---</option>
                                         <option value={"compliant"}>Compliant</option>
                                         <option value={"non_compliant"}>Non-Compliant</option>
@@ -1138,7 +1198,7 @@ export default function Part4(props){
                             <div className={styles.form_row}>
                                 <div className={styles.form_item}>
                                     <label className={styles.sub_header} htmlFor="qc_analyzed">QC Sample Analysed</label>
-                                    <select name="qc_analyzed" className={styles.input_max}>
+                                    <select disabled={!isEditor} name="qc_analyzed" className={styles.input_max}>
                                         <option value={""}>---</option>
                                         <option value={"yes"}>Yes</option>
                                         <option value={"no"}>No</option>
@@ -1149,14 +1209,14 @@ export default function Part4(props){
                             <div className={styles.form_row}>
                                 <div className={styles.form_item}>
                                     <label className={styles.sub_header} htmlFor="source">Source</label>
-                                    <input type="text" name='source' className={styles.input_max} required/>
+                                    <input disabled={!isEditor} type="text" name='source' className={styles.input_max} required/>
                                 </div>
                             </div>
 
                             <div className={styles.form_row}>
                                 <div className={styles.form_item}>
                                     <label className={styles.sub_header} htmlFor="qc_charts">QC Charts</label>
-                                    <select name="qc_charts" className={styles.input_max}>
+                                    <select disabled={!isEditor} name="qc_charts" className={styles.input_max}>
                                         <option value={""}>---</option>
                                         <option value={"yes"}>Yes</option>
                                         <option value={"no"}>No</option>
@@ -1167,20 +1227,20 @@ export default function Part4(props){
                             <div className={styles.form_row}>
                                 <div className={styles.form_item}>
                                     <label className={styles.sub_header} htmlFor="comments">Comments</label>
-                                    <textarea rows={3} type="text" name='comments' className={styles.input_textarea} required/>
+                                    <textarea disabled={!isEditor} rows={3} type="text" name='comments' className={styles.input_textarea} required/>
                                 </div>
                             </div>
 
 
-                            <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
-                            <input type="text" name="part" value={part} hidden readOnly />
+                            <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                            <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />
                             <hr />
                             <div className={styles.button_container}>
                                 {table1FormState.error && <small 
                                                                     style={{textAlign:"left", width:"100%", color:"red"}}>
                                                                         {table1FormState.error}
                                                                 </small>}
-                                <button className={styles.add_button}>
+                                <button disabled={!isEditor} className={styles.add_button}>
                                     <SaveIcon style={{fill:"white", scale:"0.8"}}/>
                                     Save
                                 </button>
@@ -1218,14 +1278,14 @@ export default function Part4(props){
                             <div className={styles.form_row}>
                                 <div className={styles.form_item}>
                                     <label className={styles.sub_header} htmlFor="instrument">Instrument/Equipment</label>
-                                    <input type="text" name='instrument' className={styles.input_max} required/>
+                                    <input disabled={!isEditor} type="text" name='instrument' className={styles.input_max} required/>
                                 </div>
                             </div>
 
                             <div className={styles.form_row}>
                                 <div className={styles.form_item}>
                                     <label className={styles.sub_header} htmlFor="parameters">Parameters Affected</label>
-                                    <input type="text" name='parameters' className={styles.input_max} required/>
+                                    <input disabled={!isEditor} type="text" name='parameters' className={styles.input_max} required/>
                                 </div>
                             </div>
 
@@ -1236,7 +1296,7 @@ export default function Part4(props){
                             <div className={styles.form_row}>
                                 <div className={styles.form_item}>
                                     <label className={styles.sub_header} htmlFor="program_calibration">Program</label>
-                                    <select name="program_calibration" className={styles.input_max}>
+                                    <select disabled={!isEditor} name="program_calibration" className={styles.input_max}>
                                         <option value={""}>---</option>
                                         <option value={"yes"}>Yes</option>
                                         <option value={"no"}>No</option>
@@ -1246,7 +1306,7 @@ export default function Part4(props){
                             <div className={styles.form_row}>
                                 <div className={styles.form_item}>
                                     <label className={styles.sub_header} htmlFor="internal_calibration">Internal</label>
-                                    <select name="internal_calibration" className={styles.input_max}>
+                                    <select disabled={!isEditor} name="internal_calibration" className={styles.input_max}>
                                         <option value={""}>---</option>
                                         <option value={"yes"}>Yes</option>
                                         <option value={"no"}>No</option>
@@ -1256,7 +1316,17 @@ export default function Part4(props){
                             <div className={styles.form_row}>
                                 <div className={styles.form_item}>
                                     <label className={styles.sub_header} htmlFor="external_calibration">External</label>
-                                    <select name="external_calibration" className={styles.input_max}>
+                                    <select disabled={!isEditor} name="external_calibration" className={styles.input_max}>
+                                        <option value={""}>---</option>
+                                        <option value={"yes"}>Yes</option>
+                                        <option value={"no"}>No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className={styles.form_row}>
+                                <div className={styles.form_item}>
+                                    <label className={styles.sub_header} htmlFor="record_calibration">Record</label>
+                                    <select disabled={!isEditor} name="record_calibration" className={styles.input_max}>
                                         <option value={""}>---</option>
                                         <option value={"yes"}>Yes</option>
                                         <option value={"no"}>No</option>
@@ -1271,7 +1341,7 @@ export default function Part4(props){
                             <div className={styles.form_row}>
                                 <div className={styles.form_item}>
                                     <label className={styles.sub_header} htmlFor="program_maintenance">Program</label>
-                                    <select name="program_maintenance" className={styles.input_max}>
+                                    <select disabled={!isEditor} name="program_maintenance" className={styles.input_max}>
                                         <option value={""}>---</option>
                                         <option value={"yes"}>Yes</option>
                                         <option value={"no"}>No</option>
@@ -1281,7 +1351,7 @@ export default function Part4(props){
                             <div className={styles.form_row}>
                                 <div className={styles.form_item}>
                                     <label className={styles.sub_header} htmlFor="internal_maintenance">Internal</label>
-                                    <select name="internal_maintenance" className={styles.input_max}>
+                                    <select disabled={!isEditor} name="internal_maintenance" className={styles.input_max}>
                                         <option value={""}>---</option>
                                         <option value={"yes"}>Yes</option>
                                         <option value={"no"}>No</option>
@@ -1291,7 +1361,17 @@ export default function Part4(props){
                             <div className={styles.form_row}>
                                 <div className={styles.form_item}>
                                     <label className={styles.sub_header} htmlFor="external_maintenance">External</label>
-                                    <select name="external_maintenance" className={styles.input_max}>
+                                    <select disabled={!isEditor} name="external_maintenance" className={styles.input_max}>
+                                        <option value={""}>---</option>
+                                        <option value={"yes"}>Yes</option>
+                                        <option value={"no"}>No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className={styles.form_row}>
+                                <div className={styles.form_item}>
+                                    <label className={styles.sub_header} htmlFor="record_maintenance">Record</label>
+                                    <select disabled={!isEditor} name="record_maintenance" className={styles.input_max}>
                                         <option value={""}>---</option>
                                         <option value={"yes"}>Yes</option>
                                         <option value={"no"}>No</option>
@@ -1300,15 +1380,15 @@ export default function Part4(props){
                             </div>
 
 
-                            <input type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
-                            <input type="text" name="part" value={part} hidden readOnly />
+                            <input disabled={!isEditor} type="text" name="onsiteId" value={application.onsite_assessment.id} hidden readOnly />
+                            <input disabled={!isEditor} type="text" name="part" value={part} hidden readOnly />
                             <hr />
                             <div className={styles.button_container}>
                                 {table1FormState.error && <small 
                                                                     style={{textAlign:"left", width:"100%", color:"red"}}>
                                                                         {table1FormState.error}
                                                                 </small>}
-                                <button className={styles.add_button}>
+                                <button disabled={!isEditor} className={styles.add_button}>
                                     <SaveIcon style={{fill:"white", scale:"0.8"}}/>
                                     Save
                                 </button>

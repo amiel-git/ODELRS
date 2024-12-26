@@ -134,19 +134,23 @@ export default function ApplicationTabs(props) {
                 alignItems:"start"
             }}
         />
+
+        {application.status === 8 && 
+            <Tab 
+                label={
+                          <div  className={(props.application.status === 8) ? styles.breathing_text : styles.tab_item}>
+                            <DomainIcon className={styles.tab_item_icon}/>
+                            Onsite Assessment
+                        </div>
+                        }
+                        {...a11yProps(3)}
+                sx={{
+                    alignItems:"start"
+                }}
+            />
+        }
         <Tab 
-            label={
-                      <div  className={(props.application.status === 8) ? styles.breathing_text : styles.tab_item}>
-                        <DomainIcon className={styles.tab_item_icon}/>
-                        Onsite Assessment
-                    </div>
-                    }
-                    {...a11yProps(3)}
-            sx={{
-                alignItems:"start"
-            }}
-        />
-        <Tab 
+
             label={
                       <div className={styles.tab_item}>
                         <TextsmsIcon className={styles.tab_item_icon}/>

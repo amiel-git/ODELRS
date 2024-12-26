@@ -135,13 +135,31 @@ export default function OnsiteAssessment(props){
             />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={4}>
-            Part 4B
+          <Part4
+              user={user}
+              application={application}
+              lab={lab}
+              part="part4b"
+              checklists={checklists}
+            />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={5}>
-            Part 4C
+          <Part4
+              user={user}
+              application={application}
+              lab={lab}
+              part="part4c"
+              checklists={checklists}
+            />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={6}>
-            Part 4D
+          <Part4
+              user={user}
+              application={application}
+              lab={lab}
+              part="part4d"
+              checklists={checklists}
+            />
         </CustomTabPanel>
         </Box>
 

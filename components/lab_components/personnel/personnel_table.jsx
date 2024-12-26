@@ -171,7 +171,6 @@ export default function PersonnelTable(props){
                       <TableRow hover role="checkbox" tabIndex={-1} key={idx}>
                         {columns.map((column) => {
                           const value = row[column.id];
-                          console.log(column.id)
                           if(column.id === "cv" || column.id === "license"){
                             //For hyperlinks
                             return (
